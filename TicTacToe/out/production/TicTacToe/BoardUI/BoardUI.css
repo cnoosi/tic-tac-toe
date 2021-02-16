@@ -1,7 +1,6 @@
 .MainFrame
 {
     -fx-background-color: #ebf3fe;
-    -fx-background-image: url("/src/resources/images/Board.jpg");
     -fx-background-size: 100% 100%;
     -fx-background-image-position: fixed;
     -fx-background-padding: 0;
