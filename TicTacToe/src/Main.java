@@ -11,10 +11,10 @@ public class Main extends Application
         {
             Parent root = FXMLLoader.load(getClass().getResource("/BoardUI/BoardUI.fxml"));
             primaryStage.setTitle("Hello World");
-            primaryStage.setScene(new Scene(root, 300, 275));
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setResizable(false);
             primaryStage.show();
         }
-
 
     public static void main(String[] args) {
         launch(args);

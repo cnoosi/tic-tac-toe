@@ -1,4 +1,6 @@
 package BoardUI;
 
-public class BoardUIController {
+public class BoardUIController
+{
+
 }
