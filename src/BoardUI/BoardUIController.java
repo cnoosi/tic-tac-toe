@@ -35,8 +35,8 @@ public class BoardUIController
 
     private Game game = new Game(3);
     //private Notification = new Notification(notificationLabel);
-    private Image XToken = new Image("/resources/images/X.jpg");
-    private Image YToken = new Image("/resources/images/O.jpg");
+    private Image XToken = new Image("/resources/images/x.png");
+    private Image YToken = new Image("/resources/images/o.png");
 
     @FXML
     public void handleButtonClick(ActionEvent event)
