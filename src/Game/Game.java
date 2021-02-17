@@ -5,15 +5,18 @@ public class Game
     private int[][] boardData;
     private int boardSize;
     private int token;
+    private Time time;
 
     public Game(int boardSize)
     {
+        this.time = new Time();
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
         this.token = 1;
     }
     public Game(int[][] boardData, int boardSize)
     {
+        this.time = new Time();
         this.boardData = boardData;
         this.boardSize = boardSize;
         this.token = 1;
