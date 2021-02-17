@@ -1,31 +1,49 @@
-public class Board
+package Game;
+
+public class Game
 {
     private int[][] boardData;
     private int boardSize;
+    private int token;
 
-    Board(int boardSize)
+    public Game(int boardSize)
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
+        this.token = 1;
     }
-    Board(int[][] boardData, int boardSize)
+    public Game(int[][] boardData, int boardSize)
     {
         this.boardData = boardData;
         this.boardSize = boardSize;
+        this.token = 1;
     }
 
-    public boolean SetBoardPlacement(int i, int j, int player)
+    public void switchToken()
+    {
+        if (token == 1)
+            token = 2;
+        else
+            token = 1;
+    }
+
+    public int getToken()
+    {
+        return token;
+    }
+
+    public boolean setPosition(int i, int j)
     {
         if (boardData[i][j] == 0)
         {
-            boardData[i][j] = player;
-            //ui change stuff
+            boardData[i][j] = token;
+            //ui change stuff (probably shouldn't do it within button)
             return true;
         }
         return false;
     }
 
-    public void ClearBoard()
+    public void clearBoard()
     {
         for (int i = 0; i < boardSize; i++)
         {
@@ -37,7 +55,7 @@ public class Board
         }
     }
 
-    public int CheckWin()
+    public int checkWin()
     {
         int[] consecutivePlayer = new int[boardSize];
         //Horizontal Check
