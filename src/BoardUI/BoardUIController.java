@@ -35,8 +35,8 @@ public class BoardUIController
 
     private Game game = new Game(3);
     //private Notification = new Notification(notificationLabel);
-    private Image XToken = new Image("/resources/images/X.jpg");
-    private Image YToken = new Image("/resources/images/O.jpg");
+    private Image XToken = new Image("/resources/images/x.png");
+    private Image YToken = new Image("/resources/images/o.png");
 
     @FXML
     public void handleButtonClick(ActionEvent event)
@@ -101,13 +101,13 @@ public class BoardUIController
             int winner = game.checkWin();
             if (winner != 0) {
                 if (winner == -1) {
-                    notificationLabel.setTextFill(new Color(1, 1, 1, 1));
+                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
                     notificationLabel.setText("Tie!");
                     return;
                 } else if (winner == 1)
-                    notificationLabel.setTextFill(new Color(0, 0, 1, 1));
+                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
                 else if (winner == 2)
-                    notificationLabel.setTextFill(new Color(1, 0, 1, 1));
+                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
                 notificationLabel.setText("Player " + winner + " wins!");
             }
         }
