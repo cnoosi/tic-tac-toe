@@ -11,9 +11,9 @@ import Game.*;
 
 public class BoardUIController
 {
-    private Game game = new Game();
-    private Image XToken = new Image("/resources/images/Rect.png");
-    private Image YToken = new Image("/resources/images/Oh.png");
+    private Game game = new Game(3);
+    private Image YToken = new Image("/resources/images/Rect.png");
+    private Image XToken = new Image("/resources/images/Oh.png");
 
     @FXML private ImageView box_00;
     @FXML private ImageView box_01;
@@ -36,11 +36,6 @@ public class BoardUIController
     @FXML private Button btn_22;
 
     @FXML private Label notificationLabel;
-
-    private Game game = new Game(3);
-    //private Notification = new Notification(notificationLabel);
-    private Image XToken = new Image("/resources/images/X.jpg");
-    private Image YToken = new Image("/resources/images/O.jpg");
 
     @FXML
     public void handleButtonClick(ActionEvent event)
@@ -91,12 +86,10 @@ public class BoardUIController
         }
     }
 
-    public void setToken(ImageView image, int i, int j)
-    {
+    public void setToken(ImageView image, int i, int j) {
         notificationLabel.setText("");
         boolean move = game.setPosition(i, j);
-        if (move)
-        {
+        if (move) {
             if (game.getToken() == 1)
                 image.setImage(XToken);
             else
@@ -109,16 +102,28 @@ public class BoardUIController
                     notificationLabel.setText("Tie!");
                     return;
                 } else if (winner == 1)
-                    notificationLabel.setTextFill(new Color(0, 0, 1, 1));
+                    notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
                 else if (winner == 2)
                     notificationLabel.setTextFill(new Color(1, 0, 1, 1));
                 notificationLabel.setText("Player " + winner + " wins!");
+                setDisable(true);
             }
-        }
-        else
-        {
+        } else {
             notificationLabel.setTextFill(new Color(1, 0, 0, 1));
             notificationLabel.setText("This position is already taken! Please select another");
         }
+    }
+
+    public void setDisable(boolean mode)
+    {
+        btn_00.setDisable(mode);
+        btn_01.setDisable(mode);
+        btn_02.setDisable(mode);
+        btn_10.setDisable(mode);
+        btn_11.setDisable(mode);
+        btn_12.setDisable(mode);
+        btn_20.setDisable(mode);
+        btn_21.setDisable(mode);
+        btn_22.setDisable(mode);
     }
 }
