@@ -11,6 +11,10 @@ import Game.*;
 
 public class BoardUIController
 {
+    private Game game = new Game();
+    private Image XToken = new Image("/resources/images/Rect.png");
+    private Image YToken = new Image("/resources/images/Oh.png");
+
     @FXML private ImageView box_00;
     @FXML private ImageView box_01;
     @FXML private ImageView box_02;
