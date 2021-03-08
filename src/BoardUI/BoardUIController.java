@@ -1,5 +1,6 @@
 package BoardUI;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,16 +15,21 @@ public class BoardUIController
     private Game game = new Game(3);
     private Image YToken = new Image("/resources/images/Rect.png");
     private Image XToken = new Image("/resources/images/Oh.png");
+    private ComputerAlgorithm ai = new Minimax();
 
-    @FXML private ImageView box_00;
-    @FXML private ImageView box_01;
-    @FXML private ImageView box_02;
-    @FXML private ImageView box_10;
-    @FXML private ImageView box_11;
-    @FXML private ImageView box_12;
-    @FXML private ImageView box_20;
-    @FXML private ImageView box_21;
-    @FXML private ImageView box_22;
+    @FXML private ImageView box_00 = new ImageView();
+    @FXML private ImageView box_01 = new ImageView();
+    @FXML private ImageView box_02 = new ImageView();
+    @FXML private ImageView box_10 = new ImageView();
+    @FXML private ImageView box_11 = new ImageView();
+    @FXML private ImageView box_12 = new ImageView();
+    @FXML private ImageView box_20 = new ImageView();
+    @FXML private ImageView box_21 = new ImageView();
+    @FXML private ImageView box_22 = new ImageView();
+
+    ImageView [][] imageViews = {{box_00, box_01, box_02},{box_10, box_11, box_12},{box_20, box_21, box_22}};
+    //Group group = new Group(box_00, box_01, box_02,box_10, box_11, box_12,box_20, box_21, box_22);
+
 
     @FXML private Button btn_00;
     @FXML private Button btn_01;
@@ -84,6 +90,11 @@ public class BoardUIController
         {
             setToken(box_22, 2, 2);
         }
+
+        ai.setMove(game);
+        System.out.println(ai.getRow());
+        System.out.println(ai.getCol());
+        //setToken(imageViews[ai.getRow()][ai.getCol()], ai.getRow(), ai.getCol());
     }
 
     public void setToken(ImageView image, int i, int j) {

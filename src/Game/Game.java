@@ -1,6 +1,6 @@
 package Game;
 
-public class Game
+public class Game implements Cloneable
 {
     private int[][] boardData;
     private int boardSize;
@@ -17,6 +17,16 @@ public class Game
         this.boardData = boardData;
         this.boardSize = boardSize;
         this.token = 1;
+    }
+
+    public int[][] getBoardData()
+    {
+        return boardData;
+    }
+
+    public int getBoardSize()
+    {
+        return boardSize;
     }
 
     public void switchToken()
@@ -41,6 +51,11 @@ public class Game
             return true;
         }
         return false;
+    }
+
+    public void unsetPosition(int i, int j)
+    {
+        boardData[i][j] = 0;
     }
 
     public void clearBoard()
@@ -84,6 +99,7 @@ public class Game
             {
                 consecutivePlayer[row] = boardData[row][col];
             }
+
             boolean isSamePlayer = true;
             for (int i = 1; i < boardSize; i++)
             {
@@ -93,8 +109,9 @@ public class Game
                     break;
                 }
             }
-            if (isSamePlayer)
+            if (isSamePlayer) {
                 return consecutivePlayer[0];
+            }
         }
         //Cross Check
         for (int i = 0; i < boardSize; i++)
@@ -110,6 +127,26 @@ public class Game
                 break;
             }
         }
+
+        if (isSamePlayer)
+            return consecutivePlayer[0];
+
+
+        consecutivePlayer[0] = boardData[0][2];
+        consecutivePlayer[1] = boardData[1][1];
+        consecutivePlayer[2] = boardData[2][0];
+
+        isSamePlayer = true;
+
+        for (int i = 1; i < boardSize; i++)
+        {
+            if (consecutivePlayer[i] != consecutivePlayer[i - 1])
+            {
+                isSamePlayer = false;
+                break;
+            }
+        }
+
         if (isSamePlayer)
             return consecutivePlayer[0];
 
@@ -130,5 +167,10 @@ public class Game
             return -1; //Tie!
 
         return 0; //No winner
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
