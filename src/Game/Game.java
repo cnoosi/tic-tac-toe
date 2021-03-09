@@ -77,6 +77,8 @@ public class Game implements Cloneable
     public int checkWin()
     {
         int[] consecutivePlayer = new int[boardSize];
+        boolean isSamePlayer = true;
+
         //Horizontal Check
         for (int row = 0; row < boardSize; row++)
         {
@@ -84,7 +86,7 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[col] = boardData[row][col];
             }
-            boolean isSamePlayer = true;
+            isSamePlayer = true;
             for (int i = 1; i < boardSize; i++)
             {
                 if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -96,6 +98,7 @@ public class Game implements Cloneable
             if (isSamePlayer)
                 return consecutivePlayer[0];
         }
+
         //Vertical Check
         for (int col = 0; col < boardSize; col++)
         {
@@ -103,8 +106,7 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[row] = boardData[row][col];
             }
-
-            boolean isSamePlayer = true;
+            isSamePlayer = true;
             for (int i = 1; i < boardSize; i++)
             {
                 if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -113,16 +115,16 @@ public class Game implements Cloneable
                     break;
                 }
             }
-            if (isSamePlayer) {
+            if (isSamePlayer)
                 return consecutivePlayer[0];
-            }
         }
-        //Cross Check
+
+        //Cross Check (Left -> right)
         for (int i = 0; i < boardSize; i++)
         {
             consecutivePlayer[i] = boardData[i][i];
         }
-        boolean isSamePlayer = true;
+        isSamePlayer = true;
         for (int i = 1; i < boardSize; i++)
         {
             if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -131,17 +133,16 @@ public class Game implements Cloneable
                 break;
             }
         }
-
         if (isSamePlayer)
             return consecutivePlayer[0];
 
-
-        consecutivePlayer[0] = boardData[0][2];
-        consecutivePlayer[1] = boardData[1][1];
-        consecutivePlayer[2] = boardData[2][0];
-
+        //Cross Check (Right -> left)
+        for (int i = boardSize - 1; i >= 0; i--)
+        {
+            int j = boardSize - 1 - i;
+            consecutivePlayer[i] = boardData[i][j];
+        }
         isSamePlayer = true;
-
         for (int i = 1; i < boardSize; i++)
         {
             if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -150,7 +151,6 @@ public class Game implements Cloneable
                 break;
             }
         }
-
         if (isSamePlayer)
             return consecutivePlayer[0];
 
