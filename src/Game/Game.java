@@ -35,6 +35,7 @@ public class Game implements Cloneable
         token = (token == 1? 2:1);
     }
 
+
     public int getToken()
     {
         return token;
@@ -46,6 +47,16 @@ public class Game implements Cloneable
     }
 
     public boolean setPosition(int i, int j)
+    {
+        if (getPosition(i, j) == 0)
+        {
+            boardData[i][j] = token;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setPosition(int i, int j, int token)
     {
         if (getPosition(i, j) == 0)
         {
@@ -117,7 +128,7 @@ public class Game implements Cloneable
         }
         if(checkConsecutivePlayer(consecutivePlayer))
             return consecutivePlayer[0];
-        
+
         //Cross Check (Right -> left)
         for (int i = boardSize - 1; i >= 0; i--)
         {

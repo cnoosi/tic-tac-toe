@@ -7,19 +7,18 @@ public class Minimax implements ComputerAlgorithm
 
     private Position position = new Position();
 
-    public Position setMove(Game copy)
+    public Position getMove(Game copy)
     {
         try
         {
             Game game = (Game)copy.clone();
 
-            System.out.println("Here");
             // making a copy of the board
             int moveScore  = -999;
 
-            for(int r = 0; r < game.getBoardData().length; r++)
+            for(int r = 0; r < game.getBoardSize(); r++)
             {
-                for(int c = 0; c < game.getBoardData().length; c++)
+                for(int c = 0; c < game.getBoardSize(); c++)
                 {
                     if(game.getBoardData()[r][c] == 0)
                     {
@@ -47,9 +46,19 @@ public class Minimax implements ComputerAlgorithm
     {
         int checkBoard = game.checkWin();
 
-        if(checkBoard == 1 || checkBoard == 2 || checkBoard == -1)
+        if(checkBoard == 1)
+        {
+            return (-1)*checkBoard;
+        }
+
+        if(checkBoard == 2)
         {
             return checkBoard;
+        }
+
+        if(checkBoard == -1)
+        {
+            return 0;
         }
 
         // if maximizing for ai
@@ -62,7 +71,7 @@ public class Minimax implements ComputerAlgorithm
                 {
                     if(game.getBoardData()[i][j] == 0)
                     {
-                        game.setPosition(i, j);
+                        game.setPosition(i, j, 2);
                         score = Math.max(score, minimax(game, depth + 1, !isMax));
                         game.unsetPosition(i, j);
                     }
@@ -81,9 +90,8 @@ public class Minimax implements ComputerAlgorithm
                 {
                     if(game.getBoardData()[i][j] == 0)
                     {
-                        game.switchToken();
-                        game.setPosition(i, j);
-                        score = Math.min(score, minimax(game, depth + 1, isMax));
+                        game.setPosition(i, j, 1);
+                        score = Math.min(score, minimax(game, depth + 1, !isMax));
                         game.unsetPosition(i, j);
                     }
                 }

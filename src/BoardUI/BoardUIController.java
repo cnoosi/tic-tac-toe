@@ -8,8 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import Game.*;
-
-import java.util.ArrayList;
+import java.util.*;
 
 public class BoardUIController
 {
@@ -35,15 +34,15 @@ public class BoardUIController
                 setToken(imageList.get(button), button/3, button%3);
             }
         }
-        //Position pos = ai.setMove(game);
-        //System.out.println(pos.toString());
-        System.out.println(game.toString());
+
+        Position pos = ai.getMove(game);
+        setToken(imageList.get(pos.getRow()*3 + pos.getCol()), pos.getRow(), pos.getCol());
     }
 
     @FXML
     public void handleResetClick(ActionEvent even)
     {
-        game.reset();
+        game = new Game(3);
         for(ImageView img : imageList)
             img.setImage(null);
         setDisable(false);
