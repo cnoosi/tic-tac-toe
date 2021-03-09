@@ -42,12 +42,16 @@ public class Game implements Cloneable
         return token;
     }
 
+    public int getPosition(int i, int j)
+    {
+        return boardData[i][j];
+    }
+
     public boolean setPosition(int i, int j)
     {
-        if (boardData[i][j] == 0)
+        if (getPosition(i, j) == 0)
         {
             boardData[i][j] = token;
-            //ui change stuff (probably shouldn't do it within button)
             return true;
         }
         return false;
