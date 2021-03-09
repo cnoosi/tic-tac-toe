@@ -63,40 +63,15 @@ public class Game implements Cloneable
         boardData[i][j] = 0;
     }
 
-    public void clearBoard()
+    public void reset()
     {
         for (int i = 0; i < boardSize; i++)
         {
             for (int j = 0; j < boardSize; j++)
             {
                 boardData[i][j] = 0;
-                //ui change stuff
             }
         }
-    }
-
-    public int checkWinner()
-    {
-        int [] consecutivePlayer = new int[boardSize];
-
-        // Horizantal Check
-        for(int[] row : boardData)
-            for(int col : row)
-                consecutivePlayer[col] = row[col];
-
-        if(checkConsecutivePlayer(consecutivePlayer))
-            return consecutivePlayer[0];
-
-        // Vertical Check
-        for(int[] row : boardData)
-            for(int col : row)
-                consecutivePlayer[col] = row[col];
-
-        if(checkConsecutivePlayer(consecutivePlayer))
-            return consecutivePlayer[0];
-
-        return 0;
-
     }
 
     protected boolean checkConsecutivePlayer(int [] array)
@@ -112,11 +87,9 @@ public class Game implements Cloneable
     }
 
 
-
     public int checkWin()
     {
         int[] consecutivePlayer = new int[boardSize];
-        boolean isSamePlayer = true;
 
         //Horizontal Check
         for (int row = 0; row < boardSize; row++)
@@ -125,17 +98,7 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[col] = boardData[row][col];
             }
-            isSamePlayer = true;
-            for (int i = 1; i < boardSize; i++)
-            {
-                if (consecutivePlayer[i] != consecutivePlayer[i - 1])
-                {
-                    isSamePlayer = false;
-                    break;
-                }
-            }
-            if (isSamePlayer)
-                System.out.println("Horizantal Win");
+            if(checkConsecutivePlayer(consecutivePlayer))
                 return consecutivePlayer[0];
         }
 
@@ -146,18 +109,7 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[row] = boardData[row][col];
             }
-            isSamePlayer = true;
-            for (int i = 1; i < boardSize; i++)
-            {
-                if (consecutivePlayer[i] != consecutivePlayer[i - 1])
-                {
-                    isSamePlayer = false;
-                    break;
-                }
-            }
-
-            if (isSamePlayer)
-                System.out.println("Vertical Win");
+            if(checkConsecutivePlayer(consecutivePlayer))
                 return consecutivePlayer[0];
         }
 
@@ -166,16 +118,7 @@ public class Game implements Cloneable
         {
             consecutivePlayer[i] = boardData[i][i];
         }
-        isSamePlayer = true;
-        for (int i = 1; i < boardSize; i++)
-        {
-            if (consecutivePlayer[i] != consecutivePlayer[i - 1])
-            {
-                isSamePlayer = false;
-                break;
-            }
-        }
-        if (isSamePlayer)
+        if(checkConsecutivePlayer(consecutivePlayer))
             return consecutivePlayer[0];
 
         //Cross Check (Right -> left)
@@ -184,16 +127,7 @@ public class Game implements Cloneable
             int j = boardSize - 1 - i;
             consecutivePlayer[i] = boardData[i][j];
         }
-        isSamePlayer = true;
-        for (int i = 1; i < boardSize; i++)
-        {
-            if (consecutivePlayer[i] != consecutivePlayer[i - 1])
-            {
-                isSamePlayer = false;
-                break;
-            }
-        }
-        if (isSamePlayer)
+        if(checkConsecutivePlayer(consecutivePlayer))
             return consecutivePlayer[0];
 
         //Full board check

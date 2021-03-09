@@ -21,6 +21,7 @@ public class BoardUIController
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
+    @FXML private Button resetBtn;
 
     @FXML private Label notificationLabel;
 
@@ -34,13 +35,18 @@ public class BoardUIController
                 setToken(imageList.get(button), button/3, button%3);
             }
         }
-        Position pos = ai.setMove(game);
-        System.out.println(pos.toString());
+        //Position pos = ai.setMove(game);
+        //System.out.println(pos.toString());
+    }
 
-        //System.out.println(ai.getRow());
-        //System.out.println(ai.getCol());
-        //setToken(imageViews[ai.getRow()][ai.getCol()], ai.getRow(), ai.getCol());
-        //System.out.println(game.toString());
+    @FXML
+    public void handleResetClick(ActionEvent even)
+    {
+        game.reset();
+        for(ImageView img : imageList)
+            img.setImage(null);
+        setDisable(false);
+        notificationLabel.setText("");
     }
 
     public void setToken(ImageView image, int i, int j)
