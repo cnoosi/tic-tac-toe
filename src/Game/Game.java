@@ -2,22 +2,28 @@ package Game;
 
 public class Game implements Cloneable
 {
-    private int[][] boardData;
-    private int     boardSize;
-    private int     token;
+    private int[][]             boardData;
+    private int                 boardSize;
+    private int                 token;
+    private int                 localPlayers;
+    private ComputerAlgorithm   ai;
 
     public Game(int boardSize)
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
         this.token = 1;
+        this.localPlayers = 1;
+        ai = new Minimax();
     }
 
-    public Game(int[][] boardData, int boardSize)
+    public Game(int[][] boardData, int boardSize, int localPlayers)
     {
         this.boardData = boardData;
         this.boardSize = boardSize;
         this.token = 1;
+        this.localPlayers = localPlayers;
+        ai = new Minimax();
     }
 
     public int[][] getBoardData()
@@ -46,24 +52,27 @@ public class Game implements Cloneable
         return boardData[i][j];
     }
 
-    public boolean setPosition(int i, int j)
+    public int requestPosition(int i, int j)
     {
         if (getPosition(i, j) == 0)
         {
-            boardData[i][j] = token;
-            return true;
+            int playerToken = this.token;
+            setPosition(i, j, playerToken);
+            switchToken();
+            // Make a move for the AI if only single player
+            if (this.token == 2 && this.localPlayers == 1)
+            {
+                Position pos = ai.getMove(this);
+                requestPosition(pos.getRow(), pos.getCol());
+            }
+            return playerToken;
         }
-        return false;
+        return 0;
     }
 
-    public boolean setPosition(int i, int j, int token)
+    public void setPosition(int i, int j, int token)
     {
-        if (getPosition(i, j) == 0)
-        {
-            boardData[i][j] = token;
-            return true;
-        }
-        return false;
+        boardData[i][j] = token;
     }
 
     public void unsetPosition(int i, int j)

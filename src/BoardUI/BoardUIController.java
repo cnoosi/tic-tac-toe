@@ -12,11 +12,12 @@ import java.util.*;
 
 public class BoardUIController
 {
-    private Game  game   = new Game(3);
-    private Image YToken = new Image("/resources/images/Rect.png");
-    private Image XToken = new Image("/resources/images/Oh.png");
+    private Game                 game   = new Game(3);
+    private boolean              game_has_winner = false;
+    private Image                YToken = new Image("/resources/images/Rect.png");
+    private Image                XToken = new Image("/resources/images/Oh.png");
 
-    private ComputerAlgorithm ai = new Minimax();
+    private ComputerAlgorithm   ai = new Minimax();
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
@@ -31,52 +32,84 @@ public class BoardUIController
         {
             if(event.getSource() == buttonList.get(button))
             {
-                setToken(imageList.get(button), button/3, button%3);
+                if (!game_has_winner)
+                {
+                    Position pos = getPositionFromIndex(button);
+                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
+                    if (token_moved != 0)
+                        updateTokens();
+                    else
+                        notificationLabel.setText("This position is not available. Please select another!");
+                    checkWin();
+                }
             }
         }
-
-        Position pos = ai.getMove(game);
-        setToken(imageList.get(pos.getRow()*3 + pos.getCol()), pos.getRow(), pos.getCol());
     }
 
     @FXML
     public void handleResetClick(ActionEvent even)
     {
         game = new Game(3);
-        for(ImageView img : imageList)
-            img.setImage(null);
+        updateTokens();
         setDisable(false);
+        game_has_winner = false;
         notificationLabel.setText("");
     }
 
-    public void setToken(ImageView image, int i, int j)
+    public int getIndexFromRowCol(int row, int col)
+    {
+        return row * 3 + col;
+    }
+
+    public Position getPositionFromIndex(int i)
+    {
+        int row = i / game.getBoardSize();
+        int col = i % game.getBoardSize();
+        return new Position(row, col);
+    }
+
+    public void updateTokens()
     {
         notificationLabel.setText("");
-        boolean move = game.setPosition(i, j);
-        if (move) {
-            if (game.getToken() == 1)
-                image.setImage(XToken);
-            else
-                image.setImage(YToken);
-            game.switchToken();
-            int winner = game.checkWin();
-            System.out.println(winner);
-            if (winner != 0) {
-                if (winner == -1) {
-                    notificationLabel.setTextFill(new Color(1, 1, 1, 1));
-                    notificationLabel.setText("Tie!");
-                    return;
-                } else if (winner == 1)
-                    notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
-                else if (winner == 2)
-                    notificationLabel.setTextFill(new Color(1, 0, 1, 1));
-                notificationLabel.setText("Player " + winner + " wins!");
-                setDisable(true);
+        for (int i = 0; i < game.getBoardSize(); i++) {
+            for (int j = 0; j < game.getBoardSize(); j++) {
+                ImageView image = imageList.get(getIndexFromRowCol(i, j));
+                int tokenAtPosition = game.getPosition(i, j);
+                if (tokenAtPosition == 0)
+                    image.setImage(null);
+                else if (tokenAtPosition == 1)
+                    image.setImage(XToken);
+                else if (tokenAtPosition == 2)
+                    image.setImage(YToken);
             }
-        } else {
-            notificationLabel.setTextFill(new Color(1, 0, 0, 1));
-            notificationLabel.setText("This position is already taken! Please select another");
         }
+    }
+
+    public void checkWin()
+    {
+        int winner = game.checkWin();
+        System.out.println(winner);
+        if (winner != 0)
+        {
+            if (winner == -1)
+            {
+                notificationLabel.setTextFill(new Color(1, 1, 1, 1));
+                notificationLabel.setText("Tie!");
+            }
+            else if (winner == 1)
+            {
+                notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
+                notificationLabel.setText("Player " + winner + " wins!");
+            }
+            else if (winner == 2)
+            {
+                notificationLabel.setTextFill(new Color(1, 0, 1, 1));
+                notificationLabel.setText("Player " + winner + " wins!");
+            }
+            setDisable(true);
+            game_has_winner = true;
+        }
+        game_has_winner = false;
     }
 
     public void setDisable(boolean mode)
