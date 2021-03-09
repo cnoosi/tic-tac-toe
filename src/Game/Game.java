@@ -42,12 +42,25 @@ public class Game implements Cloneable
         return token;
     }
 
+<<<<<<< HEAD
     public boolean setPosition(int i, int j)
     {
         if (boardData[i][j] == 0)
         {
             boardData[i][j] = token;
             //ui change stuff (probably shouldn't do it within button)
+=======
+    public int getPosition(int i, int j)
+    {
+        return boardData[i][j];
+    }
+
+    public boolean setPosition(int i, int j)
+    {
+        if (getPosition(i, j) == 0)
+        {
+            boardData[i][j] = token;
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
             return true;
         }
         return false;
@@ -73,6 +86,11 @@ public class Game implements Cloneable
     public int checkWin()
     {
         int[] consecutivePlayer = new int[boardSize];
+<<<<<<< HEAD
+=======
+        boolean isSamePlayer = true;
+
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         //Horizontal Check
         for (int row = 0; row < boardSize; row++)
         {
@@ -80,7 +98,11 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[col] = boardData[row][col];
             }
+<<<<<<< HEAD
             boolean isSamePlayer = true;
+=======
+            isSamePlayer = true;
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
             for (int i = 1; i < boardSize; i++)
             {
                 if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -92,6 +114,10 @@ public class Game implements Cloneable
             if (isSamePlayer)
                 return consecutivePlayer[0];
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         //Vertical Check
         for (int col = 0; col < boardSize; col++)
         {
@@ -99,8 +125,12 @@ public class Game implements Cloneable
             {
                 consecutivePlayer[row] = boardData[row][col];
             }
+<<<<<<< HEAD
 
             boolean isSamePlayer = true;
+=======
+            isSamePlayer = true;
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
             for (int i = 1; i < boardSize; i++)
             {
                 if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -109,16 +139,28 @@ public class Game implements Cloneable
                     break;
                 }
             }
+<<<<<<< HEAD
             if (isSamePlayer) {
                 return consecutivePlayer[0];
             }
         }
         //Cross Check
+=======
+            if (isSamePlayer)
+                return consecutivePlayer[0];
+        }
+
+        //Cross Check (Left -> right)
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         for (int i = 0; i < boardSize; i++)
         {
             consecutivePlayer[i] = boardData[i][i];
         }
+<<<<<<< HEAD
         boolean isSamePlayer = true;
+=======
+        isSamePlayer = true;
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         for (int i = 1; i < boardSize; i++)
         {
             if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -127,6 +169,7 @@ public class Game implements Cloneable
                 break;
             }
         }
+<<<<<<< HEAD
 
         if (isSamePlayer)
             return consecutivePlayer[0];
@@ -138,6 +181,18 @@ public class Game implements Cloneable
 
         isSamePlayer = true;
 
+=======
+        if (isSamePlayer)
+            return consecutivePlayer[0];
+
+        //Cross Check (Right -> left)
+        for (int i = boardSize - 1; i >= 0; i--)
+        {
+            int j = boardSize - 1 - i;
+            consecutivePlayer[i] = boardData[i][j];
+        }
+        isSamePlayer = true;
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         for (int i = 1; i < boardSize; i++)
         {
             if (consecutivePlayer[i] != consecutivePlayer[i - 1])
@@ -146,7 +201,10 @@ public class Game implements Cloneable
                 break;
             }
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of d5ed2c9... Revert "Merge branch 'John-Branch' of https://github.com/cnoosi/tic-tac-toe into John-Branch"
         if (isSamePlayer)
             return consecutivePlayer[0];
 
