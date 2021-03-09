@@ -37,6 +37,7 @@ public class BoardUIController
         }
         //Position pos = ai.setMove(game);
         //System.out.println(pos.toString());
+        System.out.println(game.toString());
     }
 
     @FXML
@@ -60,6 +61,7 @@ public class BoardUIController
                 image.setImage(YToken);
             game.switchToken();
             int winner = game.checkWin();
+            System.out.println(winner);
             if (winner != 0) {
                 if (winner == -1) {
                     notificationLabel.setTextFill(new Color(1, 1, 1, 1));

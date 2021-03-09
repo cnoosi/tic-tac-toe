@@ -32,10 +32,7 @@ public class Game implements Cloneable
 
     public void switchToken()
     {
-        if (token == 1)
-            token = 2;
-        else
-            token = 1;
+        token = (token == 1? 2:1);
     }
 
     public int getToken()
@@ -78,7 +75,7 @@ public class Game implements Cloneable
     {
         for (int i = 1; i < array.length; i++)
         {
-            if (array[i] != array[i - 1])
+            if (array[i] == 0 || array[i] != array[i - 1])
             {
                 return false;
             }
@@ -120,7 +117,7 @@ public class Game implements Cloneable
         }
         if(checkConsecutivePlayer(consecutivePlayer))
             return consecutivePlayer[0];
-
+        
         //Cross Check (Right -> left)
         for (int i = boardSize - 1; i >= 0; i--)
         {
