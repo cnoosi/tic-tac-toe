@@ -5,54 +5,42 @@ public class Minimax implements ComputerAlgorithm
     static private boolean minimize = true;
     static private boolean maximize = false;
 
-    private int row = -1;
-    private int col = -1;
+    private Position position = new Position();
 
-    public int getRow()
-    {
-        return row;
-    }
-
-    public int getCol()
-    {
-        return col;
-    }
-
-    public void setMove(Game copy)
+    public Position setMove(Game copy)
     {
         try
         {
             Game game = (Game)copy.clone();
 
+            System.out.println("Here");
+            // making a copy of the board
+            int moveScore  = -999;
 
-        System.out.println("Here");
-        // making a copy of the board
-        int moveScore  = -999;
-
-        for(int r = 0; r < game.getBoardData().length; r++)
-        {
-            for(int c = 0; c < game.getBoardData().length; c++)
+            for(int r = 0; r < game.getBoardData().length; r++)
             {
-                if(game.getBoardData()[r][c] == 0)
+                for(int c = 0; c < game.getBoardData().length; c++)
                 {
-                    game.getBoardData()[r][c] = game.getToken();
-
-                    int currentScore = minimax(game, 0, false);
-
-                    game.getBoardData()[r][c] = 0;
-
-                    if(currentScore > moveScore)
+                    if(game.getBoardData()[r][c] == 0)
                     {
-                        row = r;
-                        col = c;
-                        moveScore = currentScore;
+                        game.getBoardData()[r][c] = game.getToken();
+
+                        int currentScore = minimax(game, 0, false);
+
+                        game.getBoardData()[r][c] = 0;
+
+                        if(currentScore > moveScore)
+                        {
+                            position.setRow(r);
+                            position.setCol(c);
+                            moveScore = currentScore;
+                        }
                     }
                 }
             }
         }
-        //game.setPosition(row, col);
-        }
         catch (Exception e) {}
+        return position;
     }
 
     public int minimax(Game game, int depth, boolean isMax)

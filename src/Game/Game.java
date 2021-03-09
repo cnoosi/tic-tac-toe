@@ -3,8 +3,8 @@ package Game;
 public class Game implements Cloneable
 {
     private int[][] boardData;
-    private int boardSize;
-    private int token;
+    private int     boardSize;
+    private int     token;
 
     public Game(int boardSize)
     {
@@ -12,6 +12,7 @@ public class Game implements Cloneable
         this.boardData = new int[boardSize][boardSize];
         this.token = 1;
     }
+
     public Game(int[][] boardData, int boardSize)
     {
         this.boardData = boardData;
@@ -74,6 +75,44 @@ public class Game implements Cloneable
         }
     }
 
+    public int checkWinner()
+    {
+        int [] consecutivePlayer = new int[boardSize];
+
+        // Horizantal Check
+        for(int[] row : boardData)
+            for(int col : row)
+                consecutivePlayer[col] = row[col];
+
+        if(checkConsecutivePlayer(consecutivePlayer))
+            return consecutivePlayer[0];
+
+        // Vertical Check
+        for(int[] row : boardData)
+            for(int col : row)
+                consecutivePlayer[col] = row[col];
+
+        if(checkConsecutivePlayer(consecutivePlayer))
+            return consecutivePlayer[0];
+
+        return 0;
+
+    }
+
+    protected boolean checkConsecutivePlayer(int [] array)
+    {
+        for (int i = 1; i < array.length; i++)
+        {
+            if (array[i] != array[i - 1])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
     public int checkWin()
     {
         int[] consecutivePlayer = new int[boardSize];
@@ -96,6 +135,7 @@ public class Game implements Cloneable
                 }
             }
             if (isSamePlayer)
+                System.out.println("Horizantal Win");
                 return consecutivePlayer[0];
         }
 
@@ -115,7 +155,9 @@ public class Game implements Cloneable
                     break;
                 }
             }
+
             if (isSamePlayer)
+                System.out.println("Vertical Win");
                 return consecutivePlayer[0];
         }
 
@@ -171,6 +213,23 @@ public class Game implements Cloneable
             return -1; //Tie!
 
         return 0; //No winner
+    }
+
+    @Override
+    public String toString()
+    {
+        String output = "";
+
+        for(int r = 0; r < boardSize; r++)
+        {
+            for(int c = 0; c < boardSize; c++)
+            {
+                output += boardData[r][c] + "  ";
+            }
+            output += "\n";
+        }
+
+        return output;
     }
 
     @Override

@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
+<?import java.util.ArrayList?>
 
 <AnchorPane id="MainFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1000.0" styleClass="MainFrame" stylesheets="@BoardUI.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardUI.BoardUIController">
    <children>
@@ -23,6 +24,19 @@
       <ImageView fx:id="box_20" fitHeight="171.0" fitWidth="170.0" layoutX="200.0" layoutY="478.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="box_21" fitHeight="171.0" fitWidth="170.0" layoutX="414.0" layoutY="483.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="box_22" fitHeight="171.0" fitWidth="170.0" layoutX="633.0" layoutY="478.0" pickOnBounds="true" preserveRatio="true" />
+      <fx:define>
+         <ArrayList fx:id="imageList">
+            <fx:reference source="box_00"/>
+            <fx:reference source="box_01"/>
+            <fx:reference source="box_02"/>
+            <fx:reference source="box_10"/>
+            <fx:reference source="box_11"/>
+            <fx:reference source="box_12"/>
+            <fx:reference source="box_20"/>
+            <fx:reference source="box_21"/>
+            <fx:reference source="box_22"/>
+         </ArrayList>
+      </fx:define>
       <Button fx:id="btn_00" layoutX="201.0" layoutY="55.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
       <Button fx:id="btn_01" layoutX="412.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
       <Button fx:id="btn_02" layoutX="628.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
@@ -32,6 +46,19 @@
       <Button fx:id="btn_20" layoutX="198.0" layoutY="478.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
       <Button fx:id="btn_21" layoutX="408.0" layoutY="477.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
       <Button fx:id="btn_22" layoutX="628.0" layoutY="477.0" mnemonicParsing="false" onAction="#handleButtonClick" opacity="0.0" prefHeight="179.0" prefWidth="178.0" text="Button" />
+      <fx:define>
+         <ArrayList fx:id="buttonList">
+            <fx:reference source="btn_00"/>
+            <fx:reference source="btn_01"/>
+            <fx:reference source="btn_02"/>
+            <fx:reference source="btn_10"/>
+            <fx:reference source="btn_11"/>
+            <fx:reference source="btn_12"/>
+            <fx:reference source="btn_20"/>
+            <fx:reference source="btn_21"/>
+            <fx:reference source="btn_22"/>
+         </ArrayList>
+      </fx:define>
       <Label fx:id="notificationLabel" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="1.0" layoutY="682.0" mouseTransparent="true" prefHeight="65.0" prefWidth="1000.0" textAlignment="CENTER">
          <font>
             <Font size="40.0" />
