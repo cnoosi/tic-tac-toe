@@ -4,14 +4,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="MainFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1000.0" styleClass="MainFrame" stylesheets="@../BoardUI/BoardUI.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardUI.BoardUIController">
+<AnchorPane id="MainFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1000.0" styleClass="MainFrame" stylesheets="@../BoardUI/BoardUI.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuUI.MenuUIController">
    <children>
-      <Button fx:id="twoPlayer" layoutX="351.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleButtonClick" prefHeight="60.0" prefWidth="300.0" text="Two Players">
+      <Button fx:id="twoPlayerBtn" layoutX="351.0" layoutY="505.0" mnemonicParsing="false" onAction="#handleTwoPlayerMode" prefHeight="60.0" prefWidth="300.0" text="Two Players">
          <font>
             <Font size="24.0" />
          </font>
       </Button>
-      <Button fx:id="singlePlayer" layoutX="351.0" layoutY="437.0" mnemonicParsing="false" onAction="#handleButtonClick" prefHeight="60.0" prefWidth="300.0" text="Single Player">
+      <Button fx:id="singlePlayerBtn" layoutX="351.0" layoutY="437.0" mnemonicParsing="false" onAction="#handleSinglePlayerMode" prefHeight="60.0" prefWidth="300.0" text="Single Player">
          <font>
             <Font size="24.0" />
          </font>

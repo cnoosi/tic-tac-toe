@@ -9,7 +9,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Parent root = FXMLLoader.load(getClass().getResource("/BoardUI/BoardUI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/MenuUI/MenuUI.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("/BoardUI/BoardUI.fxml"));
         primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
