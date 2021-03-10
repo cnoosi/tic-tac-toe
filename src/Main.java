@@ -10,7 +10,7 @@ public class Main extends Application
     public void start(Stage primaryStage) throws Exception
     {
         Parent root = FXMLLoader.load(getClass().getResource("/BoardUI/BoardUI.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
