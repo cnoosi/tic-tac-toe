@@ -12,7 +12,8 @@ import java.util.*;
 
 public class BoardUIController
 {
-    private Game                 game   = new Game(3);
+    private int                  playerCount = 1;
+    private Game                 game   = new Game(3, playerCount);
     private boolean              game_has_winner = false;
     private Image                YToken = new Image("/resources/images/Rect.png");
     private Image                XToken = new Image("/resources/images/Oh.png");
@@ -49,7 +50,7 @@ public class BoardUIController
     @FXML
     public void handleResetClick(ActionEvent even)
     {
-        game = new Game(3);
+        game = new Game(3, playerCount);
         updateTokens();
         setDisable(false);
         game_has_winner = false;
