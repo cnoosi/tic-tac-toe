@@ -20,6 +20,16 @@ public class BoardUIController
     private Image               XToken = new Image("/resources/images/Oh.png");
     private ComputerAlgorithm   ai = new Minimax();
 
+     public void SetMultiplayer (){
+        playerCount = 2;
+        boardSize = 3;
+        game   = new Game(boardSize, playerCount);
+        game_has_winner = false;
+        YToken = new Image("/resources/images/Rect.png");
+        XToken = new Image("/resources/images/Oh.png");
+        ai = new Minimax();
+    }
+
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
     @FXML private Button resetBtn;

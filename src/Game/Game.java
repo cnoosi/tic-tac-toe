@@ -12,9 +12,9 @@ public class Game implements Cloneable
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
-        this.token = 1;
+        this.token = 2;
         this.localPlayers = localPlayers;
-        ai = new Minimax();
+        ai = null;
     }
 
     public Game(int boardSize, ComputerAlgorithm algo)
