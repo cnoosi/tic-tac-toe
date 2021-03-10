@@ -7,7 +7,7 @@
 <AnchorPane prefHeight="593.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardUI.SplashPageController">
    <children>
       <Button fx:id="multiplayer" layoutX="189.0" layoutY="218.0" mnemonicParsing="false" onAction="#multiplayerButtonClicked" prefHeight="27.0" prefWidth="271.0" text="Multiplayer" />
-      <Button layoutX="467.0" layoutY="163.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="48.0" text="Hard" />
+      <Button fx:id="hardButton" layoutX="467.0" layoutY="163.0" mnemonicParsing="false" onAction="#hardButtonClicked" prefHeight="55.0" prefWidth="48.0" text="Hard" />
       <Button layoutX="467.0" layoutY="242.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="47.0" text="Easy" />
    </children>
 </AnchorPane>

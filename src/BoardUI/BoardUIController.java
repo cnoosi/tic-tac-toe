@@ -16,18 +16,22 @@ public class BoardUIController
     private int                 boardSize = 3;
     private Game                game   = new Game(boardSize, playerCount);
     private boolean             game_has_winner = false;
-    private Image               YToken = new Image("/resources/images/Rect.png");
-    private Image               XToken = new Image("/resources/images/Oh.png");
-    private ComputerAlgorithm   ai = new Minimax();
+    private final Image         YToken = new Image("/resources/images/Rect.png");
+    private final Image         XToken = new Image("/resources/images/Oh.png");
 
-     public void SetMultiplayer (){
+
+     public void SetMultiplayer () {
         playerCount = 2;
         boardSize = 3;
         game   = new Game(boardSize, playerCount);
         game_has_winner = false;
-        YToken = new Image("/resources/images/Rect.png");
-        XToken = new Image("/resources/images/Oh.png");
-        ai = new Minimax();
+    }
+
+    public void SetSingleplayer(ComputerAlgorithm algo) {
+         playerCount = 1;
+         boardSize = 3;
+         game = new Game(boardSize, playerCount, algo);
+         game_has_winner = false;
     }
 
     @FXML private ArrayList<Button>    buttonList;

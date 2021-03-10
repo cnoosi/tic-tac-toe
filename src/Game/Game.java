@@ -17,7 +17,7 @@ public class Game implements Cloneable
         ai = null;
     }
 
-    public Game(int boardSize, ComputerAlgorithm algo)
+    public Game(int boardSize, int localPlayer, ComputerAlgorithm algo)
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];

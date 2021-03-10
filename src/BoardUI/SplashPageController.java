@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class SplashPageController {
-    @FXML private Button multiplayer;
+    @FXML private Button multiplayer, hardButton;
 
     public void multiplayerButtonClicked(ActionEvent event) throws IOException {
 
@@ -35,6 +35,14 @@ public class SplashPageController {
     public void hardButtonClicked(ActionEvent event) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
         Parent root = loader.load();
+        BoardUIController UIController = loader.getController();
+        UIController.SetSingleplayer(new Minimax());
+
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
 
 }
