@@ -12,12 +12,12 @@ import java.util.*;
 
 public class BoardUIController
 {
-    private int                  playerCount = 1;
-    private Game                 game   = new Game(3, playerCount);
-    private boolean              game_has_winner = false;
-    private Image                YToken = new Image("/resources/images/Rect.png");
-    private Image                XToken = new Image("/resources/images/Oh.png");
-
+    private int                 playerCount = 1;
+    private int                 boardSize = 3;
+    private Game                game   = new Game(boardSize, playerCount);
+    private boolean             game_has_winner = false;
+    private Image               YToken = new Image("/resources/images/Rect.png");
+    private Image               XToken = new Image("/resources/images/Oh.png");
     private ComputerAlgorithm   ai = new Minimax();
 
     @FXML private ArrayList<Button>    buttonList;
@@ -50,7 +50,7 @@ public class BoardUIController
     @FXML
     public void handleResetClick(ActionEvent even)
     {
-        game = new Game(3, playerCount);
+        game = new Game(boardSize, playerCount);
         updateTokens();
         setDisable(false);
         game_has_winner = false;

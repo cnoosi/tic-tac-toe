@@ -41,7 +41,6 @@ public class Game implements Cloneable
         token = (token == 1? 2:1);
     }
 
-
     public int getToken()
     {
         return token;
