@@ -60,6 +60,13 @@ public class Game implements Cloneable
         return boardData[i][j];
     }
 
+    public boolean checkEmpty(int i, int j) {return boardData[i][j] == 0;}
+
+    public void setToken(int token)
+    {
+        this.token = token;
+    }
+
     public int requestPosition(int i, int j)
     {
         if (getPosition(i, j) == 0)
