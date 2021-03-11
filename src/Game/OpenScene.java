@@ -14,4 +14,11 @@ public class OpenScene {
         window.setScene(new Scene(root));
         window.show();
     }
+
+    public void start(Stage window, Parent root, String headerName) throws Exception {
+        window.setTitle(headerName);
+        window.setResizable(false);
+        window.setScene(new Scene(root));
+        window.show();
+    }
 }
