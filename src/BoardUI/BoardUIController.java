@@ -1,5 +1,8 @@
 package BoardUI;
 
+import MenuUI.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,6 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import Game.*;
+import javafx.stage.Stage;
+
 import java.util.*;
 
 public class BoardUIController
@@ -19,6 +24,7 @@ public class BoardUIController
     private Image               YToken = new Image("/resources/images/Rect.png");
     private Image               XToken = new Image("/resources/images/Oh.png");
     private ComputerAlgorithm   ai = new Minimax();
+    private OpenScene           openScene = new OpenScene();
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
@@ -48,13 +54,14 @@ public class BoardUIController
     }
 
     @FXML
-    public void handleResetClick(ActionEvent even)
+    public void handleMenuClick(ActionEvent even) throws Exception
     {
-        game = new Game(boardSize, playerCount);
-        updateTokens();
-        setDisable(false);
-        game_has_winner = false;
-        notificationLabel.setText("");
+        Stage stage = (Stage) resetBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
+        Parent frame = root.load();
+        MenuUIController controller = (MenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
     }
 
     public int getIndexFromRowCol(int row, int col)
@@ -117,5 +124,19 @@ public class BoardUIController
     {
         for(Button btn : buttonList)
             btn.setDisable(mode);
+    }
+
+    public void setLocalPlayerCount(int playerCount)
+    {
+        this.playerCount = playerCount;
+    }
+
+    public void resetGame()
+    {
+        game = new Game(boardSize, playerCount);
+        updateTokens();
+        setDisable(false);
+        game_has_winner = false;
+        notificationLabel.setText("");
     }
 }
