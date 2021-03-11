@@ -46,7 +46,10 @@ public class BoardUIController
                     if (token_moved != 0)
                         updateTokens();
                     else
+                    {
+                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
                         notificationLabel.setText("This position is not available. Please select another!");
+                    }
                     checkWin();
                 }
             }
