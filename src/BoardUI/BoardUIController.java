@@ -50,11 +50,7 @@ public class BoardUIController
     @FXML
     public void handleResetClick(ActionEvent even)
     {
-        game = new Game(boardSize, playerCount);
-        updateTokens();
-        setDisable(false);
-        game_has_winner = false;
-        notificationLabel.setText("");
+        resetGame();
     }
 
     public int getIndexFromRowCol(int row, int col)
@@ -117,5 +113,19 @@ public class BoardUIController
     {
         for(Button btn : buttonList)
             btn.setDisable(mode);
+    }
+
+    public void setLocalPlayerCount(int playerCount)
+    {
+        this.playerCount = playerCount;
+    }
+
+    public void resetGame()
+    {
+        game = new Game(boardSize, playerCount);
+        updateTokens();
+        setDisable(false);
+        game_has_winner = false;
+        notificationLabel.setText("");
     }
 }
