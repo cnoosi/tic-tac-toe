@@ -101,7 +101,7 @@ public class BoardUIController
         {
             if (winner == -1)
             {
-                notificationLabel.setTextFill(new Color(1, 1, 1, 1));
+                notificationLabel.setTextFill(new Color(1, 1, 0, 1));
                 notificationLabel.setText("Tie!");
             }
             else if (winner == 1)
