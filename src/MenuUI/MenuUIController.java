@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class MenuUIController
 {
-    OpenScene openScene = new OpenScene();
+    private OpenScene openScene = new OpenScene();
     @FXML private Button singlePlayerBtn;
     @FXML private Button twoPlayerBtn;
 
