@@ -28,5 +28,7 @@ public class GameState {
         this.currentToken = currentToken;
     }
 
-    
+    public boolean getIsActive() {return this.isActive;}
+    public int getCurrentWinner() {return this.currentWinner;}
+    public int getCurrentToken() {return this.currentToken;}
 }
