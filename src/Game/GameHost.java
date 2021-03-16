@@ -31,10 +31,12 @@ public class GameHost {
         checkWin();
         return true;
     }
+
     public void checkWin()
     {
         currentGameState.setCurrentWinner(-1);
     }
+
     public void resetGame()
     {
         currentGameState = new GameState();
@@ -42,6 +44,7 @@ public class GameHost {
         updateBoardData();
         updateGameState();
     }
+
     public void setNextToken()
     {
         currentToken = currentToken + 1 > players.size() ? currentToken + 1 : 0;
