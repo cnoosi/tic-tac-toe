@@ -1,8 +1,5 @@
 package BoardUI;
 
-import MenuUI.*;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,8 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import Game.*;
-import javafx.stage.Stage;
-
 import java.util.*;
 
 public class BoardUIController
@@ -21,10 +16,23 @@ public class BoardUIController
     private int                 boardSize = 3;
     private Game                game   = new Game(boardSize, playerCount);
     private boolean             game_has_winner = false;
-    private Image               YToken = new Image("/resources/images/Rect.png");
-    private Image               XToken = new Image("/resources/images/Oh.png");
-    private ComputerAlgorithm   ai = new Minimax();
-    private OpenScene           openScene = new OpenScene();
+    private final Image         YToken = new Image("/resources/images/Rect.png");
+    private final Image         XToken = new Image("/resources/images/Oh.png");
+
+
+     public void SetMultiplayer () {
+        playerCount = 2;
+        boardSize = 3;
+        game   = new Game(boardSize, playerCount);
+        game_has_winner = false;
+    }
+
+    public void SetSingleplayer(ComputerAlgorithm algo) {
+         playerCount = 1;
+         boardSize = 3;
+         game = new Game(boardSize, playerCount, algo);
+         game_has_winner = false;
+    }
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
@@ -46,10 +54,7 @@ public class BoardUIController
                     if (token_moved != 0)
                         updateTokens();
                     else
-                    {
-                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
                         notificationLabel.setText("This position is not available. Please select another!");
-                    }
                     checkWin();
                 }
             }
@@ -57,14 +62,13 @@ public class BoardUIController
     }
 
     @FXML
-    public void handleMenuClick(ActionEvent even) throws Exception
+    public void handleResetClick(ActionEvent even)
     {
-        Stage stage = (Stage) resetBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        Parent frame = root.load();
-        MenuUIController controller = (MenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+        game = new Game(boardSize, playerCount);
+        updateTokens();
+        setDisable(false);
+        game_has_winner = false;
+        notificationLabel.setText("");
     }
 
     public int getIndexFromRowCol(int row, int col)
@@ -104,7 +108,7 @@ public class BoardUIController
         {
             if (winner == -1)
             {
-                notificationLabel.setTextFill(new Color(1, 1, 0, 1));
+                notificationLabel.setTextFill(new Color(1, 1, 1, 1));
                 notificationLabel.setText("Tie!");
             }
             else if (winner == 1)
@@ -127,19 +131,5 @@ public class BoardUIController
     {
         for(Button btn : buttonList)
             btn.setDisable(mode);
-    }
-
-    public void setLocalPlayerCount(int playerCount)
-    {
-        this.playerCount = playerCount;
-    }
-
-    public void resetGame()
-    {
-        game = new Game(boardSize, playerCount);
-        updateTokens();
-        setDisable(false);
-        game_has_winner = false;
-        notificationLabel.setText("");
     }
 }
