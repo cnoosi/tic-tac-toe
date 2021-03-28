@@ -1,4 +1,5 @@
 import Game.*;
+import Networking.ServerProcess;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,15 @@ public class Main extends Application
     }
 
     public static void main(String[] args) {
+        if (args[0] == "server")
+        {
+            Thread serverThread = new Thread(new ServerProcess());
+            serverThread.start();
+        }
+        else if (args[0] == "client")
+        {
+
+        }
         launch(args);
     }
 }
