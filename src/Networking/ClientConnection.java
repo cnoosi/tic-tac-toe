@@ -1,38 +1,45 @@
 package Networking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable
 {
     Socket client;
     int id;
-    DataInputStream inputStream;
-    DataOutputStream outputStream;
+    ObjectInputStream inputStream;
+    ObjectOutputStream outputStream;
     Thread clientThread;
+    BlockingQueue chatQueue;
 
-
-    public ClientConnection(int id, Socket c) throws Exception
+    public ClientConnection(int id, Socket c, BlockingQueue chatQueue) throws Exception
     {
         this.id = id;
         this.client = c;
-        inputStream = new DataInputStream(c.getInputStream());
-        outputStream = new DataOutputStream(c.getOutputStream());
+        this.outputStream = new ObjectOutputStream(c.getOutputStream());
+        this.inputStream = new ObjectInputStream(c.getInputStream());
+        this.chatQueue = chatQueue;
 
         this.clientThread = new Thread(this);
         clientThread.start();
     }
 
-    public DataOutputStream getOutputStream() {
+    public ObjectOutputStream getOutputStream() {
         return outputStream;
     }
 
-    public void writeMessage(String message)
+    public ObjectInputStream getInputStream()
+    {
+        return inputStream;
+    }
+
+    public void writeChatMessage(Packet chatPacket)
     {
         try
         {
-            outputStream.writeUTF(message);
+            outputStream.writeObject(chatPacket);
         }
         catch (Exception ex)
         {
@@ -45,8 +52,12 @@ public class ClientConnection implements Runnable
     {
         try
         {
-            String message = inputStream.readUTF();
-            writeMessage(message);
+            while (true)
+            {
+                Packet newPacket = (Packet) inputStream.readObject();
+                ChatMessage message = (ChatMessage) newPacket.getMessage();
+                chatQueue.add(message);
+            }
         }
         catch (Exception ex)
         {

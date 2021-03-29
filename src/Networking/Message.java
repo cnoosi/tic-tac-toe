@@ -1,6 +1,7 @@
 package Networking;
 
-public abstract class Message
-{
+import java.io.Serializable;
 
+public abstract class Message implements Serializable {
+    private Object data;
 }
