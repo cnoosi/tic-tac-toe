@@ -20,7 +20,7 @@ public class ClientProcess implements Runnable
                 if (newPacket.getTopic().equals("GlobalChat"))
                 {
                     ChatMessage message = (ChatMessage) newPacket.getMessage();
-                    System.out.println("Message from other client: " + message.getData());
+                    System.out.println("Message received from server: " + message.getData());
                 }
             }
         }
