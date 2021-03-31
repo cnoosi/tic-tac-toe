@@ -1,5 +1,8 @@
 package Networking;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -36,8 +39,11 @@ public class ClientProcess implements Runnable
             while (continueMessaging) {
                 //System.out.print("Enter a message: ");
                 String newMessage = input.nextLine();
-                Message test = new ChatMessage(newMessage);
-                //outputStream.writeUTF(test);
+                ChatMessage chatMessage = new ChatMessage(newMessage);
+                JSONObject json = new JSONObject();
+                json.put("Message", chatMessage);
+                String jsonString = JSONObject.toJSONString(json);
+                outputStream.writeUTF(jsonString);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
