@@ -12,7 +12,7 @@ public class ServerProcess implements Runnable
     private ServerSocket server;
     private boolean keepRunning = true;
     private ArrayList<ClientConnection> connections;
-    private BlockingQueue<ChatMessage> chatMessagesToProcess;
+    private BlockingQueue<Message> messagesToProcess;
 
     private void messagingProcess()
     {
@@ -20,14 +20,8 @@ public class ServerProcess implements Runnable
         {
             while (true) {
                 //Introduce topic so you only send messages to the intended connections
-                ChatMessage message = chatMessagesToProcess.take();
-                if (message != null)
-                {
-                    String chat = message.getData();
-                    for (ClientConnection connection : connections) {
-                        connection.writeChatMessage(new Packet("GlobalChat", new ChatMessage(chat)));
-                    }
-                }
+                Message newMessage = messagesToProcess.take();
+
             }
         }
         catch (Exception ex)
@@ -46,7 +40,7 @@ public class ServerProcess implements Runnable
     public void run()
     {
         connections = new ArrayList<ClientConnection>();
-        chatMessagesToProcess = new SynchronousQueue<ChatMessage>();
+        messagesToProcess = new SynchronousQueue<Message>();
         startProcessThreads();
 
         try
@@ -57,7 +51,7 @@ public class ServerProcess implements Runnable
             {
                 Socket clientSocketConnection = server.accept();
                 ClientConnection newConnection = new ClientConnection(connections.size() + 1,
-                                                                        clientSocketConnection, chatMessagesToProcess);
+                                                                        clientSocketConnection, messagesToProcess);
                 connections.add(newConnection);
                 InetAddress inetAddress = clientSocketConnection.getInetAddress();
                 System.out.println("Accepted connection from " + inetAddress.getHostAddress());

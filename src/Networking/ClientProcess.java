@@ -1,28 +1,21 @@
 package Networking;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientProcess implements Runnable
 {
     Socket client;
-    ObjectInputStream inputStream;
-    ObjectOutputStream outputStream;
+    DataInputStream inputStream;
+    DataOutputStream outputStream;
 
     private void updateGlobalChatMessages()
     {
         try
         {
-            while (true) {
-                Packet newPacket = (Packet) inputStream.readObject();
-                if (newPacket.getTopic().equals("GlobalChat"))
-                {
-                    ChatMessage message = (ChatMessage) newPacket.getMessage();
-                    System.out.println("Message received from server: " + message.getData());
-                }
-            }
+
         }
         catch (Exception ex)
         {
@@ -35,18 +28,16 @@ public class ClientProcess implements Runnable
     {
         try {
             client = new Socket("localhost", 8000);
-            outputStream = new ObjectOutputStream(client.getOutputStream());
-            inputStream = new ObjectInputStream(client.getInputStream());
-
-            Thread updateChatThread = new Thread(this::updateGlobalChatMessages);
-            updateChatThread.start();
+            outputStream = new DataOutputStream(client.getOutputStream());
+            inputStream = new DataInputStream(client.getInputStream());
 
             boolean continueMessaging = true;
             Scanner input = new Scanner(System.in);
             while (continueMessaging) {
                 //System.out.print("Enter a message: ");
                 String newMessage = input.nextLine();
-                outputStream.writeObject(new Packet("GlobalChat", new ChatMessage(newMessage)));
+                Message test = new ChatMessage(newMessage);
+                //outputStream.writeUTF(test);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
