@@ -1,8 +1,5 @@
 package Networking;
 
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -40,10 +37,7 @@ public class ClientProcess implements Runnable
                 //System.out.print("Enter a message: ");
                 String newMessage = input.nextLine();
                 ChatMessage chatMessage = new ChatMessage(newMessage);
-                JSONObject json = new JSONObject();
-                json.put("Message", chatMessage);
-                String jsonString = JSONObject.toJSONString(json);
-                outputStream.writeUTF(jsonString);
+                outputStream.writeUTF(JSON.encode("Data", chatMessage));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

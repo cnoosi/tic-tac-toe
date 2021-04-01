@@ -1,5 +1,7 @@
 package Networking;
 
+import java.util.Map;
+
 public class ChatMessage extends Message {
     private String data;
 
