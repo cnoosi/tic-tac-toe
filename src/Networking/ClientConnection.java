@@ -1,12 +1,12 @@
 package Networking;
 
+import Messages.ChatMessage;
 import Messages.Message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable
 {
@@ -43,7 +43,7 @@ public class ClientConnection implements Runnable
     {
         try
         {
-
+            outputStream.writeUTF(JSON.encode(message));
         }
         catch (Exception ex)
         {

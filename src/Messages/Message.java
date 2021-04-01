@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Message implements Serializable {
-    private Object data;
-
     public Map<String, Object> toMap()
     {
         HashMap<String, Object> newMap = new HashMap<>();

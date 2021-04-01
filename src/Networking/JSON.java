@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public interface JSON {
     public static HashMap<String, Object> decode(String jsonString)
@@ -22,5 +23,10 @@ public interface JSON {
     public static String encode(Message message)
     {
         return JSONObject.toJSONString(message.toMap());
+    }
+
+    public static String generateGUID()
+    {
+        return UUID.randomUUID().toString();
     }
 }

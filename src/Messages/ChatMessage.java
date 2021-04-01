@@ -4,11 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatMessage extends Message {
-    private String data;
+    private String playerName;
+    private String chatChannel;
+    private String playerChat;
 
-    public ChatMessage(String data)
+    public ChatMessage(String playerChat, String chatChannel)
     {
-        this.data = data;
+        this.playerName = "";
+        this.chatChannel = chatChannel;
+        this.playerChat = playerChat;
+    }
+
+    public ChatMessage(String playerName, String playerChat, String chatChannel)
+    {
+        this.playerName = playerName;
+        this.chatChannel = chatChannel;
+        this.playerChat = playerChat;
     }
 
     @Override
@@ -16,7 +27,8 @@ public class ChatMessage extends Message {
     {
         HashMap<String, Object> newMap = new HashMap<>();
         newMap.put("MessageType", this.getClass().getSimpleName());
-        newMap.put("Data", data);
+        newMap.put("PlayerName", playerName);
+        newMap.put("PlayerChat", playerChat);
         return newMap;
     }
 }
