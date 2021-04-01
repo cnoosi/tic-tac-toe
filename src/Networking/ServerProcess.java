@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
@@ -12,7 +13,7 @@ public class ServerProcess implements Runnable
     private ServerSocket server;
     private boolean keepRunning = true;
     private ArrayList<ClientConnection> connections;
-    private BlockingQueue<Message> messagesToProcess;
+    private BlockingQueue<Map<String, String>> messagesToProcess;
 
     private void messagingProcess()
     {
@@ -20,8 +21,8 @@ public class ServerProcess implements Runnable
         {
             while (true) {
                 //Introduce topic so you only send messages to the intended connections
-                Message newMessage = messagesToProcess.take();
-
+                Map<String, String> newMessage = messagesToProcess.take();
+                System.out.println("Processing message type: " + newMessage.get("MessageType"));
             }
         }
         catch (Exception ex)
@@ -40,7 +41,7 @@ public class ServerProcess implements Runnable
     public void run()
     {
         connections = new ArrayList<ClientConnection>();
-        messagesToProcess = new SynchronousQueue<Message>();
+        messagesToProcess = new SynchronousQueue<Map<String, String>>();
         startProcessThreads();
 
         try

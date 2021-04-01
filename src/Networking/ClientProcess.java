@@ -37,7 +37,7 @@ public class ClientProcess implements Runnable
                 //System.out.print("Enter a message: ");
                 String newMessage = input.nextLine();
                 ChatMessage chatMessage = new ChatMessage(newMessage);
-                outputStream.writeUTF(JSON.encode("Data", chatMessage));
+                outputStream.writeUTF(JSON.encode(chatMessage));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

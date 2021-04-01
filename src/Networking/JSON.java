@@ -3,33 +3,21 @@ package Networking;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public interface JSON {
-    public static Object decode(String key, String jsonString)
+    public static HashMap<String, String> decode(String jsonString)
     {
-        System.out.println(jsonString);
         JSONObject json = (JSONObject) JSONValue.parse(jsonString);
-        if (json.containsKey(key))
-        {
-            return json.get(key);
-        }
-        return null;
+        HashMap<String, String> newMap = new HashMap<>();
+        newMap.put("MessageType", (String) json.get("MessageType"));
+        newMap.put("Data", (String) json.get("Data"));
+        return newMap;
     }
 
-    public static String encode(String key, Object obj)
+    public static String encode(Message message)
     {
-        JSONObject json = new JSONObject();
-        json.put(key, obj);
-        return JSONObject.toJSONString(json);
-    }
-
-    public static String encode(String key, ArrayList objects)
-    {
-        JSONObject json = new JSONObject();
-        for (Object obj : objects)
-        {
-            json.put(key, obj);
-        }
-        return JSONObject.toJSONString(json);
+        return JSONObject.toJSONString(message.toMap());
     }
 }

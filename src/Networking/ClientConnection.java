@@ -3,6 +3,7 @@ package Networking;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable
@@ -56,8 +57,8 @@ public class ClientConnection implements Runnable
             while (continueConnection)
             {
                 String jsonString = inputStream.readUTF();
-                Object newMessage = JSON.decode("Data", jsonString);
-                if (newMessage != null && newMessage instanceof Message)
+                HashMap<String, String> newMessage = JSON.decode(jsonString);
+                if (newMessage != null)
                 {
                     messageQueue.add(newMessage);
                 }
