@@ -1,4 +1,4 @@
-package Networking;
+package Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +11,10 @@ public class ChatMessage extends Message {
         this.data = data;
     }
 
-    public String getData()
-    {
-        return data;
-    }
-
     @Override
-    public Map<String, String> toMap()
+    public Map<String, Object> toMap()
     {
-        HashMap<String, String> newMap = new HashMap<>();
+        HashMap<String, Object> newMap = new HashMap<>();
         newMap.put("MessageType", this.getClass().getSimpleName());
         newMap.put("Data", data);
         return newMap;

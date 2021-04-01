@@ -1,5 +1,7 @@
 package Networking;
 
+import Messages.Message;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -14,15 +16,15 @@ public class ClientConnection implements Runnable
     DataInputStream inputStream;
     DataOutputStream outputStream;
     Thread clientThread;
-    BlockingQueue messageQueue;
+    ServerProcess server;
 
-    public ClientConnection(int id, Socket c, BlockingQueue messageQueue) throws Exception
+    public ClientConnection(int id, Socket c, ServerProcess server) throws Exception
     {
         this.id = id;
         this.client = c;
         this.outputStream = new DataOutputStream(c.getOutputStream());
         this.inputStream = new DataInputStream(c.getInputStream());
-        this.messageQueue = messageQueue;
+        this.server = server;
 
         this.clientThread = new Thread(this);
         clientThread.start();
@@ -49,6 +51,8 @@ public class ClientConnection implements Runnable
         }
     }
 
+    public int getId() {return id;}
+
     @Override
     public void run()
     {
@@ -57,10 +61,11 @@ public class ClientConnection implements Runnable
             while (continueConnection)
             {
                 String jsonString = inputStream.readUTF();
-                HashMap<String, String> newMessage = JSON.decode(jsonString);
-                if (newMessage != null)
+                HashMap<String, Object> map = JSON.decode(jsonString);
+                if (map != null)
                 {
-                    messageQueue.add(newMessage);
+                    map.put("Client", this);
+                    server.processMessage(map);
                 }
             }
         }

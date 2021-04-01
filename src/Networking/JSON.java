@@ -1,18 +1,21 @@
 package Networking;
 
+import Messages.Message;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.Map;
 
 public interface JSON {
-    public static HashMap<String, String> decode(String jsonString)
+    public static HashMap<String, Object> decode(String jsonString)
     {
         JSONObject json = (JSONObject) JSONValue.parse(jsonString);
-        HashMap<String, String> newMap = new HashMap<>();
-        newMap.put("MessageType", (String) json.get("MessageType"));
-        newMap.put("Data", (String) json.get("Data"));
+        HashMap<String, Object> newMap = new HashMap<>();
+        for (Object keyStr: json.keySet())
+        {
+            String key = (String) keyStr;
+            newMap.put(key, json.get(key));
+        }
         return newMap;
     }
 

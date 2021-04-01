@@ -1,4 +1,4 @@
-package Networking;
+package Messages;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -7,9 +7,9 @@ import java.util.Map;
 public abstract class Message implements Serializable {
     private Object data;
 
-    public Map<String, String> toMap()
+    public Map<String, Object> toMap()
     {
-        HashMap<String, String> newMap = new HashMap<>();
+        HashMap<String, Object> newMap = new HashMap<>();
         newMap.put("MessageType", null);
         newMap.put("Data", null);
         return newMap;
