@@ -100,7 +100,7 @@ public class ServerProcess implements Runnable
                     GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers); //(ServerProcess, gameId, Pair<ClientConnection>)
                     games.put(newGameId, newGameProcess);
 
-                    //Subscribe clients to the game chat channel
+                    //Subscribe clients to the game AND game chat channel
                     unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.get(0));
                     unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.get(1));
                     subscribe("CHAT_" + newGameId, "Chat", gamePlayers.get(0));
