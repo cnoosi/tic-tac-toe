@@ -8,6 +8,15 @@ public class Game implements Cloneable
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
+    public Game()
+    {
+        this.boardSize = 3;
+        this.boardData = new int[boardSize][boardSize];
+        this.token = 1;
+        this.localPlayers = 1;
+        ai = new Minimax();
+    }
+
     public Game(int boardSize, int localPlayers)
     {
         this.boardSize = boardSize;

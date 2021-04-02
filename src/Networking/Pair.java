@@ -30,4 +30,12 @@ public class Pair <C1, C2>
     {
         this.second = second;
     }
+
+    public Object find(Object o)
+    {
+        if(o.equals(first))
+            return first;
+        else
+            return second;
+    }
 }

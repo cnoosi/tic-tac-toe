@@ -109,7 +109,7 @@ public class ServerProcess implements Runnable
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getFirst());
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getSecond());
 
-                    Thread handleNewGameThread = new Thread(new GameProcess);
+                    Thread handleNewGameThread = new Thread(new GameProcess());
                     handleNewGameThread.start();
 
                     gamePlayers = new Pair<>();
