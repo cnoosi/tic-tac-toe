@@ -21,8 +21,8 @@ public class BoardUIController
     private int                 boardSize = 3;
     private Game                game   = new Game(boardSize, playerCount);
     private boolean             game_has_winner = false;
-    private Image               YToken = new Image("/resources/images/Rect.png");
-    private Image               XToken = new Image("/resources/images/Oh.png");
+    private Image               YToken = new Image("/resources/images/TokenX.png");
+    private Image               XToken = new Image("/resources/images/TokenO.png");
     private ComputerAlgorithm   ai = new Minimax();
     private OpenScene           openScene = new OpenScene();
 
