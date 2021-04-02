@@ -87,12 +87,12 @@ public class ServerProcess implements Runnable
             {
                 ClientConnection nextPlayer = matchmakingQueue.take();
 
-                if (gamePlayers.get(0) == null)
-                    gamePlayers.set(0, nextPlayer);
-                else if (gamePlayers.get(1) == null)
-                    gamePlayers.set(1, nextPlayer);
+                if (gamePlayers.getFirst() == null)
+                    gamePlayers.setFirst(nextPlayer);
+                else if (gamePlayers.getSecond() == null)
+                    gamePlayers.setSecond(nextPlayer);
 
-                if (gamePlayers.get(0) != null && gamePlayers.get(1) != null)
+                if (gamePlayers.getFirst() != null && gamePlayers.getSecond() != null)
                 {
                     //Start the game!
                     String newGameId = JSON.generateGUID();
@@ -101,15 +101,15 @@ public class ServerProcess implements Runnable
                     games.put(newGameId, newGameProcess);
 
                     //Subscribe clients to the game AND game chat channel
-                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.get(0));
-                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.get(1));
-                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.get(0));
-                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.get(1));
+                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getFirst());
+                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getSecond());
+                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.getFirst());
+                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.getSecond());
                     //Subscribe clients to the game
-                    subscribe("GAME_" + newGameId, "Game", gamePlayers.get(0));
-                    subscribe("GAME_" + newGameId, "Game", gamePlayers.get(1));
+                    subscribe("GAME_" + newGameId, "Game", gamePlayers.getFirst());
+                    subscribe("GAME_" + newGameId, "Game", gamePlayers.getSecond());
 
-                    Thread handleNewGameThread = new Thread(newGameProcess);
+                    Thread handleNewGameThread = new Thread(new GameProcess);
                     handleNewGameThread.start();
 
                     gamePlayers = new Pair<>();
