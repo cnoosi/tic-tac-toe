@@ -6,17 +6,14 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.media.MediaView?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 <?import java.util.ArrayList?>
 
 <AnchorPane id="MainFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" styleClass="MainFrame" stylesheets="@BoardUI.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BoardUI.BoardUIController">
    <children>
-      <ImageView fitHeight="800.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../resources/images/background1.gif" />
-         </image>
-      </ImageView>
+      <MediaView fx:id="mv" fitHeight="800.0" fitWidth="1280.0" />
       <ImageView fitHeight="680.0" fitWidth="1088.0" layoutX="90.0" layoutY="60.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../resources/images/board0.png" />

@@ -2,7 +2,11 @@ package BoardUI;
 
 import MenuUI.*;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,10 +16,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import Game.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import java.io.File;
+import java.net.URL;
 import java.util.*;
 
-public class BoardUIController
+public class BoardUIController implements Initializable
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
@@ -29,8 +36,11 @@ public class BoardUIController
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
     @FXML private Button resetBtn;
-
     @FXML private Label notificationLabel;
+    @FXML private MediaView mv;
+
+    private MediaPlayer mp;
+    private Media me;
 
     @FXML
     public void handleButtonClick(ActionEvent event)
@@ -141,5 +151,23 @@ public class BoardUIController
         setDisable(false);
         game_has_winner = false;
         notificationLabel.setText("");
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        String path = new File("src/resources/images/background1.mp4").getAbsolutePath();
+
+        me = new Media(new File(path).toURI().toString());
+        mp = new MediaPlayer(me);
+        mv.setMediaPlayer(mp);
+        mp.setAutoPlay(true);
+//        mp.setCycleCount(MediaPlayer.INDEFINITE);
+        mp.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mp.seek(Duration.ZERO);
+                mp.play();
+            }
+        });
     }
 }
