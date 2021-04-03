@@ -67,10 +67,9 @@ public class ServerProcess implements Runnable
                 {
                     ClientConnection client = (ClientConnection) map.get("Client");
                     String playerName = "" + client.getId(); //Eventually, change this to their actual name!
-                    String channelName = (String) map.get("ChatChannel");
                     String playerChat = (String) map.get("PlayerChat");
+                    String channelName = (String) map.get("ChatChannel");
                     sendToSubscribedClients(channelName, new ChatMessage(playerName, playerChat, channelName), client);
-                    // Send message to their topic!
                 }
             }
         }
@@ -133,12 +132,14 @@ public class ServerProcess implements Runnable
     public void sendToSubscribedClients(String topic, Message newMessage, ClientConnection ignoreClient)
     {
         ArrayList<ClientConnection> subs = subscriptions.get(topic);
-        for (ClientConnection client : subs)
+        if (subs != null)
         {
-            if (ignoreClient == null)
-                client.writeMessage(newMessage);
-            else if (client != ignoreClient)
-                client.writeMessage(newMessage);
+            for (ClientConnection client : subs) {
+                if (ignoreClient == null)
+                    client.writeMessage(newMessage);
+                else if (client != ignoreClient)
+                    client.writeMessage(newMessage);
+            }
         }
     }
 
@@ -196,6 +197,9 @@ public class ServerProcess implements Runnable
                 connections.add(newConnection);
                 InetAddress inetAddress = clientSocketConnection.getInetAddress();
                 System.out.println("Accepted connection from " + inetAddress.getHostAddress());
+
+                //Subscribe the user to the global chat automatically
+                subscribe("GLOBAL_CHAT", "Chat", newConnection);
             }
             System.out.println("Server shutting down");
         }

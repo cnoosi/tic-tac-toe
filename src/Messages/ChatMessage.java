@@ -29,6 +29,7 @@ public class ChatMessage extends Message {
         newMap.put("MessageType", this.getClass().getSimpleName());
         newMap.put("PlayerName", playerName);
         newMap.put("PlayerChat", playerChat);
+        newMap.put("ChatChannel", chatChannel);
         return newMap;
     }
 }

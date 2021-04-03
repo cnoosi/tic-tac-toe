@@ -20,6 +20,7 @@ public class ClientProcess implements Runnable
     DataOutputStream outputStream;
 
     private String gameId;
+    private String chatChannel;
 
     public void handleMessagingProcess()
     {
@@ -38,7 +39,7 @@ public class ClientProcess implements Runnable
                         if (topicType.equals("Chat")) {
                             if (isSubscribed)
                             {
-                                //Change chat channel
+                                chatChannel = topic;
                             }
                         }
                     }
@@ -62,8 +63,8 @@ public class ClientProcess implements Runnable
                     }
                     else if (messageType.equals("ChatMessage")) {
                         String playerName = (String) map.get("PlayerName");
-                        String playerMessage = (String) map.get("PlayerMessage");
-                        //We got chat in our channel! Put it in our chat ui!
+                        String playerChat = (String) map.get("PlayerChat");
+                        System.out.println(playerName + ": " + playerChat);
                     }
                 }
             }
