@@ -2,6 +2,7 @@ package Networking;
 
 import Messages.ChatMessage;
 import Messages.Message;
+import Messages.QueueMessage;
 import Messages.SubscribeMessage;
 
 import java.lang.reflect.Array;
@@ -56,11 +57,11 @@ public class ServerProcess implements Runnable
                 {
                     ClientConnection client = (ClientConnection) map.get("Client");
                     String gameId = (String) map.get("GameId");
-                    int row = (int) map.get("Row");
-                    int col = (int) map.get("Col");
+                    long row = (long) map.get("Row");
+                    long col = (long) map.get("Col");
                     GameProcess findGame = games.get(gameId);
                     if (findGame != null)
-                        findGame.requestMove(client, row, col);
+                        findGame.requestMove(client, (int) row, (int) col);
                 }
                 else if (messageType.equals("ChatMessage"))
                 {
@@ -110,9 +111,15 @@ public class ServerProcess implements Runnable
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getFirst());
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getSecond());
 
+                    //Let the players know they're out of the queue!
+                    QueueMessage gameFoundMessage = new QueueMessage(false, newGameId);
+                    gamePlayers.getFirst().writeMessage(gameFoundMessage);
+                    gamePlayers.getSecond().writeMessage(gameFoundMessage);
+
                     Thread handleNewGameThread = new Thread(newGameProcess);
                     handleNewGameThread.start();
 
+                    //Clear pair for another matchmaking attempt
                     gamePlayers = new Pair<>();
                 }
             }
@@ -123,12 +130,14 @@ public class ServerProcess implements Runnable
         }
     }
 
-    private void sendToSubscribedClients(String topic, Message newMessage, ClientConnection ignoreClient)
+    public void sendToSubscribedClients(String topic, Message newMessage, ClientConnection ignoreClient)
     {
         ArrayList<ClientConnection> subs = subscriptions.get(topic);
         for (ClientConnection client : subs)
         {
-            if (ignoreClient != null && client != ignoreClient)
+            if (ignoreClient == null)
+                client.writeMessage(newMessage);
+            else if (client != ignoreClient)
                 client.writeMessage(newMessage);
         }
     }
@@ -138,7 +147,10 @@ public class ServerProcess implements Runnable
         System.out.println("SUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients == null)
-            clients = new ArrayList<>();
+        {
+            subscriptions.put(topic, new ArrayList<>());
+            clients = subscriptions.get(topic);
+        }
         clients.add(client);
         client.writeMessage(new SubscribeMessage(topic, topicType, true));
     }
@@ -148,7 +160,7 @@ public class ServerProcess implements Runnable
         System.out.println("UNSUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients != null)
-            clients.remove(client);
+            return;
         client.writeMessage(new SubscribeMessage(topic, topicType, false));
     }
 

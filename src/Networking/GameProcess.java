@@ -1,5 +1,6 @@
 package Networking;
 import Game.Game;
+import Messages.GameMessage;
 
 public class GameProcess implements Runnable
 {
@@ -8,16 +9,9 @@ public class GameProcess implements Runnable
     private Pair<ClientConnection, ClientConnection> players;
     private ServerProcess server;
 
-    public GameProcess()
-    {
-        game = new Game();
-        gameId = null;
-        players = new Pair<>();
-        server = new ServerProcess();
-    }
-
     public GameProcess(ServerProcess server, String gameId, Pair players)
     {
+        game = new Game();
         this.server = server;
         this.gameId = gameId;
         this.players = players;
@@ -30,16 +24,25 @@ public class GameProcess implements Runnable
 
     public void requestMove(ClientConnection client, int row, int col)
     {
-        boolean moveMade = game.requestPosition(row, col, getToken(client));
+        int token = getToken(client);
+        boolean moveMade = game.requestPosition(row, col, token);
         if (moveMade)
-            System.out.println("A move was MADE by token: " + getToken(client));
+        {
+            System.out.println("A move was MADE by token: " + token);
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), row, col, token);
+            server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+        }
         else
-            System.out.println("A move was BLOCKED by token: " + getToken(client));
+            System.out.println("A move was BLOCKED by token: " + token);
     }
 
     public void run()
     {
         //This is where the game (fun) begins!
-        System.out.println("Hello World");
+        while (true)
+        {
+
+        }
+        //System.out.println("Hello World");
     }
 }

@@ -1,8 +1,6 @@
 package Networking;
 
-import Messages.ChatMessage;
 import Messages.Message;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
