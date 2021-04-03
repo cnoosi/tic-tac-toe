@@ -23,17 +23,23 @@ public class GameProcess implements Runnable
         this.players = players;
     }
 
-    //findGame.requestMove(client, row, col);
-
-    public boolean requestMove(ClientConnection client, int row, int col)
+    public int getToken(ClientConnection client)
     {
-        game.setPosition(row, col, client.getToken());
-        return true;
+        return players.getFirst() == client ? 1 : 2;
+    }
+
+    public void requestMove(ClientConnection client, int row, int col)
+    {
+        boolean moveMade = game.requestPosition(row, col, getToken(client));
+        if (moveMade)
+            System.out.println("A move was MADE by token: " + getToken(client));
+        else
+            System.out.println("A move was BLOCKED by token: " + getToken(client));
     }
 
     public void run()
     {
+        //This is where the game (fun) begins!
         System.out.println("Hello World");
     }
-
 }

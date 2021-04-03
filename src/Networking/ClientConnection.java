@@ -17,7 +17,6 @@ public class ClientConnection implements Runnable
     DataOutputStream outputStream;
     Thread clientThread;
     ServerProcess server;
-    int token;
 
     public ClientConnection(int id, Socket c, ServerProcess server) throws Exception
     {
@@ -28,18 +27,6 @@ public class ClientConnection implements Runnable
         this.server = server;
         this.clientThread = new Thread(this);
         clientThread.start();
-    }
-
-    public ClientConnection(int id, Socket c, ServerProcess server, int token) throws Exception
-    {
-        this.id = id;
-        this.client = c;
-        this.outputStream = new DataOutputStream(c.getOutputStream());
-        this.inputStream = new DataInputStream(c.getInputStream());
-        this.server = server;
-        this.clientThread = new Thread(this);
-        clientThread.start();
-        this.token = token;
     }
 
     public DataOutputStream getOutputStream() {
@@ -63,12 +50,17 @@ public class ClientConnection implements Runnable
         }
     }
 
-    public int getToken()
-    {
-        return token;
-    }
-
     public int getId() {return id;}
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof ClientConnection))
+            return false;
+
+        ClientConnection other = (ClientConnection) o;
+        return getId() == other.getId();
+    }
 
     @Override
     public void run()

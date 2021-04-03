@@ -32,29 +32,29 @@ public class BoardUIController
 
     @FXML private Label notificationLabel;
 
-    @FXML
-    public void handleButtonClick(ActionEvent event)
-    {
-        for(int button = 0; button < buttonList.size(); button++)
-        {
-            if(event.getSource() == buttonList.get(button))
-            {
-                if (!game_has_winner)
-                {
-                    Position pos = getPositionFromIndex(button);
-                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
-                    if (token_moved != 0)
-                        updateTokens();
-                    else
-                    {
-                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
-                        notificationLabel.setText("This position is not available. Please select another!");
-                    }
-                    checkWin();
-                }
-            }
-        }
-    }
+//    @FXML
+//    public void handleButtonClick(ActionEvent event)
+//    {
+//        for(int button = 0; button < buttonList.size(); button++)
+//        {
+//            if(event.getSource() == buttonList.get(button))
+//            {
+//                if (!game_has_winner)
+//                {
+//                    Position pos = getPositionFromIndex(button);
+////                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
+////                    if (token_moved != 0)
+////                        updateTokens();
+////                    else
+////                    {
+////                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
+////                        notificationLabel.setText("This position is not available. Please select another!");
+////                    }
+////                    checkWin();
+//                }
+//            }
+//        }
+//    }
 
     @FXML
     public void handleMenuClick(ActionEvent even) throws Exception

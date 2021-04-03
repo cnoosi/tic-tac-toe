@@ -21,27 +21,25 @@ public class ClientProcess implements Runnable
     {
         try
         {
-            String jsonString = inputStream.readUTF();
-            HashMap<String, Object> map = JSON.decode(jsonString);
-            System.out.println("SERVER MESSAGE: " + map);
-            if (map != null)
+            while (clientAlive)
             {
-                String messageType = (String) map.get("MessageType");
-                if (messageType.equals("SubscribeMessage"))
-                {
-                    String topic = (String) map.get("Topic");
-                    String topicType = (String) map.get("TopicType");
-                    boolean isSubscribed = (boolean) map.get("Subscribe");
-                    if (topicType.equals("Chat"))
-                    {
-                        //Change chat channel
+                String jsonString = inputStream.readUTF();
+                HashMap<String, Object> map = JSON.decode(jsonString);
+                System.out.println("SERVER MESSAGE: " + map);
+                if (map != null) {
+                    String messageType = (String) map.get("MessageType");
+                    if (messageType.equals("SubscribeMessage")) {
+                        String topic = (String) map.get("Topic");
+                        String topicType = (String) map.get("TopicType");
+                        boolean isSubscribed = (boolean) map.get("Subscribe");
+                        if (topicType.equals("Chat")) {
+                            //Change chat channel
+                        }
+                    } else if (messageType.equals("ChatMessage")) {
+                        String playerName = (String) map.get("PlayerName");
+                        String playerMessage = (String) map.get("PlayerMessage");
+                        //We got chat in our channel! Put it in our chat ui!
                     }
-                }
-                else if (messageType.equals("ChatMessage"))
-                {
-                    String playerName = (String) map.get("PlayerName");
-                    String playerMessage = (String) map.get("PlayerMessage");
-                    //We got chat in our channel! Put it in our chat ui!
                 }
             }
         }
@@ -54,17 +52,22 @@ public class ClientProcess implements Runnable
     @Override
     public void run()
     {
-        Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
-        messagingProcessThread.start();
-
         try {
             client = new Socket("localhost", 8000);
             outputStream = new DataOutputStream(client.getOutputStream());
             inputStream = new DataInputStream(client.getInputStream());
 
+            Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
+            messagingProcessThread.start();
+
             //Test stuff
             //Put the user into queue
             outputStream.writeUTF(JSON.encode(new QueueMessage(true)));
+
+            while (clientAlive)
+            {
+
+            }
 
 //            Scanner input = new Scanner(System.in);
 //            while (clientAlive) {

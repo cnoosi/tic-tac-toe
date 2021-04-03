@@ -46,6 +46,7 @@ public class ServerProcess implements Runnable
                 {
                     ClientConnection client = (ClientConnection) map.get("Client");
                     boolean joinQueue = (boolean) map.get("InQueue");
+                    System.out.println("JOIN QUEUE: " + joinQueue);
                     if (joinQueue)
                         matchmakingQueue.add(client);
                     else
@@ -97,7 +98,7 @@ public class ServerProcess implements Runnable
                     //Start the game!
                     String newGameId = JSON.generateGUID();
                     System.out.println("NEW GAME STARTED: " + newGameId);
-                    GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers); //(ServerProcess, gameId, Pair<ClientConnection>)
+                    GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers);
                     games.put(newGameId, newGameProcess);
 
                     //Subscribe clients to the game AND game chat channel
@@ -109,7 +110,7 @@ public class ServerProcess implements Runnable
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getFirst());
                     subscribe("GAME_" + newGameId, "Game", gamePlayers.getSecond());
 
-                    Thread handleNewGameThread = new Thread(new GameProcess());
+                    Thread handleNewGameThread = new Thread(newGameProcess);
                     handleNewGameThread.start();
 
                     gamePlayers = new Pair<>();
