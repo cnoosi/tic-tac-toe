@@ -1,4 +1,6 @@
 import Game.*;
+import Networking.ClientProcess;
+import Networking.ServerProcess;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,17 +13,24 @@ public class Main extends Application
     public void start(Stage primaryStage) throws Exception
     {
         OpenScene sceneOpener = new OpenScene();
-        //Parent menuRoot = FXMLLoader.load(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        //Parent gameRoot = FXMLLoader.load(getClass().getResource("/BoardUI/BoardUI.fxml"));
         sceneOpener.start(primaryStage, "/MenuUI/MenuUI.fxml", "Tic-Tac-Toe - Menu");
-        //primaryStage.setTitle("Tic Tac Toe - Menu");
-        //primaryStage.setResizable(false);
-        //primaryStage.setScene(new Scene(menuRoot));
-        //primaryStage.show();
     }
 
     public static void main(String[] args) {
-        launch(args);
+        System.out.println(args[0]);
+        if (args[0].equals("server"))
+        {
+            Thread serverThread = new Thread(new ServerProcess());
+            serverThread.start();
+        }
+        else if (args[0].equals("client"))
+        {
+            //Eventually turn this into a ClientProcess!
+            Thread clientThread = new Thread(new ClientProcess());
+            clientThread.start();
+
+            launch(args);
+        }
     }
 }
 

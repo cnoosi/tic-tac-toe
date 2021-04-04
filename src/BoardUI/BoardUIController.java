@@ -1,5 +1,12 @@
 package BoardUI;
 
+import MenuUI.*;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,52 +15,65 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import Game.*;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.io.File;
+import java.net.URL;
 import java.util.*;
 
-public class BoardUIController
+public class BoardUIController implements Initializable
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
     private Game                game   = new Game(boardSize, playerCount);
     private boolean             game_has_winner = false;
-    private Image               YToken = new Image("/resources/images/Rect.png");
-    private Image               XToken = new Image("/resources/images/Oh.png");
+    private Image               YToken = new Image("/resources/images/TokenX.png");
+    private Image               XToken = new Image("/resources/images/TokenO.png");
     private ComputerAlgorithm   ai = new Minimax();
+    private OpenScene           openScene = new OpenScene();
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
     @FXML private Button resetBtn;
+    @FXML private Label notificationLabel;
+    @FXML private MediaView mv;
+    private MediaPlayer mp;
+    private Media me;
 
-    private Game game = new Game(3);
-    //private Notification = new Notification(notificationLabel);
-    private Image XToken = new Image("/resources/images/x.png");
-    private Image YToken = new Image("/resources/images/o.png");
+//    @FXML
+//    public void handleButtonClick(ActionEvent event)
+//    {
+//        for(int button = 0; button < buttonList.size(); button++)
+//        {
+//            if(event.getSource() == buttonList.get(button))
+//            {
+//                if (!game_has_winner)
+//                {
+//                    Position pos = getPositionFromIndex(button);
+////                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
+////                    if (token_moved != 0)
+////                        updateTokens();
+////                    else
+////                    {
+////                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
+////                        notificationLabel.setText("This position is not available. Please select another!");
+////                    }
+////                    checkWin();
+//                }
+//            }
+//        }
+//    }
 
     @FXML
-    public void handleButtonClick(ActionEvent event)
+    public void handleMenuClick(ActionEvent even) throws Exception
     {
-        for(int button = 0; button < buttonList.size(); button++)
-        {
-            if(event.getSource() == buttonList.get(button))
-            {
-                if (!game_has_winner)
-                {
-                    Position pos = getPositionFromIndex(button);
-                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
-                    if (token_moved != 0)
-                        updateTokens();
-                    else
-                        notificationLabel.setText("This position is not available. Please select another!");
-                    checkWin();
-                }
-            }
-        }
-    }
-
-    @FXML
-    public void handleResetClick(ActionEvent even)
-    {
-        resetGame();
+        Stage stage = (Stage) resetBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
+        Parent frame = root.load();
+        MenuUIController controller = (MenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
     }
 
     public int getIndexFromRowCol(int row, int col)
@@ -71,25 +91,22 @@ public class BoardUIController
     public void updateTokens()
     {
         notificationLabel.setText("");
+    }
+    public void checkWin()
+    {
+        int winner = game.checkWin();
+        System.out.println(winner);
+        if (winner != 0)
+        {
+            if (winner == -1)
+            {
+                notificationLabel.setTextFill(new Color(1, 1, 0, 1));
+                notificationLabel.setText("Tie!");
+            }
+            else if (winner == 1)
+            {
+                notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
 
-        boolean move = game.setPosition(i, j);
-        if (move) {
-            if (game.getToken() == 1)
-                image.setImage(XToken);
-            else
-                image.setImage(YToken);
-            game.switchToken();
-            int winner = game.checkWin();
-            System.out.println(winner);
-            if (winner != 0) {
-                if (winner == -1) {
-                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
-                    notificationLabel.setText("Tie!");
-                    return;
-                } else if (winner == 1)
-                    notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
-                else if (winner == 2)
-                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
                 notificationLabel.setText("Player " + winner + " wins!");
             }
             else if (winner == 2)
@@ -121,5 +138,23 @@ public class BoardUIController
         setDisable(false);
         game_has_winner = false;
         notificationLabel.setText("");
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        String path = new File("src/resources/images/background1.mp4").getAbsolutePath();
+
+        me = new Media(new File(path).toURI().toString());
+        mp = new MediaPlayer(me);
+        mv.setMediaPlayer(mp);
+        mp.setAutoPlay(true);
+//        mp.setCycleCount(MediaPlayer.INDEFINITE);
+        mp.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mp.seek(Duration.ZERO);
+                mp.play();
+            }
+        });
     }
 }
