@@ -24,7 +24,10 @@ public class BoardUIController
     @FXML private ArrayList<ImageView> imageList;
     @FXML private Button resetBtn;
 
-    @FXML private Label notificationLabel;
+    private Game game = new Game(3);
+    //private Notification = new Notification(notificationLabel);
+    private Image XToken = new Image("/resources/images/x.png");
+    private Image YToken = new Image("/resources/images/o.png");
 
     @FXML
     public void handleButtonClick(ActionEvent event)
@@ -68,34 +71,25 @@ public class BoardUIController
     public void updateTokens()
     {
         notificationLabel.setText("");
-        for (int i = 0; i < game.getBoardSize(); i++) {
-            for (int j = 0; j < game.getBoardSize(); j++) {
-                ImageView image = imageList.get(getIndexFromRowCol(i, j));
-                int tokenAtPosition = game.getPosition(i, j);
-                if (tokenAtPosition == 0)
-                    image.setImage(null);
-                else if (tokenAtPosition == 1)
-                    image.setImage(XToken);
-                else if (tokenAtPosition == 2)
-                    image.setImage(YToken);
-            }
-        }
-    }
 
-    public void checkWin()
-    {
-        int winner = game.checkWin();
-        System.out.println(winner);
-        if (winner != 0)
-        {
-            if (winner == -1)
-            {
-                notificationLabel.setTextFill(new Color(1, 1, 1, 1));
-                notificationLabel.setText("Tie!");
-            }
-            else if (winner == 1)
-            {
-                notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
+        boolean move = game.setPosition(i, j);
+        if (move) {
+            if (game.getToken() == 1)
+                image.setImage(XToken);
+            else
+                image.setImage(YToken);
+            game.switchToken();
+            int winner = game.checkWin();
+            System.out.println(winner);
+            if (winner != 0) {
+                if (winner == -1) {
+                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
+                    notificationLabel.setText("Tie!");
+                    return;
+                } else if (winner == 1)
+                    notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
+                else if (winner == 2)
+                    notificationLabel.setTextFill(new Color(0, 0, 0, 1));
                 notificationLabel.setText("Player " + winner + " wins!");
             }
             else if (winner == 2)
