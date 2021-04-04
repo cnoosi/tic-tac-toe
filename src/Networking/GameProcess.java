@@ -1,6 +1,11 @@
 package Networking;
-import Game.Game;
+import Game.*;
 import Messages.GameMessage;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameProcess implements Runnable
 {
@@ -37,12 +42,32 @@ public class GameProcess implements Runnable
     }
 
     public void run()
-    {
-        //This is where the game (fun) begins!
-        while (true)
+    { ;
+        while(true)
         {
+            if(game.checkWin() != 0)
+            {
+                Map<String, Object> message = new HashMap<>();
+                message.put("MessageType", "SubscribeMessage");
+                message.put("Client", players.getFirst());
+                message.put("Topic", "CHAT_" + gameId);
+                message.put("TopicType", "Chat");
+                message.put("Subscribe", false);
+                server.processMessage(message);
 
+                message.replace("Client", players.getSecond());
+                server.processMessage(message);
+
+                message.replace("Topic", "GAME_" + gameId);
+                message.replace("TopicType", "Game");
+                server.processMessage(message);
+
+                message.replace("Client", players.getFirst());
+                server.processMessage(message);
+
+                System.out.println("Hello World");
+            }
+            break;
         }
-        //System.out.println("Hello World");
     }
 }
