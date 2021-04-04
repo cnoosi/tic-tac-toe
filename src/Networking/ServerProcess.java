@@ -115,7 +115,7 @@ public class ServerProcess implements Runnable
                     gamePlayers.getFirst().writeMessage(gameFoundMessage);
                     gamePlayers.getSecond().writeMessage(gameFoundMessage);
 
-                    Thread handleNewGameThread = new Thread(new GameProcess());
+                    Thread handleNewGameThread = new Thread(newGameProcess);
                     handleNewGameThread.start();
 
                     //Clear pair for another matchmaking attempt

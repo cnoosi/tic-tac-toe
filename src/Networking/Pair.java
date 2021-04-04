@@ -38,4 +38,11 @@ public class Pair <C1, C2>
         else
             return second;
     }
+
+    public void swapPair()
+    {
+        C1 temp = first;
+        first = (C1)getSecond();
+        second = (C2)temp;
+    }
 }
