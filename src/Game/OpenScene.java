@@ -18,10 +18,6 @@ public class OpenScene {
         window.setResizable(false);
         window.setScene(scene);
         window.show();
-//        String musicPath = "/Users/kasra/Documents/GitHub/TicTacToe/tic-tac-toe/src/resources/images/soundTrack.wav";
-//        MusicPlayer music = new MusicPlayer(musicPath);
-//        music.playMusic();
-//        music.stopMusic();
     }
 
     public void start(Stage window, Parent root, String headerName) throws Exception {
@@ -30,9 +26,5 @@ public class OpenScene {
         window.setResizable(false);
         window.setScene(scene);
         window.show();
-//        String musicPath = "/Users/kasra/Documents/GitHub/TicTacToe/tic-tac-toe/src/resources/images/soundTrack.wav";
-//        MusicPlayer music = new MusicPlayer(musicPath);
-//        music.playMusic();
-//        music.stopMusic();
     }
 }
