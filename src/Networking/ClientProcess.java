@@ -4,6 +4,8 @@ import Messages.ChatMessage;
 import Messages.Message;
 import Messages.MoveMessage;
 import Messages.QueueMessage;
+import UserInterface.UIProcess;
+import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,7 +20,7 @@ public class ClientProcess implements Runnable
     DataInputStream inputStream;
     DataOutputStream outputStream;
 
-    private UiProcess ui;
+    private UIProcess ui;
     private String gameId;
     private String chatChannel;
 
@@ -48,8 +50,13 @@ public class ClientProcess implements Runnable
                         String gameId = (String) map.get("GameId");
                         if (!inQueue && gameId != null)
                         {
+                            ui.startGame();
                             this.gameId = gameId;
                         }
+                        else if (inQueue)
+                            ui.joinQueue();
+                        else
+                            ui.leaveQueue();
                     }
 
                     else if (messageType.equals("GameMessage")) {
@@ -60,14 +67,16 @@ public class ClientProcess implements Runnable
                         long newValue = (long) map.get("NewValue");
                         if (newRow != -1 && newCol != -1 && newValue != -1)
                         {
-                            System.out.println(newRow + "," + newCol + " = " + newValue);
+                            System.out.println(newRow + " , " + newCol + " = " + newValue);
+                            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
                         }
-                        System.out.println("CURRENT PLAYER: " + currentToken + " WINNER: " + winner);
+                        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
+                        ui.updateBoardUI((int) currentToken, (int) winner);
                     }
                     else if (messageType.equals("ChatMessage")) {
                         String playerName = (String) map.get("PlayerName");
                         String playerChat = (String) map.get("PlayerChat");
-                        System.out.println(playerName + ": " + playerChat);
+                        ui.newChat(playerName, playerChat);
                     }
                 }
             }
@@ -90,6 +99,12 @@ public class ClientProcess implements Runnable
         }
     }
 
+    public ClientProcess(Stage primaryStage)
+    {
+        this.ui = new UIProcess(this, primaryStage);
+        ui.openPage("Menu");
+    }
+
     @Override
     public void run()
     {
@@ -97,8 +112,6 @@ public class ClientProcess implements Runnable
             client = new Socket("localhost", 8000);
             outputStream = new DataOutputStream(client.getOutputStream());
             inputStream = new DataInputStream(client.getInputStream());
-
-            this.ui = new UiProcess(this);
 
             Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
             messagingProcessThread.start();
@@ -110,6 +123,10 @@ public class ClientProcess implements Runnable
             Scanner input = new Scanner(System.in);
             while (clientAlive)
             {
+//                String newChat = input.nextLine();
+//                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
+//                writeMessage(chatMessage);
+
                 int row = input.nextInt();
                 int col = input.nextInt();
                 MoveMessage moveRequest = new MoveMessage(gameId, row, col);

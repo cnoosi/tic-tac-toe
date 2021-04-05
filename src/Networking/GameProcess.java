@@ -107,8 +107,8 @@ public class GameProcess implements Runnable
             if (currentTime - lastMove > MOVE_TIME_LIMIT)
             {
                 // They ran out of time!
-                System.out.println("TOKEN SWITCHED!");
-                game.switchToken();
+                //System.out.println("TIME LIMIT HIT! TOKEN SWITCHED!");
+                //game.switchToken();
             }
         }
     }

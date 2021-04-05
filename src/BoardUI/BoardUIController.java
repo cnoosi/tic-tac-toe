@@ -69,7 +69,10 @@ public class BoardUIController
 
     public void setImage(int token, int row, int col)
     {
-        imageList.get(getIndexFromRowCol(row, col)).setImage(XToken);
+        if (token == 1)
+            imageList.get(getIndexFromRowCol(row, col)).setImage(XToken);
+        else
+            imageList.get(getIndexFromRowCol(row, col)).setImage(YToken);
     }
 
     public int getIndexFromRowCol(int row, int col)
