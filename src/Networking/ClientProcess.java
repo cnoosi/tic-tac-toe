@@ -9,7 +9,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class ClientProcess implements Runnable
@@ -19,6 +18,7 @@ public class ClientProcess implements Runnable
     DataInputStream inputStream;
     DataOutputStream outputStream;
 
+    private UiProcess ui;
     private String gameId;
     private String chatChannel;
 
@@ -98,10 +98,12 @@ public class ClientProcess implements Runnable
             outputStream = new DataOutputStream(client.getOutputStream());
             inputStream = new DataInputStream(client.getInputStream());
 
+            this.ui = new UiProcess(this);
+
             Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
             messagingProcessThread.start();
 
-            //Test stuff
+            //Test stuff *******
             //Put the user into queue
             writeMessage(new QueueMessage(true));
 
@@ -113,6 +115,8 @@ public class ClientProcess implements Runnable
                 MoveMessage moveRequest = new MoveMessage(gameId, row, col);
                 writeMessage(moveRequest);
             }
+            //Test stuff *******
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
