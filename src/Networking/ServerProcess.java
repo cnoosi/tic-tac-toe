@@ -129,6 +129,12 @@ public class ServerProcess implements Runnable
         }
     }
 
+    public void killGameProcess(String gameId)
+    {
+        GameProcess findGame = games.get(gameId);
+        games.remove(findGame);
+    }
+
     public void sendToSubscribedClients(String topic, Message newMessage, ClientConnection ignoreClient)
     {
         ArrayList<ClientConnection> subs = subscriptions.get(topic);
@@ -143,7 +149,7 @@ public class ServerProcess implements Runnable
         }
     }
 
-    private void subscribe(String topic, String topicType, ClientConnection client)
+    public void subscribe(String topic, String topicType, ClientConnection client)
     {
         System.out.println("SUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
@@ -156,7 +162,7 @@ public class ServerProcess implements Runnable
         client.writeMessage(new SubscribeMessage(topic, topicType, true));
     }
 
-    private void unsubscribe(String topic, String topicType, ClientConnection client)
+    public void unsubscribe(String topic, String topicType, ClientConnection client)
     {
         System.out.println("UNSUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);

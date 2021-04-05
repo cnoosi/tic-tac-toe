@@ -5,6 +5,7 @@ public class Game implements Cloneable
     private int[][]             boardData;
     private int                 boardSize;
     private int                 token;
+    private long                lastMove;
     private int                 winner;
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
@@ -16,6 +17,18 @@ public class Game implements Cloneable
         this.token = 1;
         this.localPlayers = 2;
         this.winner = 0;
+        this.lastMove = System.currentTimeMillis();
+        ai = new Minimax();
+    }
+
+    public Game(int localPlayers)
+    {
+        this.boardSize = 3;
+        this.boardData = new int[boardSize][boardSize];
+        this.token = 1;
+        this.localPlayers = localPlayers;
+        this.winner = 0;
+        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -26,6 +39,7 @@ public class Game implements Cloneable
         this.token = 1;
         this.localPlayers = localPlayers;
         this.winner = 0;
+        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -36,6 +50,7 @@ public class Game implements Cloneable
         this.token = 1;
         this.localPlayers = localPlayers;
         this.winner = 0;
+        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -51,6 +66,7 @@ public class Game implements Cloneable
 
     public void switchToken()
     {
+        lastMove = System.currentTimeMillis();
         token = (token == 1? 2:1);
     }
 
@@ -60,6 +76,8 @@ public class Game implements Cloneable
     }
 
     public int getWinner() {return winner;}
+
+    public long getLastMove() {return lastMove;}
 
     public int getPosition(int i, int j)
     {
@@ -85,6 +103,7 @@ public class Game implements Cloneable
 
     public void setPosition(int i, int j, int token)
     {
+        lastMove = System.currentTimeMillis();
         boardData[i][j] = token;
     }
 

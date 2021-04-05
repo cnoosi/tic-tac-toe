@@ -58,7 +58,10 @@ public class ClientProcess implements Runnable
                         long newRow = (long) map.get("NewRow");
                         long newCol = (long) map.get("NewCol");
                         long newValue = (long) map.get("NewValue");
-                        System.out.println(newRow + "," + newCol + " = " + newValue);
+                        if (newRow != -1 && newCol != -1 && newValue != -1)
+                        {
+                            System.out.println(newRow + "," + newCol + " = " + newValue);
+                        }
                         System.out.println("CURRENT PLAYER: " + currentToken + " WINNER: " + winner);
                     }
                     else if (messageType.equals("ChatMessage")) {

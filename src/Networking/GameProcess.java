@@ -10,9 +10,13 @@ import java.util.Map;
 public class GameProcess implements Runnable
 {
     private Game game;
+    private boolean gameActive = true;
     private String gameId;
     private Pair<ClientConnection, ClientConnection> players;
     private ServerProcess server;
+    private ClientProcess client;
+
+    private final int MOVE_TIME_LIMIT = 30;
 
     public GameProcess(ServerProcess server, String gameId, Pair players)
     {
@@ -20,6 +24,38 @@ public class GameProcess implements Runnable
         this.server = server;
         this.gameId = gameId;
         this.players = players;
+    }
+
+    public GameProcess(ClientProcess client)
+    {
+        game = new Game(2);
+        this.client = client;
+    }
+
+    private void gameEnded()
+    {
+        gameActive = false;
+        System.out.println("game is over!");
+        if (server != null)
+        {
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(),
+                    -1, -1, -1);
+
+            server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+            server.unsubscribe("GAME_" + gameId, "Game", players.getFirst());
+            server.unsubscribe("GAME_" + gameId, "Game", players.getSecond());
+            server.unsubscribe("CHAT_" + gameId, "Chat", players.getFirst());
+            server.unsubscribe("CHAT_" + gameId, "Chat", players.getSecond());
+            server.subscribe("CHAT_GLOBAL", "Chat", players.getFirst());
+            server.subscribe("CHAT_GLOBAL", "Chat", players.getSecond());
+            server.killGameProcess(gameId);
+        }
+        else if (client != null)
+        {
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(),
+                                                    -1, -1, -1);
+
+        }
     }
 
     public int getToken(ClientConnection client)
@@ -36,38 +72,44 @@ public class GameProcess implements Runnable
             System.out.println("A move was MADE by token: " + token);
             GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), row, col, token);
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+            int winner = game.checkWin(); //Update winner
+            if (winner != 0)
+                gameEnded();
+        }
+        else
+            System.out.println("A move was BLOCKED by token: " + token);
+    }
+
+    public void requestMove(int row, int col)
+    {
+        int token = 1;
+        boolean moveMade = game.requestPosition(row, col, token);
+        if (moveMade)
+        {
+            System.out.println("A move was MADE by token: " + token);
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), row, col, token);
+            server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+            int winner = game.checkWin(); //Update winner
+            if (winner != 0)
+                gameEnded();
         }
         else
             System.out.println("A move was BLOCKED by token: " + token);
     }
 
     public void run()
-    { ;
-        while(true)
+    {
+        while(gameActive)
         {
-            if(game.checkWin() != 0)
+            //Countdown texts
+            long lastMove = game.getLastMove() / 1000;
+            long currentTime = System.currentTimeMillis() / 1000;
+            if (currentTime - lastMove > MOVE_TIME_LIMIT)
             {
-                Map<String, Object> message = new HashMap<>();
-                message.put("MessageType", "SubscribeMessage");
-                message.put("Client", players.getFirst());
-                message.put("Topic", "CHAT_" + gameId);
-                message.put("TopicType", "Chat");
-                message.put("Subscribe", false);
-                server.processMessage(message);
-
-                message.replace("Client", players.getSecond());
-                server.processMessage(message);
-
-                message.replace("Topic", "GAME_" + gameId);
-                message.replace("TopicType", "Game");
-                server.processMessage(message);
-
-                message.replace("Client", players.getFirst());
-                server.processMessage(message);
-
-                System.out.println("Hello World");
+                // They ran out of time!
+                System.out.println("TOKEN SWITCHED!");
+                game.switchToken();
             }
-            break;
         }
     }
 }
