@@ -17,12 +17,12 @@ import javafx.scene.control.Label;
 import Game.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import Game.Position;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class BoardUIController implements Initializable
+public class BoardUIController implements Initializable, BoardUIObserver
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
@@ -42,29 +42,40 @@ public class BoardUIController implements Initializable
     private MediaPlayer mp;
     private Media me;
 
-//    @FXML
-//    public void handleButtonClick(ActionEvent event)
-//    {
-//        for(int button = 0; button < buttonList.size(); button++)
-//        {
-//            if(event.getSource() == buttonList.get(button))
-//            {
+    public void setGame(Game game)
+    {
+        this.game = game;
+    }
+
+
+
+    @FXML
+    public void handleButtonClick(ActionEvent event)
+    {
+        for(int button = 0; button < buttonList.size(); button++)
+        {
+            if(event.getSource() == buttonList.get(button))
+            {
+//                Position pos = getPositionFromIndex(button);
+//                game.setPosition(1, 1, 1);
+//                updateTokens();
 //                if (!game_has_winner)
 //                {
 //                    Position pos = getPositionFromIndex(button);
-////                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
-////                    if (token_moved != 0)
-////                        updateTokens();
-////                    else
-////                    {
-////                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
-////                        notificationLabel.setText("This position is not available. Please select another!");
-////                    }
-////                    checkWin();
+//                    //int token_moved = game.requestPosition(pos.getRow(), pos.getCol(), 2);
+//                    if (token_moved != 0)
+//                        updateTokens();
+//                    else
+//                    {
+//                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
+//                        notificationLabel.setText("This position is not available. Please select another!");
+//                    }
+//                    checkWin();
 //                }
-//            }
-//        }
-//    }
+                System.out.println(getPositionFromIndex(button));
+            }
+        }
+    }
 
     @FXML
     public void handleMenuClick(ActionEvent even) throws Exception
@@ -91,7 +102,8 @@ public class BoardUIController implements Initializable
 
     public void updateTokens()
     {
-        notificationLabel.setText("");
+        System.out.println(imageList);
+        //notificationLabel.setText("");
         for (int i = 0; i < game.getBoardSize(); i++) {
             for (int j = 0; j < game.getBoardSize(); j++) {
                 ImageView image = imageList.get(getIndexFromRowCol(i, j));
@@ -170,4 +182,11 @@ public class BoardUIController implements Initializable
             }
         });
     }
+
+    @Override
+    public void onMoveExecuted(Position move)
+    {
+        imageList.get(getIndexFromRowCol(move.getRow(), move.getCol())).setImage(XToken);
+    }
+
 }

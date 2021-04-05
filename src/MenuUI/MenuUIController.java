@@ -36,7 +36,26 @@ public class MenuUIController implements Initializable
     private MediaPlayer mp;
     private Media me;
 
-
+//    public void handleMode(ActionEvent event) throws Exception
+//    {
+//        Stage stage = (Stage) singlePlayerBtn.getScene().getWindow();
+//        FXMLLoader root = new FXMLLoader();
+//        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
+//        Parent frame = root.load();
+//        BoardUIController controller = (BoardUIController) root.getController();
+//        if(event.getSource() == singlePlayerBtn)
+//        {
+//            controller.setLocalPlayerCount(1);
+//            openScene.start(stage, frame, "Tic-Tac-Toe - Single Player Game");
+//        }
+//        else
+//        {
+//            controller.setLocalPlayerCount(2);
+//            openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
+//        }
+//        controller.resetGame();
+//        mp.stop();
+//    }
 
     @FXML
     public void handleSinglePlayerMode(ActionEvent event) throws Exception
@@ -65,8 +84,6 @@ public class MenuUIController implements Initializable
         openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
         mp.stop();
     }
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
