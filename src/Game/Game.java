@@ -1,11 +1,6 @@
 package Game;
 
-import BoardUI.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class Game implements Cloneable, GameBoardObserver, BoardUISubject
+public class Game implements Cloneable
 {
     private int[][]             boardData;
     private int                 boardSize;
@@ -14,9 +9,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
     private int                 winner;
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
-
-    private List<BoardUIObserver> uiObservers;
-
 
     public Game()
     {
@@ -27,8 +19,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
         this.winner = 0;
         this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
-        uiObservers = new ArrayList<>();
-
     }
 
     public Game(int localPlayers)
@@ -40,7 +30,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
         this.winner = 0;
         this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
-        uiObservers = new ArrayList<>();
     }
 
     public Game(int boardSize, int localPlayers)
@@ -52,7 +41,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
         this.winner = 0;
         this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
-        uiObservers = new ArrayList<>();
     }
 
     public Game(int[][] boardData, int boardSize, int localPlayers)
@@ -64,7 +52,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
         this.winner = 0;
         this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
-        uiObservers = new ArrayList<>();
     }
 
     public int[][] getBoardData()
@@ -109,8 +96,6 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
                 Position pos = ai.getMove(this);
                 requestPosition(pos.getRow(), pos.getCol(), playerToken);
             }
-            for(BoardUIObserver obs : uiObservers)
-
             return true;
         }
         return false;
@@ -250,29 +235,4 @@ public class Game implements Cloneable, GameBoardObserver, BoardUISubject
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
     }
-
-    @Override
-    public void onMoveExecuted(Position move)
-    {
-        notifyObservers(move);
-    }
-
-    @Override
-    public void addObserver(BoardUIObserver observer)
-    {
-        uiObservers.add(observer);
-    }
-
-    @Override
-    public void removeObserver(BoardUIObserver observer)
-    {
-        uiObservers.remove(observer);
-    }
-
-    public void notifyObservers(Position move)
-    {
-        for(BoardUIObserver observer : uiObservers)
-            observer.onMoveExecuted(move);
-    }
-
 }
