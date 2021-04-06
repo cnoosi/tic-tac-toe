@@ -78,9 +78,10 @@ public class GameProcess implements Runnable
         }
         else
             System.out.println("A move was BLOCKED by token: " + token);
+        System.out.println(game);
     }
 
-    public void requestMove(int row, int col)
+    public void requestMoveSinglePlayer(int row, int col)
     {
         int token = 1;
         boolean moveMade = game.requestPosition(row, col, token);
