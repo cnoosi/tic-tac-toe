@@ -102,7 +102,7 @@ public class ClientProcess implements Runnable
     public ClientProcess(Stage primaryStage)
     {
         this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Menu");
+        ui.openPage("Board");
     }
 
     @Override
