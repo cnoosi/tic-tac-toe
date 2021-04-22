@@ -18,9 +18,14 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import javafx.scene.image.ImageView;
+
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 
@@ -71,6 +76,13 @@ public class MenuUIController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String path = new File("src/resources/images/comp 1.mp4").getAbsolutePath();
+
+        //********************************************
+        //TESTING DATABASE
+        //********************************************
+        Database db = new Database();
+        db.insert("kasra","ghaffari");
+
 
         me = new Media(new File(path).toURI().toString());
         mp = new MediaPlayer(me);
