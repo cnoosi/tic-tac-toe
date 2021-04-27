@@ -16,7 +16,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-
+import java.util.Scanner;
 import javafx.scene.image.ImageView;
 
 import javax.xml.crypto.Data;
@@ -80,8 +80,40 @@ public class MenuUIController implements Initializable
         //********************************************
         //TESTING DATABASE
         //********************************************
+        Scanner scanner = new Scanner(System.in);
         Database db = new Database();
-        db.insert("kasra","ghaffari");
+        System.out.println("Database Control Panel\n----------------\n" +
+                            "1) Add new user\n" +
+                            "2) Remove existing user\n" +
+                            "3) Show existing users\n" +
+                            "0) Continue to game\n");
+        int userInput = scanner.nextInt();
+        while (userInput != 0){
+            switch (userInput){
+                case 1:
+                    System.out.println("Enter UserName FirstName LastName Password");
+                    scanner.nextLine();
+                    db.insert(scanner.nextLine(),scanner.nextLine(),scanner.nextLine(),scanner.nextLine());
+                    break;
+                case 2:
+                    System.out.println(("Enter the UserName you wish to delete: "));
+                    scanner.nextLine();
+                    db.deleteRow(scanner.nextLine());
+                    break;
+                case 3:
+                    db.readAll();
+                    break;
+                case 0:
+                    break;
+            }
+            System.out.println("Database Control Panel\n----------------\n" +
+                    "1) Add new user\n" +
+                    "2) Remove existing user\n" +
+                    "3) Show existing users\n" +
+                    "0) Continue to game\n");
+            userInput = scanner.nextInt();
+        }
+
 
 
         me = new Media(new File(path).toURI().toString());
