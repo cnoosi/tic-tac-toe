@@ -4,6 +4,8 @@ import BoardUI.*;
 import Game.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -16,9 +18,11 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+
+import java.io.IOError;
+import java.io.IOException;
 import java.util.Scanner;
 import javafx.scene.image.ImageView;
-
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,19 +32,21 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-
 public class MenuUIController implements Initializable
 {
     private OpenScene openScene = new OpenScene();
     @FXML private Button singlePlayerBtn;
     @FXML private Button multiPlayerBtn;
+    @FXML private Button userMenuBtn;
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
 
     private MediaPlayer mp;
     private Media me;
-
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
 
     @FXML
@@ -71,7 +77,15 @@ public class MenuUIController implements Initializable
         mp.stop();
     }
 
-
+    public void handleUserMenuButton(ActionEvent event) throws Exception{
+        Stage stage = (Stage) userMenuBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("UserMenuUI.fxml"));
+        Parent frame = root.load();
+        UserMenuUIController controller = (UserMenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - User Menu");
+        mp.stop();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -162,8 +176,8 @@ public class MenuUIController implements Initializable
             }
         });
 
-
-
     }
+
+
 
 }

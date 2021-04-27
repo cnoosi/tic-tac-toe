@@ -72,4 +72,45 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    public boolean find(String userName, String password) {
+        String sql = "Select * from User WHERE UserName = ? AND Password = ?";
+        ResultSet rs = null;
+        boolean found = false;
+
+        try (Connection conn = this.connect();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userName);
+            ps.setString(2, password);
+            rs = ps.executeQuery();
+
+            if (rs.next()){
+                found = true;
+            }
+
+        }catch (SQLException e) { System.out.println(e.getMessage()); }
+
+        return found;
+    }
+
+    public boolean userExists(String userName) {
+        String sql = "Select * from User WHERE UserName = ?";
+        ResultSet rs = null;
+        boolean found = false;
+
+        try (Connection conn = this.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userName);
+            rs = ps.executeQuery();
+
+            if (rs.next()){
+                found = true;
+            }
+
+        }catch (SQLException e) { System.out.println(e.getMessage()); }
+
+        return found;
+    }
 }
