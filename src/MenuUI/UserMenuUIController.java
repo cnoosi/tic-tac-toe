@@ -1,6 +1,7 @@
 package MenuUI;
 
 import Game.Database;
+import Game.DbManager;
 import Game.OpenScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,46 +27,53 @@ public class UserMenuUIController {
     @FXML private Label userValidation2;
     private OpenScene openScene = new OpenScene();
 
-    public void handleLoginBtn(ActionEvent event) throws Exception{
-        Scanner scanner = new Scanner(System.in);
-        Database db = new Database();
-        String user = userName.getText();
-        String pass = password.getText();
 
-        boolean userValid = db.find(user,pass);
+    //********************************************
+    //LOGIN FUNCTION
+    //********************************************
+    public void handleLoginBtn(ActionEvent event) throws Exception{
+        Scanner  scanner = new Scanner(System.in);
+//      Database db      = new Database();
+        String   user    = userName.getText();
+        String   pass    = password.getText();
+        boolean  userValid;
+
+        //CHECKS TO SEE IF THE USER EXISTS
+        userValid = DbManager.getInstance().userFound(user,pass);
+//      userValid = db.find(user,pass);
+
         if(userValid)
         {
             userValidation.setText("user has been found!");
+//            DbManager.getInstance().setCurrentUser();
         }
         else
         {
             userValidation.setText("User not found");
         }
-
-        System.out.println("username: " + user + "\n" + "pass: " + pass + "\n");
-
     }
 
+    //********************************************
+    //CREATE ACCOUNT FUNCTION
+    //********************************************
     public void handleCreateAcctBtn(ActionEvent event) throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        Database db = new Database();
 
         String user   = userName2.getText();
         String firstN = firstName.getText();
         String lastN  = lastName.getText();
         String pass   = password2.getText();
 
-
-
-        boolean usrExists = db.userExists(user);
-        if (usrExists) {
+        boolean available = DbManager.getInstance().userAvailable(user);
+        if (!available)
+        {
             userValidation2.setText("that username is already taken");
-        } else {
-            db.insert(user,firstN,lastN,pass);
+        }
+        else
+        {
+            DbManager.getInstance().addUser(user,firstN,lastN,pass);
             userValidation2.setText("account successfully created!!");
         }
 
-        System.out.println("username: " + user + "\n" + "pass: " + pass + "\n");
     }
 
     public void handleHomeBtn(ActionEvent event) throws Exception {

@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -34,13 +35,14 @@ import java.util.ResourceBundle;
 
 public class MenuUIController implements Initializable
 {
-    private OpenScene openScene = new OpenScene();
-    @FXML private Button singlePlayerBtn;
-    @FXML private Button multiPlayerBtn;
-    @FXML private Button userMenuBtn;
+    private       OpenScene openScene = new OpenScene();
+    @FXML private Button    singlePlayerBtn;
+    @FXML private Button    multiPlayerBtn;
+    @FXML private Button    userMenuBtn;
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
+    @FXML private Label     username;
 
     private MediaPlayer mp;
     private Media me;
@@ -95,38 +97,39 @@ public class MenuUIController implements Initializable
         //TESTING DATABASE
         //********************************************
         Scanner scanner = new Scanner(System.in);
-        Database db = new Database();
-        System.out.println("Database Control Panel\n----------------\n" +
-                            "1) Add new user\n" +
-                            "2) Remove existing user\n" +
-                            "3) Show existing users\n" +
-                            "0) Continue to game\n");
-        int userInput = scanner.nextInt();
-        while (userInput != 0){
-            switch (userInput){
-                case 1:
-                    System.out.println("Enter UserName FirstName LastName Password");
-                    scanner.nextLine();
-                    db.insert(scanner.nextLine(),scanner.nextLine(),scanner.nextLine(),scanner.nextLine());
-                    break;
-                case 2:
-                    System.out.println(("Enter the UserName you wish to delete: "));
-                    scanner.nextLine();
-                    db.deleteRow(scanner.nextLine());
-                    break;
-                case 3:
-                    db.readAll();
-                    break;
-                case 0:
-                    break;
-            }
-            System.out.println("Database Control Panel\n----------------\n" +
-                    "1) Add new user\n" +
-                    "2) Remove existing user\n" +
-                    "3) Show existing users\n" +
-                    "0) Continue to game\n");
-            userInput = scanner.nextInt();
-        }
+////        Database db = new Database();
+//        System.out.println("Database Control Panel\n----------------\n" +
+//                            "1) Add new user\n" +
+//                            "2) Remove existing user\n" +
+//                            "3) Show existing users\n" +
+//                            "0) Continue to game\n");
+//        int userInput = scanner.nextInt();
+//        while (userInput != 0){
+//            switch (userInput){
+//                case 1:
+////                    System.out.println(db.connect());
+////                    System.out.println("Enter UserName FirstName LastName Password");
+////                    scanner.nextLine();
+////                    db.insert(scanner.nextLine(),scanner.nextLine(),scanner.nextLine(),scanner.nextLine());
+////                    break;
+//                case 2:
+////                    System.out.println(("Enter the UserName you wish to delete: "));
+////                    scanner.nextLine();
+////                    db.deleteRow(scanner.nextLine());
+////                    break;
+//                case 3:
+//                    DbManager.getInstance().printAllUsers();
+//                    break;
+//                case 0:
+//                    break;
+//            }
+//            System.out.println("Database Control Panel\n----------------\n" +
+//                    "1) Add new user\n" +
+//                    "2) Remove existing user\n" +
+//                    "3) Show existing users\n" +
+//                    "0) Continue to game\n");
+//            userInput = scanner.nextInt();
+//        }
 
 
 
@@ -135,6 +138,11 @@ public class MenuUIController implements Initializable
         mv.setMediaPlayer(mp);
         mp.setAutoPlay(true);
         mp.setCycleCount(MediaPlayer.INDEFINITE);
+
+        //********************************************
+        //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
+        //********************************************
+        username.setText(DbManager.getInstance().getCurrentUser());
 
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON

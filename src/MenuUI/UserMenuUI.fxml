@@ -19,8 +19,8 @@
       <Label layoutX="776.0" layoutY="379.0" style="-fx-text-fill: purple;" text="Password:" />
       <TextField fx:id="userName2" layoutX="845.0" layoutY="240.0" />
       <TextField fx:id="firstName" layoutX="845.0" layoutY="286.0" />
-      <TextField fx:id="password2" layoutX="845.0" layoutY="375.0" />
       <TextField fx:id="lastName" layoutX="845.0" layoutY="331.0" />
+      <TextField fx:id="password2" layoutX="845.0" layoutY="375.0" />
       <Button fx:id="createAcctBtn" layoutX="871.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
       <Label fx:id="userValidation2" layoutX="821.0" layoutY="477.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
       <Button fx:id="homeBtn" layoutX="28.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleHomeBtn" prefWidth="59.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Back" />
