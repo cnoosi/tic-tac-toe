@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ClientProcess implements Runnable
@@ -24,6 +24,57 @@ public class ClientProcess implements Runnable
     private String gameId;
     private String chatChannel;
 
+    private void handleSubscribeMessage(Map<String, Object> map)
+    {
+        String topic = (String) map.get("Topic");
+        String topicType = (String) map.get("TopicType");
+        boolean isSubscribed = (boolean) map.get("Subscribe");
+        if (topicType.equals("Chat")) {
+            if (isSubscribed)
+            {
+                chatChannel = topic;
+            }
+        }
+    }
+
+    private void handleQueueMessage(Map<String, Object> map)
+    {
+        boolean inQueue = (boolean) map.get("InQueue");
+        String gameId = (String) map.get("GameId");
+        if (!inQueue && gameId != null)
+        {
+            ui.startGame();
+            this.gameId = gameId;
+        }
+        else if (inQueue)
+            ui.joinQueue();
+        else
+            ui.leaveQueue();
+    }
+
+    private void handleGameMessage(Map<String, Object> map)
+    {
+        long currentToken = (long) map.get("CurrentToken");
+        long winner = (long) map.get("Winner");
+        long newRow = (long) map.get("NewRow");
+        long newCol = (long) map.get("NewCol");
+        long newValue = (long) map.get("NewValue");
+        if (newRow != -1 && newCol != -1 && newValue != -1)
+        {
+            System.out.println(newRow + " , " + newCol + " = " + newValue);
+            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
+        }
+        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
+        ui.updateBoardUI((int) currentToken, (int) winner);
+    }
+
+    private void handleChatMessage(Map<String, Object> map)
+    {
+        String playerName = (String) map.get("PlayerName");
+        String playerChat = (String) map.get("PlayerChat");
+        ui.newChat(playerName, playerChat);
+    }
+
     public void handleMessagingProcess()
     {
         try
@@ -31,52 +82,24 @@ public class ClientProcess implements Runnable
             while (clientAlive)
             {
                 String jsonString = inputStream.readUTF();
-                HashMap<String, Object> map = JSON.decode(jsonString);
+                Map<String, Object> map = JSON.decode(jsonString);
                 if (map != null) {
                     String messageType = (String) map.get("MessageType");
-                    if (messageType.equals("SubscribeMessage")) {
-                        String topic = (String) map.get("Topic");
-                        String topicType = (String) map.get("TopicType");
-                        boolean isSubscribed = (boolean) map.get("Subscribe");
-                        if (topicType.equals("Chat")) {
-                            if (isSubscribed)
-                            {
-                                chatChannel = topic;
-                            }
-                        }
-                    }
-                    else if (messageType.equals("QueueMessage")) {
-                        boolean inQueue = (boolean) map.get("InQueue");
-                        String gameId = (String) map.get("GameId");
-                        if (!inQueue && gameId != null)
-                        {
-                            ui.startGame();
-                            this.gameId = gameId;
-                        }
-                        else if (inQueue)
-                            ui.joinQueue();
-                        else
-                            ui.leaveQueue();
-                    }
 
-                    else if (messageType.equals("GameMessage")) {
-                        long currentToken = (long) map.get("CurrentToken");
-                        long winner = (long) map.get("Winner");
-                        long newRow = (long) map.get("NewRow");
-                        long newCol = (long) map.get("NewCol");
-                        long newValue = (long) map.get("NewValue");
-                        if (newRow != -1 && newCol != -1 && newValue != -1)
-                        {
-                            System.out.println(newRow + " , " + newCol + " = " + newValue);
-                            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
-                        }
-                        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
-                        ui.updateBoardUI((int) currentToken, (int) winner);
-                    }
-                    else if (messageType.equals("ChatMessage")) {
-                        String playerName = (String) map.get("PlayerName");
-                        String playerChat = (String) map.get("PlayerChat");
-                        ui.newChat(playerName, playerChat);
+                    switch (messageType)
+                    {
+                        case "SubscribeMessage":
+                            handleSubscribeMessage(map);
+                            break;
+                        case "QueueMessage":
+                            handleQueueMessage(map);
+                            break;
+                        case "GameMessage":
+                            handleGameMessage(map);
+                            break;
+                        case "ChatMessage":
+                            handleChatMessage(map);
+                            break;
                     }
                 }
             }
