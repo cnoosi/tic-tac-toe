@@ -24,6 +24,8 @@ import java.io.IOError;
 import java.io.IOException;
 import java.util.Scanner;
 import javafx.scene.image.ImageView;
+import jdk.jshell.spi.ExecutionControlProvider;
+
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,7 +44,7 @@ public class MenuUIController implements Initializable
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
-    @FXML private Label     username;
+    @FXML private Label     usernameLabel;
 
     private MediaPlayer mp;
     private Media me;
@@ -142,7 +144,10 @@ public class MenuUIController implements Initializable
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
         //********************************************
-        username.setText(DbManager.getInstance().getCurrentUser());
+        User current = new User();
+        current = DbManager.getInstance().getCurrentUser();
+        usernameLabel.setText(current.getUserName());
+
 
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
