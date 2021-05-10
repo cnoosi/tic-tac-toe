@@ -1,7 +1,5 @@
 package Networking;
 
-import java.util.Objects;
-
 public class Pair <C1, C2>
 {
     private C1 first;
@@ -46,18 +44,5 @@ public class Pair <C1, C2>
         C1 temp = first;
         first = (C1)getSecond();
         second = (C2)temp;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pair<?, ?> pair = (Pair<?, ?>) o;
-        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
     }
 }
