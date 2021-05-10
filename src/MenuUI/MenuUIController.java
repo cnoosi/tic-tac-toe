@@ -4,6 +4,9 @@ import BoardUI.*;
 import Game.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -17,25 +20,35 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.util.Scanner;
 import javafx.scene.image.ImageView;
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
-
 
 public class MenuUIController implements Initializable
 {
-    private OpenScene openScene = new OpenScene();
-    @FXML private Button singlePlayerBtn;
-    @FXML private Button multiPlayerBtn;
+    private       OpenScene openScene = new OpenScene();
+    @FXML private Button    singlePlayerBtn;
+    @FXML private Button    multiPlayerBtn;
+    @FXML private Button    userMenuBtn;
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
+    @FXML private Label     username;
 
     private MediaPlayer mp;
     private Media me;
-
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
 
 
     @FXML
@@ -66,17 +79,70 @@ public class MenuUIController implements Initializable
         mp.stop();
     }
 
-
+    public void handleUserMenuButton(ActionEvent event) throws Exception{
+        Stage stage = (Stage) userMenuBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("UserMenuUI.fxml"));
+        Parent frame = root.load();
+        UserMenuUIController controller = (UserMenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - User Menu");
+        mp.stop();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String path = new File("src/resources/images/comp 1.mp4").getAbsolutePath();
+
+        //********************************************
+        //TESTING DATABASE
+        //********************************************
+        Scanner scanner = new Scanner(System.in);
+////        Database db = new Database();
+//        System.out.println("Database Control Panel\n----------------\n" +
+//                            "1) Add new user\n" +
+//                            "2) Remove existing user\n" +
+//                            "3) Show existing users\n" +
+//                            "0) Continue to game\n");
+//        int userInput = scanner.nextInt();
+//        while (userInput != 0){
+//            switch (userInput){
+//                case 1:
+////                    System.out.println(db.connect());
+////                    System.out.println("Enter UserName FirstName LastName Password");
+////                    scanner.nextLine();
+////                    db.insert(scanner.nextLine(),scanner.nextLine(),scanner.nextLine(),scanner.nextLine());
+////                    break;
+//                case 2:
+////                    System.out.println(("Enter the UserName you wish to delete: "));
+////                    scanner.nextLine();
+////                    db.deleteRow(scanner.nextLine());
+////                    break;
+//                case 3:
+//                    DbManager.getInstance().printAllUsers();
+//                    break;
+//                case 0:
+//                    break;
+//            }
+//            System.out.println("Database Control Panel\n----------------\n" +
+//                    "1) Add new user\n" +
+//                    "2) Remove existing user\n" +
+//                    "3) Show existing users\n" +
+//                    "0) Continue to game\n");
+//            userInput = scanner.nextInt();
+//        }
+
+
 
         me = new Media(new File(path).toURI().toString());
         mp = new MediaPlayer(me);
         mv.setMediaPlayer(mp);
         mp.setAutoPlay(true);
         mp.setCycleCount(MediaPlayer.INDEFINITE);
+
+        //********************************************
+        //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
+        //********************************************
+        username.setText(DbManager.getInstance().getCurrentUser());
 
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
@@ -118,8 +184,8 @@ public class MenuUIController implements Initializable
             }
         });
 
-
-
     }
+
+
 
 }
