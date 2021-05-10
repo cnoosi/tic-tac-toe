@@ -12,13 +12,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        //This ONLY starts on the client, so we can start the ui here
-        ClientProcess newClient =  new ClientProcess(primaryStage);
-        Thread clientThread = new Thread(newClient);
-        clientThread.start();
-
-        //OpenScene sceneOpener = new OpenScene();
-        //sceneOpener.start(primaryStage, "/MenuUI/MenuUI.fxml", "Tic-Tac-Toe - Menu");
+        OpenScene sceneOpener = new OpenScene();
+        sceneOpener.start(primaryStage, "/MenuUI/MenuUI.fxml", "Tic-Tac-Toe - Menu");
     }
 
     public static void main(String[] args) {
@@ -30,6 +25,10 @@ public class Main extends Application
         }
         else if (args[0].equals("client"))
         {
+            //Eventually turn this into a ClientProcess!
+            Thread clientThread = new Thread(new ClientProcess());
+            clientThread.start();
+
             launch(args);
         }
     }

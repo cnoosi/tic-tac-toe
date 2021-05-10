@@ -1,6 +1,8 @@
 package Networking;
 
+import Messages.ChatMessage;
 import Messages.Message;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -23,6 +25,7 @@ public class ClientConnection implements Runnable
         this.outputStream = new DataOutputStream(c.getOutputStream());
         this.inputStream = new DataInputStream(c.getInputStream());
         this.server = server;
+
         this.clientThread = new Thread(this);
         clientThread.start();
     }
@@ -49,16 +52,6 @@ public class ClientConnection implements Runnable
     }
 
     public int getId() {return id;}
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (!(o instanceof ClientConnection))
-            return false;
-
-        ClientConnection other = (ClientConnection) o;
-        return getId() == other.getId();
-    }
 
     @Override
     public void run()
