@@ -52,15 +52,15 @@ public class BoardUIController implements Initializable
                 if (!game_has_winner)
                 {
                     Position pos = getPositionFromIndex(button);
-                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
-                    if (token_moved != 0)
-                        updateTokens();
-                    else
-                    {
-                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
-                        notificationLabel.setText("This position is not available. Please select another!");
-                    }
-                    checkWin();
+//                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
+//                    if (token_moved != 0)
+//                        updateTokens();
+//                    else
+//                    {
+//                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
+//                        notificationLabel.setText("This position is not available. Please select another!");
+//                    }
+//                    checkWin();
                 }
             }
         }
@@ -75,6 +75,14 @@ public class BoardUIController implements Initializable
         Parent frame = root.load();
         MenuUIController controller = (MenuUIController) root.getController();
         openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+    }
+
+    public void setImage(int token, int row, int col)
+    {
+        if (token == 1)
+            imageList.get(getIndexFromRowCol(row, col)).setImage(XToken);
+        else
+            imageList.get(getIndexFromRowCol(row, col)).setImage(YToken);
     }
 
     public int getIndexFromRowCol(int row, int col)

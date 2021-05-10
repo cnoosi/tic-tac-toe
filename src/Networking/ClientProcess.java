@@ -1,12 +1,15 @@
 package Networking;
 
 import Messages.ChatMessage;
+import Messages.Message;
+import Messages.MoveMessage;
 import Messages.QueueMessage;
+import UserInterface.UIProcess;
+import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -17,31 +20,87 @@ public class ClientProcess implements Runnable
     DataInputStream inputStream;
     DataOutputStream outputStream;
 
+    private UIProcess ui;
+    private String gameId;
+    private String chatChannel;
+
+    private void handleSubscribeMessage(Map<String, Object> map)
+    {
+        String topic = (String) map.get("Topic");
+        String topicType = (String) map.get("TopicType");
+        boolean isSubscribed = (boolean) map.get("Subscribe");
+        if (topicType.equals("Chat")) {
+            if (isSubscribed)
+            {
+                chatChannel = topic;
+            }
+        }
+    }
+
+    private void handleQueueMessage(Map<String, Object> map)
+    {
+        boolean inQueue = (boolean) map.get("InQueue");
+        String gameId = (String) map.get("GameId");
+        if (!inQueue && gameId != null)
+        {
+            ui.startGame();
+            this.gameId = gameId;
+        }
+        else if (inQueue)
+            ui.joinQueue();
+        else
+            ui.leaveQueue();
+    }
+
+    private void handleGameMessage(Map<String, Object> map)
+    {
+        long currentToken = (long) map.get("CurrentToken");
+        long winner = (long) map.get("Winner");
+        long newRow = (long) map.get("NewRow");
+        long newCol = (long) map.get("NewCol");
+        long newValue = (long) map.get("NewValue");
+        if (newRow != -1 && newCol != -1 && newValue != -1)
+        {
+            System.out.println(newRow + " , " + newCol + " = " + newValue);
+            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
+        }
+        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
+        ui.updateBoardUI((int) currentToken, (int) winner);
+    }
+
+    private void handleChatMessage(Map<String, Object> map)
+    {
+        String playerName = (String) map.get("PlayerName");
+        String playerChat = (String) map.get("PlayerChat");
+        ui.newChat(playerName, playerChat);
+    }
+
     public void handleMessagingProcess()
     {
         try
         {
-            String jsonString = inputStream.readUTF();
-            HashMap<String, Object> map = JSON.decode(jsonString);
-            System.out.println("SERVER MESSAGE: " + map);
-            if (map != null)
+            while (clientAlive)
             {
-                String messageType = (String) map.get("MessageType");
-                if (messageType.equals("SubscribeMessage"))
-                {
-                    String topic = (String) map.get("Topic");
-                    String topicType = (String) map.get("TopicType");
-                    boolean isSubscribed = (boolean) map.get("Subscribe");
-                    if (topicType.equals("Chat"))
+                String jsonString = inputStream.readUTF();
+                Map<String, Object> map = JSON.decode(jsonString);
+                if (map != null) {
+                    String messageType = (String) map.get("MessageType");
+
+                    switch (messageType)
                     {
-                        //Change chat channel
+                        case "SubscribeMessage":
+                            handleSubscribeMessage(map);
+                            break;
+                        case "QueueMessage":
+                            handleQueueMessage(map);
+                            break;
+                        case "GameMessage":
+                            handleGameMessage(map);
+                            break;
+                        case "ChatMessage":
+                            handleChatMessage(map);
+                            break;
                     }
-                }
-                else if (messageType.equals("ChatMessage"))
-                {
-                    String playerName = (String) map.get("PlayerName");
-                    String playerMessage = (String) map.get("PlayerMessage");
-                    //We got chat in our channel! Put it in our chat ui!
                 }
             }
         }
@@ -51,28 +110,53 @@ public class ClientProcess implements Runnable
         }
     }
 
+    public void writeMessage(Message newMessage)
+    {
+        try
+        {
+            outputStream.writeUTF(JSON.encode(newMessage));
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public ClientProcess(Stage primaryStage)
+    {
+        this.ui = new UIProcess(this, primaryStage);
+        ui.openPage("Board");
+    }
+
     @Override
     public void run()
     {
-        Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
-        messagingProcessThread.start();
-
         try {
             client = new Socket("localhost", 8000);
             outputStream = new DataOutputStream(client.getOutputStream());
             inputStream = new DataInputStream(client.getInputStream());
 
-            //Test stuff
-            //Put the user into queue
-            outputStream.writeUTF(JSON.encode(new QueueMessage(true)));
+            Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
+            messagingProcessThread.start();
 
-//            Scanner input = new Scanner(System.in);
-//            while (clientAlive) {
-//                //System.out.print("Enter a message: ");
-//                String newMessage = input.nextLine();
-//                ChatMessage chatMessage = new ChatMessage(newMessage, "CHAT_GLOBAL");
-//                outputStream.writeUTF(JSON.encode(chatMessage));
-//            }
+            //Test stuff *******
+            //Put the user into queue
+            writeMessage(new QueueMessage(true));
+
+            Scanner input = new Scanner(System.in);
+            while (clientAlive)
+            {
+//                String newChat = input.nextLine();
+//                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
+//                writeMessage(chatMessage);
+
+                int row = input.nextInt();
+                int col = input.nextInt();
+                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
+                writeMessage(moveRequest);
+            }
+            //Test stuff *******
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
