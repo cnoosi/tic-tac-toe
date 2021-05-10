@@ -1,5 +1,10 @@
 package Networking;
 
+import Game.Game;
+import Game.Position;
+import Linkers.ClientObserver;
+import Linkers.ClientSubject;
+import Linkers.GameObserver;
 import Messages.ChatMessage;
 import Messages.Message;
 import Messages.MoveMessage;
@@ -13,7 +18,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ClientProcess implements Runnable
+public class ClientProcess implements Runnable, ClientObserver
 {
     Socket client;
     boolean clientAlive = true;
@@ -71,7 +76,8 @@ public class ClientProcess implements Runnable
                             ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
                         }
                         System.out.println("Current token: " + currentToken + " || Winner: " + winner);
-                        ui.updateBoardUI((int) currentToken, (int) winner);
+                        if(winner != 0)
+                            ui.updateBoardUI((int) currentToken, (int) winner);
                     }
                     else if (messageType.equals("ChatMessage")) {
                         String playerName = (String) map.get("PlayerName");
@@ -106,6 +112,16 @@ public class ClientProcess implements Runnable
     }
 
     @Override
+    public void clientUpdate(Position pos)
+    {
+        if(clientAlive)
+        {
+            MoveMessage moveRequest = new MoveMessage(gameId, pos.getRow(), pos.getCol());
+            writeMessage(moveRequest);
+        }
+    }
+
+    @Override
     public void run()
     {
         try {
@@ -121,17 +137,17 @@ public class ClientProcess implements Runnable
             writeMessage(new QueueMessage(true));
 
             Scanner input = new Scanner(System.in);
-            while (clientAlive)
-            {
+//            while (clientAlive)
+//            {
 //                String newChat = input.nextLine();
 //                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
 //                writeMessage(chatMessage);
 
-                int row = input.nextInt();
-                int col = input.nextInt();
-                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
-                writeMessage(moveRequest);
-            }
+//                int row = input.nextInt();
+//                int col = input.nextInt();
+//                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
+//                writeMessage(moveRequest);
+//            }
             //Test stuff *******
 
         } catch (Exception ex) {
