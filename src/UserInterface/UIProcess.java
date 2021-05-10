@@ -1,42 +1,30 @@
 package UserInterface;
 
 import BoardUI.BoardUIController;
-import Game.Position;
 import MenuUI.MenuUIController;
 import Networking.ClientProcess;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import Linkers.*;
 
-import java.util.ArrayList;
-
-public class UIProcess implements BoardObserver, ClientSubject, UISubject
-{
+public class UIProcess {
     ClientProcess client;
     Parent menuRoot;
     Parent boardRoot;
     MenuUIController menuController;
     BoardUIController boardController;
     Stage mainStage;
-    ArrayList<UIObserver> observers;
-    ArrayList<ClientObserver> clientObservers;
 
     public UIProcess(ClientProcess client, Stage primaryStage)
     {
         this.client = client;
         this.mainStage = primaryStage;
-        this.observers = new ArrayList<>();
-        this.clientObservers = new ArrayList<>();
         try
         {
             FXMLLoader boardLoader = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
             this.boardRoot = boardLoader.load();
             this.boardController = boardLoader.getController();
-            boardController.addObserver(this);
-            this.addObserver(boardController);
-            this.addClientObserver(client);
 
             FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/MenuUI/MenuUI.fxml"));
             this.menuRoot = menuLoader.load();
@@ -85,56 +73,11 @@ public class UIProcess implements BoardObserver, ClientSubject, UISubject
 
     public void changeUIBoardToken(int row, int col, int newToken)
     {
-        notifyObservers(new Position(row, col), newToken);
+        boardController.setImage(newToken, row, col);
     }
 
     public void updateBoardUI(int currentToken, int winner)
     {
-        notifyObservers(new Position(20, 20), currentToken);
-    }
 
-    @Override
-    public void addObserver(Object o)
-    {
-        observers.add((UIObserver) o);
-    }
-
-    @Override
-    public void removeObserver(Object o)
-    {
-        observers.remove(o);
-    }
-
-    @Override
-    public void notifyObservers(Position pos, int token)
-    {
-        observers.forEach(observer -> observer.update(pos, token));
-    }
-
-    //
-    @Override
-    public void update(Position pos, int token)
-    {
-        System.out.println(pos.toString());
-        notifyClientObservers(pos);
-    }
-
-    //
-    @Override
-    public void addClientObserver(Object o)
-    {
-        clientObservers.add((ClientObserver) o);
-    }
-
-    @Override
-    public void removeClientObserver(Object o)
-    {
-        clientObservers.remove(o);
-    }
-
-    @Override
-    public void notifyClientObservers(Position pos)
-    {
-        clientObservers.forEach(clientObserver -> clientObserver.clientUpdate(pos));
     }
 }
