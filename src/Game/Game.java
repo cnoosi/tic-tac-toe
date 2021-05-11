@@ -8,7 +8,7 @@ public class Game implements Cloneable
     private int                 moveIndex = 0;
     private long                lastMove = System.currentTimeMillis();
     private int                 winnerToken = 0;
-    private int[][]             moves = new int[9][2];
+    private Position[]          moves = new Position[9];
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
@@ -79,8 +79,7 @@ public class Game implements Cloneable
         if (this.token == playerToken && getPosition(i, j) == 0)
         {
             setPosition(i, j, playerToken);
-            this.moves[moveIndex][0] = i;
-            this.moves[moveIndex][1] = j;
+            this.moves[moveIndex] = new Position(i, j);
             this.moveIndex++;
             switchToken();
             // Make a move for the AI if only single player
@@ -208,7 +207,7 @@ public class Game implements Cloneable
     }
 
     public int getWinnerToken() {return this.winnerToken;}
-    public int[][] getMoves() {return  this.moves;}
+    public Position[] getMoves() {return this.moves;}
 
     @Override
     public String toString()
