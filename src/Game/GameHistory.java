@@ -9,16 +9,16 @@ public class GameHistory {
         private int winnerToken;
         private long startTime;
         private long endTime;
-        private int[][] gameMoves;
 
 
-        public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime, int[][] gameMoves){
+
+        public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime){
                 setGameId(gameId);
                 setPlayer1Id(player1Id);
                 setPlayer2Id(player2Id);
                 setWinnerToken(winnerToken);
                 setStartTime(startTime);
-                setGameMoves(gameMoves);
+
         }
 
         public String getGameId() {
@@ -67,13 +67,5 @@ public class GameHistory {
 
         public void setEndTime(long endTime) {
                 this.endTime = endTime;
-        }
-
-        public int[][] getGameMoves() {
-                return gameMoves;
-        }
-
-        public void setGameMoves(int[][] gameMoves) {
-                this.gameMoves = gameMoves;
         }
 }
