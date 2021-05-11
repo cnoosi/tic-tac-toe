@@ -9,15 +9,18 @@ public class GameHistory {
         private int winnerToken;
         private long startTime;
         private long endTime;
+        private int startingPlayerId;
 
 
 
-        public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime){
+        public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime, int startingPlayerId){
                 setGameId(gameId);
                 setPlayer1Id(player1Id);
                 setPlayer2Id(player2Id);
                 setWinnerToken(winnerToken);
                 setStartTime(startTime);
+                setEndTime(endTime);
+                setStartingPlayerId(startingPlayerId);
 
         }
 
@@ -67,5 +70,13 @@ public class GameHistory {
 
         public void setEndTime(long endTime) {
                 this.endTime = endTime;
+        }
+
+        public int getStartingPlayerId() {
+                return startingPlayerId;
+        }
+
+        public void setStartingPlayerId(int startingPlayerId) {
+                this.startingPlayerId = startingPlayerId;
         }
 }

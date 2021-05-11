@@ -10,7 +10,6 @@ import sqlite.connect.net.sqlitetutorial;;
 
 public class Main extends Application
 {
-    connect();
     @Override
     public void start(Stage primaryStage) throws Exception
     {
