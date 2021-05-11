@@ -4,34 +4,15 @@ public class Game implements Cloneable
 {
     private int[][]             boardData;
     private int                 boardSize;
-    private int                 token = 1;
-    private int                 moveIndex = 0;
-    private long                lastMove = System.currentTimeMillis();
-    private int                 winnerToken = 0;
-    private Position[]          moves = new Position[9];
+    private int                 token;
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
-
-    public Game()
-    {
-        this.boardSize = 3;
-        this.boardData = new int[boardSize][boardSize];
-        this.localPlayers = 2;
-        ai = new Minimax();
-    }
-
-    public Game(int localPlayers)
-    {
-        this.boardSize = 3;
-        this.boardData = new int[boardSize][boardSize];
-        this.localPlayers = localPlayers;
-        ai = new Minimax();
-    }
 
     public Game(int boardSize, int localPlayers)
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
+        this.token = 1;
         this.localPlayers = localPlayers;
         ai = new Minimax();
     }
@@ -40,6 +21,7 @@ public class Game implements Cloneable
     {
         this.boardData = boardData;
         this.boardSize = boardSize;
+        this.token = 1;
         this.localPlayers = localPlayers;
         ai = new Minimax();
     }
@@ -56,7 +38,6 @@ public class Game implements Cloneable
 
     public void switchToken()
     {
-        lastMove = System.currentTimeMillis();
         token = (token == 1? 2:1);
     }
 
@@ -65,37 +46,31 @@ public class Game implements Cloneable
         return token;
     }
 
-    public int getWinner() {return winnerToken;}
-
-    public long getLastMove() {return lastMove;}
-
     public int getPosition(int i, int j)
     {
         return boardData[i][j];
     }
 
-    public boolean requestPosition(int i, int j, int playerToken)
+    public int requestPosition(int i, int j)
     {
-        if (this.token == playerToken && getPosition(i, j) == 0)
+        if (getPosition(i, j) == 0)
         {
+            int playerToken = this.token;
             setPosition(i, j, playerToken);
-            this.moves[moveIndex] = new Position(i, j);
-            this.moveIndex++;
             switchToken();
             // Make a move for the AI if only single player
             if (this.token == 2 && this.localPlayers == 1)
             {
                 Position pos = ai.getMove(this);
-                requestPosition(pos.getRow(), pos.getCol(), playerToken);
+                requestPosition(pos.getRow(), pos.getCol());
             }
-            return true;
+            return playerToken;
         }
-        return false;
+        return 0;
     }
 
     public void setPosition(int i, int j, int token)
     {
-        lastMove = System.currentTimeMillis();
         boardData[i][j] = token;
     }
 
@@ -140,10 +115,7 @@ public class Game implements Cloneable
                 consecutivePlayer[col] = boardData[row][col];
             }
             if(checkConsecutivePlayer(consecutivePlayer))
-            {
-                this.winnerToken = consecutivePlayer[0];
-                return this.winnerToken;
-            }
+                return consecutivePlayer[0];
         }
 
         //Vertical Check
@@ -154,10 +126,7 @@ public class Game implements Cloneable
                 consecutivePlayer[row] = boardData[row][col];
             }
             if(checkConsecutivePlayer(consecutivePlayer))
-            {
-                this.winnerToken = consecutivePlayer[0];
-                return this.winnerToken;
-            }
+                return consecutivePlayer[0];
         }
 
         //Cross Check (Left -> right)
@@ -166,10 +135,7 @@ public class Game implements Cloneable
             consecutivePlayer[i] = boardData[i][i];
         }
         if(checkConsecutivePlayer(consecutivePlayer))
-        {
-            this.winnerToken = consecutivePlayer[0];
-            return this.winnerToken;
-        }
+            return consecutivePlayer[0];
 
         //Cross Check (Right -> left)
         for (int i = boardSize - 1; i >= 0; i--)
@@ -178,10 +144,7 @@ public class Game implements Cloneable
             consecutivePlayer[i] = boardData[i][j];
         }
         if(checkConsecutivePlayer(consecutivePlayer))
-        {
-            this.winnerToken = consecutivePlayer[0];
-            return this.winnerToken;
-        }
+            return consecutivePlayer[0];
 
         //Full board check
         boolean isBoardFull = true;
@@ -197,17 +160,10 @@ public class Game implements Cloneable
             }
         }
         if (isBoardFull)
-        {
-            this.winnerToken = -1;
-            return this.winnerToken; //Tie!
-        }
+            return -1; //Tie!
 
-        this.winnerToken = 0;
-        return this.winnerToken; //No winner
+        return 0; //No winner
     }
-
-    public int getWinnerToken() {return this.winnerToken;}
-    public Position[] getMoves() {return this.moves;}
 
     @Override
     public String toString()
