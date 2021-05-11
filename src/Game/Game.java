@@ -8,7 +8,7 @@ public class Game implements Cloneable
     private int                 moveIndex = 0;
     private long                lastMove = System.currentTimeMillis();
     private int                 winnerToken = 0;
-    private int[][]             moves = new int[8][8];
+    private int[][]             moves = new int[9][2];
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
