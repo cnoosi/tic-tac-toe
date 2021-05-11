@@ -24,5 +24,6 @@
       <Button fx:id="createAcctBtn" layoutX="871.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
       <Label fx:id="userValidation2" layoutX="821.0" layoutY="477.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
       <Button fx:id="homeBtn" layoutX="28.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleHomeBtn" prefWidth="59.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Back" />
+      <Button fx:id="logoutBtn" layoutX="28.0" layoutY="74.0" mnemonicParsing="false" onAction="#handleLogoutButton" prefHeight="35.0" prefWidth="98.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Logout" />
    </children>
 </AnchorPane>

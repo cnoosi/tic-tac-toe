@@ -6,16 +6,16 @@ public class DbManager {
 
     private static DbManager instance = new DbManager();
     private ArrayList<User> userList = new ArrayList<>();
-    private User currentUser;
+    private int currentUser;
 
     private DbManager()
     {
-        setCurrentUser(-1,"Logged-Out","Not", "Logged-In", "xxxxx", 0);
         String sql = "SELECT * FROM User";
         ResultSet rs = null;
+        userList.add(new User());
+        currentUser = 0;
         try(Connection conn = this.connect();
             PreparedStatement ps = conn.prepareStatement(sql)){
-
             rs = ps.executeQuery();
             while(rs.next()){
                 int    id        = rs.getInt("Id");
@@ -71,13 +71,36 @@ public class DbManager {
         return available;
     }
 
-    public void setCurrentUser(int id, String userName, String firstName, String lastName, String password, int deleted)
+    public void setCurrentUser(String userName)
     {
-        currentUser = new User(id,userName,firstName,lastName,password,deleted);
+        for(User u: userList)
+        {
+            if(u.getUserName().equals(userName)){
+                currentUser = userList.indexOf(u);
+                System.out.println("current index: " + currentUser);
+            }
+        }
+        System.out.println("current index: " + currentUser);
     }
-    public String getCurrentUser()
+
+    public void setCurrentUser(int id)
     {
-        return currentUser.getUserName();
+        for(User u: userList)
+        {
+            if(u.getId() == id) {
+                currentUser = userList.indexOf(u);
+                System.out.println(currentUser);
+            }
+        }
+    }
+
+    public void setCurrentUserIndex(int index){
+        currentUser = index;
+    }
+
+    public User getCurrentUser()
+    {
+        return userList.get(currentUser);
     }
 
     public void addUser(String userName, String firstName, String lastName, String password)
@@ -118,7 +141,8 @@ public class DbManager {
         else
         {
             userList.add(new User(id,userName,firstName,lastName,password,deleted));
-            setCurrentUser(id,userName,firstName,lastName,password,deleted);
+//            setCurrentUser(id,userName,firstName,lastName,password,deleted);
+            setCurrentUser(id);
             System.out.println("new user added successfully! id: " + id + " username: " + userName + " deleted: " + deleted);
         }
 
@@ -146,4 +170,5 @@ public class DbManager {
             System.out.println(u.toString());
         }
     }
+
 }
