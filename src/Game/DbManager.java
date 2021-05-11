@@ -10,6 +10,7 @@ public class DbManager {
 
     private DbManager()
     {
+        System.out.println("jeff");
         String sql = "SELECT * FROM User";
         ResultSet rs = null;
         userList.add(new User());
