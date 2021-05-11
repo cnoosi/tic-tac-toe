@@ -45,7 +45,7 @@ public class UserMenuUIController {
         if(userValid)
         {
             userValidation.setText("user has been found!");
-            DbManager.getInstance().setCurrentUser(user);
+//            DbManager.getInstance().setCurrentUser();
         }
         else
         {
@@ -75,10 +75,7 @@ public class UserMenuUIController {
         }
 
     }
-    
-    public void handleLogoutButton(ActionEvent event) throws Exception{
-            DbManager.getInstance().setCurrentUserIndex(0);
-    }
+
     public void handleHomeBtn(ActionEvent event) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         FXMLLoader root = new FXMLLoader();
