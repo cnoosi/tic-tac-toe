@@ -10,7 +10,11 @@ public class DbManager {
 
     private DbManager()
     {
+<<<<<<< HEAD
         setCurrentUser(-1,"Logged-Out","Not", "Logged-In", "xxxxx", 0);
+=======
+        System.out.println("jeff");
+>>>>>>> Kasra2-Branch
         String sql = "SELECT * FROM User";
         ResultSet rs = null;
         try(Connection conn = this.connect();
