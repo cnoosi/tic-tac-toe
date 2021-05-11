@@ -1,6 +1,8 @@
 package BoardUI;
 
 import MenuUI.*;
+import Linkers.*;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -22,7 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class BoardUIController implements Initializable
+public class BoardUIController implements Initializable, BoardSubject, UIObserver
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
@@ -32,6 +34,9 @@ public class BoardUIController implements Initializable
     private Image               XToken = new Image("/resources/images/TokenO.png");
     private ComputerAlgorithm   ai = new Minimax();
     private OpenScene           openScene = new OpenScene();
+    private int token;
+
+    private ArrayList<BoardObserver> observers = new ArrayList<>();
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;
@@ -49,19 +54,8 @@ public class BoardUIController implements Initializable
         {
             if(event.getSource() == buttonList.get(button))
             {
-                if (!game_has_winner)
-                {
-                    Position pos = getPositionFromIndex(button);
-                    int token_moved = game.requestPosition(pos.getRow(), pos.getCol());
-                    if (token_moved != 0)
-                        updateTokens();
-                    else
-                    {
-                        notificationLabel.setTextFill(new Color(1, 0, 0, 1));
-                        notificationLabel.setText("This position is not available. Please select another!");
-                    }
-                    checkWin();
-                }
+                Position pos = getPositionFromIndex(button);
+                notifyObservers(pos, token);
             }
         }
     }
@@ -75,6 +69,14 @@ public class BoardUIController implements Initializable
         Parent frame = root.load();
         MenuUIController controller = (MenuUIController) root.getController();
         openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+    }
+
+    public void setImage(int token, int row, int col)
+    {
+        if (token == 1)
+            imageList.get(getIndexFromRowCol(row, col)).setImage(XToken);
+        else
+            imageList.get(getIndexFromRowCol(row, col)).setImage(YToken);
     }
 
     public int getIndexFromRowCol(int row, int col)
@@ -104,6 +106,17 @@ public class BoardUIController implements Initializable
                     image.setImage(YToken);
             }
         }
+    }
+
+    public void setResult(int token, int winner)
+    {
+        notificationLabel.setText("Winner is: " + token);
+        setDisable(true);
+    }
+
+    public Label getNotificationLabel()
+    {
+        return notificationLabel;
     }
 
     public void checkWin()
@@ -167,6 +180,42 @@ public class BoardUIController implements Initializable
             public void run() {
                 mp.seek(Duration.ZERO);
                 mp.play();
+            }
+        });
+    }
+
+    @Override
+    public void addObserver(Object o)
+    {
+        observers.add((BoardObserver) o);
+    }
+
+    @Override
+    public void removeObserver(Object o)
+    {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers(Position pos, int token)
+    {
+        observers.forEach(observer -> observer.update(pos, token));
+    }
+
+    @Override
+    public void update(Position pos, int token)
+    {
+        this.token = token;
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                if(pos.getRow() == 20) {
+                    notificationLabel.setTextFill(Color.WHITE);
+                    notificationLabel.setText("Winner is: Player " + token);
+                    setDisable(true);
+                }
+                else
+                    setImage(token, pos.getRow(), pos.getCol());
             }
         });
     }
