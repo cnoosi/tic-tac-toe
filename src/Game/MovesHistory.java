@@ -5,10 +5,20 @@ public class MovesHistory {
     private int playerId;
     private int row;
     private int col;
-    private long time;
+    private Long time;
     private int moveIndex;
 
-    public MovesHistory(String gameId,int playerId, int row, int col, int time, int moveIndex){
+
+    public MovesHistory(){
+        gameId = "-1";
+        playerId = -1;
+        row = -1;
+        col = -1;
+        time = 0L;
+        moveIndex = -1;
+    }
+
+    public MovesHistory(String gameId,int playerId, int row, int col, Long time, int moveIndex){
         setGameId(gameId);
         setPlayerId(playerId);
         setRow(row);

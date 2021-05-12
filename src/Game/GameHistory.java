@@ -22,7 +22,7 @@ public class GameHistory {
         }
 
 
-        public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime, int startingPlayerId){
+        public GameHistory(String gameId, long startTime, long endTime,int player1Id, int player2Id, int startingPlayerId, int winnerToken){
                 setGameId(gameId);
                 setPlayer1Id(player1Id);
                 setPlayer2Id(player2Id);
