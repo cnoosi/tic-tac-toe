@@ -11,6 +11,15 @@ public class GameHistory {
         private long endTime;
         private int startingPlayerId;
 
+        public GameHistory(){
+                gameId = "-1";
+                player1Id = -1;
+                player2Id = -1;
+                winnerToken = -2;
+                startTime = 0;
+                endTime = 0;
+                startingPlayerId = 0;
+        }
 
 
         public GameHistory(String gameId, int player1Id, int player2Id, int winnerToken, long startTime, long endTime, int startingPlayerId){
