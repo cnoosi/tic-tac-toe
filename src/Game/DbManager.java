@@ -212,7 +212,7 @@ public class DbManager {
     {
         String gameSql = "INSERT INTO Game(GameId,StartTime,EndTime,Player1Id,Player2Id,StartingPlayerId,WinningPlayerId) VALUES(?,?,?,?,?,?,?)";
         try (Connection gameConn = this.connect();
-             PreparedStatement gamePstmt = conn.prepareStatement(sql)) {
+             PreparedStatement gamePstmt = gameConn.prepareStatement(gameSql)) {
             gamePstmt.setString(1,gameId);
             gamePstmt.setLong(2,startTime);
             gamePstmt.setLong(3,endTime);
