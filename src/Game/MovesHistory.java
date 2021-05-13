@@ -1,24 +1,26 @@
 package Game;
 
+import Networking.GameProcess;
+
 public class MovesHistory {
     private String gameId;
     private int playerId;
     private int row;
     private int col;
-    private Long time;
+    private String time;
     private int moveIndex;
 
 
-    public MovesHistory(){
+    public MovesHistory() {
         gameId = "-1";
         playerId = -1;
         row = -1;
         col = -1;
-        time = 0L;
+        time = "0";
         moveIndex = -1;
     }
 
-    public MovesHistory(String gameId,int playerId, int row, int col, Long time, int moveIndex){
+    public MovesHistory(String gameId, int playerId, int row, int col, String time, int moveIndex) {
         setGameId(gameId);
         setPlayerId(playerId);
         setRow(row);
@@ -44,11 +46,11 @@ public class MovesHistory {
         this.playerId = playerId;
     }
 
-    public long getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

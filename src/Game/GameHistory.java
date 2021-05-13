@@ -92,14 +92,13 @@ public class GameHistory {
         }
 
         public void saveGameHistory(GameProcess gamep){
-                Game game = gamep.getGame();
-                ArrayList<Position> moves = gamep.GetPosition();
-                GameProcess startTime = gamep.getStartTime();
-                GameProcess endTime = gamep.getEndTime();
-                Pair<ClientConnection, ClientConnection> players = gamep.getPlayers();
-                ClientConnection firstPlayer = players.getFirst();
-                ClientConnection secondPlayer = players.getSecond();
-                Game winnerToken = gamep.getWinner();
+                Game game = gamep.getGame(gameId);
+                GameProcess startTime = gamep.getStartTime(startTime);
+                GameProcess endTime = gamep.getEndTime(endTime);
+                Pair<ClientConnection, ClientConnection> players = gamep.getPlayers(player1Id, player2Id);
+                ClientConnection firstPlayer = players.getFirst(player1Id);
+                ClientConnection secondPlayer = players.getSecond(player2Id);
+                Game winnerToken = gamep.getWinner(winnerToken);
 
         }
 }

@@ -72,7 +72,7 @@ public class DbManager {
                 int playerId = movesRS.getInt("PlayerId");
                 int row = movesRS.getInt("Row");
                 int col = movesRS.getInt("Column");
-                Long time = movesRS.getLong("Time");
+                String time = movesRS.getString("Time");
                 int moveIndex = movesRS.getInt("MoveIndex");
 
                 movesList.add(new MovesHistory(gameId, playerId, row, col, time, moveIndex));
@@ -226,6 +226,26 @@ public class DbManager {
         }
 
         gameList.add(new GameHistory(gameId, startTime, endTime, player1Id, player2Id, startingPlayerId, winnerToken));
+
+    }
+
+    public void addMoves(String gameId, int playerId, int row, int col, String time, int moveIndex)
+    {
+        String gameSql = "INSERT INTO Game(GameId,PlayerId,Row,Col,Time,MoveIndex) VALUES(?,?,?,?,?,?)";
+        try (Connection gameConn = this.connect();
+             PreparedStatement gamePstmt = gameConn.prepareStatement(gameSql)) {
+            gamePstmt.setString(1,gameId);
+            gamePstmt.setInt(2,playerId);
+            gamePstmt.setInt(3,row);
+            gamePstmt.setInt(4,col);
+            gamePstmt.setString(5,time);
+            gamePstmt.setInt(6,moveIndex);
+            gamePstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        movesList.add(new MovesHistory(gameId, playerId, row, col, time, moveIndex));
 
     }
 
