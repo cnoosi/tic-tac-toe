@@ -6,12 +6,12 @@ import Networking.Position;
 public class GameHistory {
 
         private String gameId;
-        private int player1Id;
-        private int player2Id;
-        private int winnerToken;
         private long startTime;
         private long endTime;
+        private int player1Id;
+        private int player2Id;
         private int startingPlayerId;
+        private int winnerToken;
 
         public GameHistory(){
                 gameId = "-1";
@@ -93,11 +93,13 @@ public class GameHistory {
 
         public void saveGameHistory(GameProcess gamep){
                 Game game = gamep.getGame();
-                ArrayList<Position> moves = gamep.GetMoves();
+                ArrayList<Position> moves = gamep.GetPosition();
                 GameProcess startTime = gamep.getStartTime();
                 GameProcess endTime = gamep.getEndTime();
                 Pair<ClientConnection, ClientConnection> players = gamep.getPlayers();
-                Game 
+                ClientConnection firstPlayer = players.getFirst();
+                ClientConnection secondPlayer = players.getSecond();
+                Game winnerToken = gamep.getWinner();
 
         }
 }
