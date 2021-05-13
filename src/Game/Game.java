@@ -1,5 +1,7 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Game implements Cloneable
 {
     private int[][]             boardData;
@@ -8,7 +10,7 @@ public class Game implements Cloneable
     private int                 moveIndex = 0;
     private long                lastMove = System.currentTimeMillis();
     private int                 winnerToken = 0;
-    private Position[]          moves = new Position[9];
+    private ArrayList<Position> moves = new ArrayList<Position>();
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
@@ -79,8 +81,7 @@ public class Game implements Cloneable
         if (this.token == playerToken && getPosition(i, j) == 0)
         {
             setPosition(i, j, playerToken);
-            this.moves[moveIndex] = new Position(i, j);
-            this.moveIndex++;
+            this.moves.add(new Position(i, j));
             switchToken();
             // Make a move for the AI if only single player
             if (this.token == 2 && this.localPlayers == 1)
@@ -207,7 +208,7 @@ public class Game implements Cloneable
     }
 
     public int getWinnerToken() {return this.winnerToken;}
-    public Position[] getMoves() {return this.moves;}
+    public ArrayList<Position> getMoves() {return this.moves;}
 
     @Override
     public String toString()
