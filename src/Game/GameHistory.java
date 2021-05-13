@@ -1,5 +1,7 @@
 package Game;
+import Networking.ClientConnection;
 import Networking.GameProcess;
+import Networking.Position;
 
 public class GameHistory {
 
@@ -90,6 +92,12 @@ public class GameHistory {
         }
 
         public void saveGameHistory(GameProcess gamep){
+                Game game = gamep.getGame();
+                ArrayList<Position> moves = gamep.GetMoves();
+                GameProcess startTime = gamep.getStartTime();
+                GameProcess endTime = gamep.getEndTime();
+                Pair<ClientConnection, ClientConnection> players = gamep.getPlayers();
+                Game 
 
         }
 }
