@@ -16,9 +16,9 @@ public class GameHistory {
                 player1Id = -1;
                 player2Id = -1;
                 winnerToken = -2;
-                startTime = 0;
-                endTime = 0;
-                startingPlayerId = 0;
+                startTime = 0L;
+                endTime = 0L;
+                startingPlayerId = -1;
         }
 
 
@@ -87,5 +87,9 @@ public class GameHistory {
 
         public void setStartingPlayerId(int startingPlayerId) {
                 this.startingPlayerId = startingPlayerId;
+        }
+
+        public void saveGameHistory(GameProcess gamep){
+
         }
 }

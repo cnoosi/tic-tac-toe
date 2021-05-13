@@ -155,6 +155,14 @@ public class DbManager {
         return userList.get(currentUser);
     }
 
+    public void setCurrentGameIndex(int gameIndex) {currentGame = gameIndex;}
+
+    public GameHistory getCurrentGame() {return gameList.get(currentGame);}
+
+    public void setCurrentMovesIndex(int movesIndex) {currentGame = movesIndex;}
+
+    public MovesHistory getCurrentMoves() {return movesList.get(currentMoves);}
+
     public void addUser(String userName, String firstName, String lastName, String password)
     {
         String sql = "INSERT INTO User(UserName,FirstName,LastName,Password,Deleted) VALUES(?,?,?,?,?)";
@@ -197,6 +205,27 @@ public class DbManager {
             setCurrentUser(id);
             System.out.println("new user added successfully! id: " + id + " username: " + userName + " deleted: " + deleted);
         }
+
+    }
+
+    public void addGame(String gameId, long startTime, long endTime, int player1Id, int player2Id, int startingPlayerId, int winnerToken)
+    {
+        String gameSql = "INSERT INTO Game(GameId,StartTime,EndTime,Player1Id,Player2Id,StartingPlayerId,WinningPlayerId) VALUES(?,?,?,?,?,?,?)";
+        try (Connection gameConn = this.connect();
+             PreparedStatement gamePstmt = conn.prepareStatement(sql)) {
+            gamePstmt.setString(1,gameId);
+            gamePstmt.setLong(2,startTime);
+            gamePstmt.setLong(3,endTime);
+            gamePstmt.setInt(4,player1Id);
+            gamePstmt.setInt(5,player2Id);
+            gamePstmt.setInt(6,startingPlayerId);
+            gamePstmt.setInt(7,winnerToken);
+            gamePstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        gameList.add(new GameHistory(gameId, startTime, endTime, player1Id, player2Id, startingPlayerId, winnerToken));
 
     }
 
