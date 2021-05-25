@@ -15,6 +15,7 @@ public class ClientConnection implements Runnable
     DataOutputStream outputStream;
     Thread clientThread;
     ServerProcess server;
+    int token;
 
     public ClientConnection(int id, Socket c, ServerProcess server) throws Exception
     {
@@ -25,6 +26,7 @@ public class ClientConnection implements Runnable
         this.server = server;
         this.clientThread = new Thread(this);
         clientThread.start();
+        this.token = token;
     }
 
     public DataOutputStream getOutputStream() {
@@ -46,6 +48,11 @@ public class ClientConnection implements Runnable
         {
             ex.printStackTrace();
         }
+    }
+
+    public int getToken()
+    {
+        return token;
     }
 
     public int getId() {return id;}

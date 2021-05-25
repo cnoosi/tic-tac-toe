@@ -30,4 +30,5 @@ public class GameMessage extends Message {
         newMap.put("NewValue", newValue);
         return newMap;
     }
+
 }

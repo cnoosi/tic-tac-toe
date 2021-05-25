@@ -13,8 +13,6 @@ public class GameProcess implements Runnable
     private boolean gameActive = true;
     private String gameId;
     private Pair<ClientConnection, ClientConnection> players;
-    private long startTime = System.currentTimeMillis();
-    private long endTime;
     private ServerProcess server;
     private ClientProcess client;
 
@@ -37,7 +35,6 @@ public class GameProcess implements Runnable
     private void gameEnded()
     {
         gameActive = false;
-        endTime = System.currentTimeMillis();
         System.out.println("game is over!");
         if (server != null)
         {
@@ -51,10 +48,6 @@ public class GameProcess implements Runnable
             server.unsubscribe("CHAT_" + gameId, "Chat", players.getSecond());
             server.subscribe("CHAT_GLOBAL", "Chat", players.getFirst());
             server.subscribe("CHAT_GLOBAL", "Chat", players.getSecond());
-
-            // Call database function
-            // db.saveGameHistory(this);
-
             server.killGameProcess(gameId);
         }
         else if (client != null)
@@ -85,10 +78,9 @@ public class GameProcess implements Runnable
         }
         else
             System.out.println("A move was BLOCKED by token: " + token);
-        System.out.println(game);
     }
 
-    public void requestMoveSinglePlayer(int row, int col)
+    public void requestMove(int row, int col)
     {
         int token = 1;
         boolean moveMade = game.requestPosition(row, col, token);
@@ -120,10 +112,4 @@ public class GameProcess implements Runnable
             }
         }
     }
-
-    public String getId() {return this.gameId;}
-    public Game getGame() {return this.game;}
-    public long getStartTime() {return this.startTime;}
-    public long getEndTime() {return this.endTime;}
-    public Pair getPlayers() {return this.players;}
 }
