@@ -1,12 +1,16 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Game implements Cloneable
 {
     private int[][]             boardData;
     private int                 boardSize;
-    private int                 token;
-    private long                lastMove;
-    private int                 winner;
+    private int                 token = 1;
+    private int                 moveIndex = 0;
+    private long                lastMove = System.currentTimeMillis();
+    private int                 winnerToken = 0;
+    private ArrayList<Position> moves = new ArrayList<Position>();
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
@@ -14,10 +18,7 @@ public class Game implements Cloneable
     {
         this.boardSize = 3;
         this.boardData = new int[boardSize][boardSize];
-        this.token = 1;
         this.localPlayers = 2;
-        this.winner = 0;
-        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -25,10 +26,7 @@ public class Game implements Cloneable
     {
         this.boardSize = 3;
         this.boardData = new int[boardSize][boardSize];
-        this.token = 1;
         this.localPlayers = localPlayers;
-        this.winner = 0;
-        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -36,10 +34,7 @@ public class Game implements Cloneable
     {
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
-        this.token = 1;
         this.localPlayers = localPlayers;
-        this.winner = 0;
-        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -47,10 +42,7 @@ public class Game implements Cloneable
     {
         this.boardData = boardData;
         this.boardSize = boardSize;
-        this.token = 1;
         this.localPlayers = localPlayers;
-        this.winner = 0;
-        this.lastMove = System.currentTimeMillis();
         ai = new Minimax();
     }
 
@@ -75,7 +67,7 @@ public class Game implements Cloneable
         return token;
     }
 
-    public int getWinner() {return winner;}
+    public int getWinner() {return winnerToken;}
 
     public long getLastMove() {return lastMove;}
 
@@ -89,6 +81,7 @@ public class Game implements Cloneable
         if (this.token == playerToken && getPosition(i, j) == 0)
         {
             setPosition(i, j, playerToken);
+            this.moves.add(new Position(i, j));
             switchToken();
             // Make a move for the AI if only single player
             if (this.token == 2 && this.localPlayers == 1)
@@ -149,8 +142,8 @@ public class Game implements Cloneable
             }
             if(checkConsecutivePlayer(consecutivePlayer))
             {
-                this.winner = consecutivePlayer[0];
-                return this.winner;
+                this.winnerToken = consecutivePlayer[0];
+                return this.winnerToken;
             }
         }
 
@@ -163,8 +156,8 @@ public class Game implements Cloneable
             }
             if(checkConsecutivePlayer(consecutivePlayer))
             {
-                this.winner = consecutivePlayer[0];
-                return this.winner;
+                this.winnerToken = consecutivePlayer[0];
+                return this.winnerToken;
             }
         }
 
@@ -175,8 +168,8 @@ public class Game implements Cloneable
         }
         if(checkConsecutivePlayer(consecutivePlayer))
         {
-            this.winner = consecutivePlayer[0];
-            return this.winner;
+            this.winnerToken = consecutivePlayer[0];
+            return this.winnerToken;
         }
 
         //Cross Check (Right -> left)
@@ -187,8 +180,8 @@ public class Game implements Cloneable
         }
         if(checkConsecutivePlayer(consecutivePlayer))
         {
-            this.winner = consecutivePlayer[0];
-            return this.winner;
+            this.winnerToken = consecutivePlayer[0];
+            return this.winnerToken;
         }
 
         //Full board check
@@ -206,13 +199,16 @@ public class Game implements Cloneable
         }
         if (isBoardFull)
         {
-            this.winner = -1;
-            return this.winner; //Tie!
+            this.winnerToken = -1;
+            return this.winnerToken; //Tie!
         }
 
-        this.winner = 0;
-        return this.winner; //No winner
+        this.winnerToken = 0;
+        return this.winnerToken; //No winner
     }
+
+    public int getWinnerToken() {return this.winnerToken;}
+    public ArrayList<Position> getMoves() {return this.moves;}
 
     @Override
     public String toString()

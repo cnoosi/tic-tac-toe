@@ -12,12 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
 import java.io.IOError;
@@ -64,13 +60,12 @@ public class MenuUIController implements Initializable
         controller.setLocalPlayerCount(1);
         controller.resetGame();
         openScene.start(stage, frame, "Tic-Tac-Toe - Single Player Game");
-        mp.stop();
     }
 
     @FXML
     public void handleTwoPlayerMode(ActionEvent event) throws Exception
     {
-        Stage stage = (Stage) multiPlayerBtn.getScene().getWindow();
+        Stage stage = (Stage) twoPlayerBtn.getScene().getWindow();
         FXMLLoader root = new FXMLLoader();
         root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
         Parent frame = root.load();
@@ -78,7 +73,6 @@ public class MenuUIController implements Initializable
         controller.setLocalPlayerCount(2);
         controller.resetGame();
         openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
-        mp.stop();
     }
 
     public void handleUserMenuButton(ActionEvent event) throws Exception{
