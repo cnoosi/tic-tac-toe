@@ -25,6 +25,49 @@ public class ServerProcess implements Runnable
     private BlockingQueue<ClientConnection> matchmakingQueue;
     private BlockingQueue<Map<String, Object>> messagesToProcess;
 
+    private void handleSubscribeMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        String topic = (String) map.get("Topic");
+        String topicType = (String) map.get("TopicType");
+        boolean subscribe = (boolean) map.get("Subscribe");
+        if (subscribe)
+            subscribe(topic, topicType, client);
+        else
+            unsubscribe(topic, topicType, client);
+    }
+
+    private void handleQueueMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        boolean joinQueue = (boolean) map.get("InQueue");
+        System.out.println("JOIN QUEUE: " + joinQueue);
+        if (joinQueue)
+            matchmakingQueue.add(client);
+        else
+            matchmakingQueue.remove(client);
+    }
+
+    private void handleMoveMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        String gameId = (String) map.get("GameId");
+        long row = (long) map.get("Row");
+        long col = (long) map.get("Col");
+        GameProcess findGame = games.get(gameId);
+        if (findGame != null)
+            findGame.requestMove(client, (int) row, (int) col);
+    }
+
+    private void handleChatMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        String playerName = "" + client.getId(); //Eventually, change this to their actual name!
+        String playerChat = (String) map.get("PlayerChat");
+        String channelName = (String) map.get("ChatChannel");
+        sendToSubscribedClients(channelName, new ChatMessage(playerName, playerChat, channelName), client);
+    }
+
     private void handleClientMessagesProcess()
     {
         try
@@ -32,44 +75,22 @@ public class ServerProcess implements Runnable
             while (keepServerRunning) {
                 Map<String, Object> map = messagesToProcess.take();
                 String messageType = (String) map.get("MessageType");
-                if (messageType.equals("SubscribeMessage"))
+                switch (messageType)
                 {
-                    ClientConnection client = (ClientConnection) map.get("Client");
-                    String topic = (String) map.get("Topic");
-                    String topicType = (String) map.get("TopicType");
-                    boolean subscribe = (boolean) map.get("Subscribe");
-                    if (subscribe)
-                        subscribe(topic, topicType, client);
-                    else
-                        unsubscribe(topic, topicType, client);
-                }
-                else if (messageType.equals("QueueMessage"))
-                {
-                    ClientConnection client = (ClientConnection) map.get("Client");
-                    boolean joinQueue = (boolean) map.get("InQueue");
-                    System.out.println("JOIN QUEUE: " + joinQueue);
-                    if (joinQueue)
-                        matchmakingQueue.add(client);
-                    else
-                        matchmakingQueue.remove(client);
-                }
-                else if (messageType.equals("MoveMessage"))
-                {
-                    ClientConnection client = (ClientConnection) map.get("Client");
-                    String gameId = (String) map.get("GameId");
-                    long row = (long) map.get("Row");
-                    long col = (long) map.get("Col");
-                    GameProcess findGame = games.get(gameId);
-                    if (findGame != null)
-                        findGame.requestMove(client, (int) row, (int) col);
-                }
-                else if (messageType.equals("ChatMessage"))
-                {
-                    ClientConnection client = (ClientConnection) map.get("Client");
-                    String playerName = "" + client.getId(); //Eventually, change this to their actual name!
-                    String playerChat = (String) map.get("PlayerChat");
-                    String channelName = (String) map.get("ChatChannel");
-                    sendToSubscribedClients(channelName, new ChatMessage(playerName, playerChat, channelName), client);
+                    case "SubscribeMessage":
+                        handleSubscribeMessage(map);
+                        break;
+                    case "QueueMessage":
+                        handleQueueMessage(map);
+                        break;
+                    case "MoveMessage":
+                        handleMoveMessage(map);
+                        break;
+                    case "ChatMessage":
+                        handleChatMessage(map);
+                        break;
+                    default:
+                        System.out.println("Failed to process message: " + messageType);
                 }
             }
         }
