@@ -9,6 +9,15 @@ public class User {
     private String  password;
     private boolean deleted;
 
+    public User(){
+        id = -1;
+        userName  = "Logged-Out";
+        firstName = "Not";
+        lastName  = "Logged-In";
+        password  = "xxxxx";
+        deleted   = false;
+    }
+
     public User (int userId, String usrNme, String fstNme, String lstNme, String pssWrd, int deleted){
         setId(userId);
         setUserName(usrNme);
@@ -75,6 +84,6 @@ public class User {
 
     public String toString()
     {
-     return "\nid: " + this.id + "\nusername: " + this.userName + "\nfirstname: " + this.firstName + "\nlastname: " + this.lastName + "\ndeleted? " + this.deleted +"\n\n";
+        return "\nid: " + this.id + "\nusername: " + this.userName + "\nfirstname: " + this.firstName + "\nlastname: " + this.lastName + "\ndeleted? " + this.deleted +"\n\n";
     }
 }

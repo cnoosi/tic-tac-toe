@@ -6,11 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import sqlite.connect.net.sqlitetutorial;;
 
 public class Main extends Application
 {
-    connect();
     @Override
     public void start(Stage primaryStage) throws Exception
     {
