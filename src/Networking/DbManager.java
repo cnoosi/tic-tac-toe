@@ -130,6 +130,17 @@ public class DbManager {
         return null;
     }
 
+    public ArrayList<GameHistory> getGameHistoryForUser(int userId)
+    {
+        ArrayList<GameHistory> history = new ArrayList<>();
+        for (GameHistory game : gameList)
+        {
+            if (game.getPlayer1Id() == userId || game.getPlayer2Id() == userId)
+                history.add(game);
+        }
+        return history;
+    }
+
     public ArrayList<MovesHistory> getMoveHistory(String gameId)
     {
         Map<Integer, MovesHistory> moveMap = new HashMap<Integer, MovesHistory>();

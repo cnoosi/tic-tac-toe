@@ -6,6 +6,7 @@ import Messages.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,12 @@ public class ServerProcess implements Runnable
     private boolean keepServerRunning = true;
     private ArrayList<ClientConnection> connections;
     private Map<String, ArrayList<ClientConnection>> subscriptions;
-    private Map<String, GameProcess> games;
-    private BlockingQueue<ClientConnection> matchmakingQueue;
     private BlockingQueue<Map<String, Object>> messagesToProcess;
     private DbManager database;
+
+    // Microservices
+    private AccountService accountsService;
+    private GamesService gamesService;
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {
@@ -35,31 +38,6 @@ public class ServerProcess implements Runnable
             unsubscribe(topic, topicType, client);
     }
 
-    private void handleQueueMessage(Map<String, Object> map)
-    {
-        ClientConnection client = (ClientConnection) map.get("Client");
-        boolean joinQueue = (boolean) map.get("InQueue");
-        System.out.println("JOIN QUEUE: " + joinQueue);
-        if (joinQueue)
-        {
-            //if (client.getId() != -1)
-                matchmakingQueue.add(client);
-        }
-        else
-            matchmakingQueue.remove(client);
-    }
-
-    private void handleMoveMessage(Map<String, Object> map)
-    {
-        ClientConnection client = (ClientConnection) map.get("Client");
-        String gameId = (String) map.get("GameId");
-        long row = (long) map.get("Row");
-        long col = (long) map.get("Col");
-        GameProcess findGame = games.get(gameId);
-        if (findGame != null)
-            findGame.requestMove(client, (int) row, (int) col);
-    }
-
     private void handleChatMessage(Map<String, Object> map)
     {
         ClientConnection client = (ClientConnection) map.get("Client");
@@ -69,71 +47,29 @@ public class ServerProcess implements Runnable
         sendToSubscribedClients(channelName, new ChatMessage(playerName, playerChat, channelName), client);
     }
 
-    private void handleSpectateMessage(Map<String, Object> map)
+    private void handleFetchGameListMessage(Map<String, Object> map)
     {
         ClientConnection client = (ClientConnection) map.get("Client");
-        boolean spectate = (boolean) map.get("Spectate");
-        String gameId = (String) map.get("GameId");
-        GameProcess findGame = games.get(gameId);
-        if (findGame != null)
+        if (client.getId() != 0) //SHOULD BE -1!
         {
-            if (spectate)
-                findGame.addSpectator(client);
-            else
-                findGame.removeSpectator(client);
-        }
-        else
-        {
-            GameHistory game = database.getGameHistory(gameId);
-            if (game != null)
-            {
-                ArrayList<MovesHistory> moves = database.getMoveHistory(gameId);
-                client.writeMessage(new GameReplayMessage(game.getPlayer1Id(), game.getPlayer1Id(),
-                                                          game.getWinnerToken(), moves.size(), game.getStartTime()));
-                for (int i = 0; i < moves.size(); i++)
-                {
-                    MovesHistory move = moves.get(i);
-                    client.writeMessage(new GameHistoryMessage(i, move.getTime(), move.getRow(), move.getCol()));
-                }
+            // Get live games
+            Map<String, GameProcess> liveGamesMap = gamesService.getLiveGames();
+            ArrayList<String> liveGames = new ArrayList<>();
+            for (Map.Entry<String, GameProcess> entry : liveGamesMap.entrySet()) {
+                liveGames.add(entry.getKey());
             }
-        }
-    }
-
-    private void handleAccountMessage(Map<String, Object> map)
-    {
-        ClientConnection client = (ClientConnection) map.get("Client");
-        AccountAction action = (AccountAction) map.get("Action");
-        String username = (String) map.get("Username");
-        String password = (String) map.get("Password");
-        String firstName = (String) map.get("FirstName");
-        String lastName = (String) map.get("LastName");
-        if (action == AccountAction.Login)
-        {
-            boolean loginSuccess = database.userFound(username, password);
-            if (loginSuccess)
-            {
-                client.setId(database.getUserId(username));
-                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
-                                    null, null, "success"));
+            // Get history games for user
+            ArrayList<GameHistory> gameHistoryList = database.getGameHistoryForUser(client.getId());
+            ArrayList<String> historyGames = new ArrayList<>();
+            for (int i = 0; i < gameHistoryList.size(); i++) {
+                historyGames.add(gameHistoryList.get(i).getGameId());
             }
-        }
-        else if (action == AccountAction.Register)
-        {
-            if (database.userAvailable(username))
-            {
-                database.addUser(username, firstName, lastName, password);
-                client.writeMessage(new AccountMessage(AccountAction.Register, null, null,
-                                    null, null, "success"));
-            }
-            else
-                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
-                                    null, null, "unavailable"));
-        }
-        else if (action == AccountAction.Logout)
-        {
-            client.setId(0);
-            client.writeMessage(new AccountMessage(AccountAction.Logout, null, null,
-                               null, null, "success"));
+            client.writeMessage(new FetchGameListMessage(GameListType.MessageCountPreload, liveGames.size() + historyGames.size()));
+            // Send each individual string
+            for (int i = 0; i < liveGames.size(); i++)
+                client.writeMessage(new FetchGameListMessage(GameListType.Live, liveGames.get(i)));
+            for (int i = 0; i < historyGames.size(); i++)
+                client.writeMessage(new FetchGameListMessage(GameListType.History, historyGames.get(i)));
         }
     }
 
@@ -149,20 +85,23 @@ public class ServerProcess implements Runnable
                     case "SubscribeMessage":
                         handleSubscribeMessage(map);
                         break;
-                    case "QueueMessage":
-                        handleQueueMessage(map);
-                        break;
-                    case "MoveMessage":
-                        handleMoveMessage(map);
-                        break;
                     case "ChatMessage":
                         handleChatMessage(map);
                         break;
+                    case "QueueMessage":
+                        gamesService.handleQueueMessage(map);
+                        break;
+                    case "MoveMessage":
+                        gamesService.handleMoveMessage(map);
+                        break;
                     case "SpectateMessage":
-                        handleSpectateMessage(map);
+                        gamesService.handleSpectateMessage(map);
                         break;
                     case "AccountMessage":
-                        handleAccountMessage(map);
+                        accountsService.handleAccountMessage(map);
+                        break;
+                    case "FetchGameListMessage":
+                        handleFetchGameListMessage(map);
                         break;
                     default:
                         System.out.println("Failed to process message: " + messageType);
@@ -172,77 +111,6 @@ public class ServerProcess implements Runnable
         catch (Exception ex)
         {
             ex.printStackTrace();
-        }
-    }
-
-    private void handleGameProcess()
-    {
-        try
-        {
-            Pair<ClientConnection, ClientConnection> gamePlayers = new Pair<>();
-            while (keepServerRunning)
-            {
-                ClientConnection nextPlayer = matchmakingQueue.take();
-
-                if (gamePlayers.getFirst() == null)
-                    gamePlayers.setFirst(nextPlayer);
-                else if (gamePlayers.getSecond() == null)
-                    gamePlayers.setSecond(nextPlayer);
-
-                if (gamePlayers.getFirst() != null && gamePlayers.getSecond() != null)
-                {
-                    //Start the game!
-                    String newGameId = JSON.generateGUID();
-                    System.out.println("NEW GAME STARTED: " + newGameId);
-                    GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers);
-                    games.put(newGameId, newGameProcess);
-
-                    //Let the players know they're out of the queue!
-                    QueueMessage gameFoundMessage = new QueueMessage(false, newGameId);
-                    gamePlayers.getFirst().writeMessage(gameFoundMessage);
-                    gamePlayers.getSecond().writeMessage(gameFoundMessage);
-
-                    //Clear pair for another matchmaking attempt
-                    gamePlayers = new Pair<>();
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    public void killGameProcess(String gameId)
-    {
-        GameProcess findGame = games.get(gameId);
-        games.remove(findGame);
-    }
-
-    public void saveGameData(GameProcess game)
-    {
-        Game gameObj = game.getGame();
-        Map<String, Pair<Integer, Position>> moves = gameObj.getMoves();
-        String gameId = game.getId();
-        long startTime = game.getStartTime();
-        long endTime = game.getEndTime();
-        Pair<ClientConnection, ClientConnection> players = game.getPlayers();
-        int playerId1 = players.getFirst().getId();
-        int playerId2 = players.getSecond().getId();
-        int winnerToken = gameObj.getWinnerToken();
-        database.addGame(gameId, startTime, endTime, playerId1, playerId2, playerId1, winnerToken);
-
-        for (Map.Entry<String, Pair<Integer, Position>> entry : moves.entrySet())
-        {
-            String time = entry.getKey();
-            int moveIndex = entry.getValue().getFirst();
-            int playerId;
-            if (moveIndex % 2 == 0)
-                playerId = playerId1;
-            else
-                playerId = playerId2;
-            Position pos = entry.getValue().getSecond();
-            database.addMoves(gameId, playerId, pos.getRow(), pos.getCol(), time, moveIndex);
         }
     }
 
@@ -284,13 +152,7 @@ public class ServerProcess implements Runnable
 
     public void disconnectClient(ClientConnection client)
     {
-        // Check if the player is in an active game
-        String gameId = client.getGameId();
-        if (gameId != null)
-        {
-            GameProcess findGame = games.get(gameId);
-            findGame.gameEnded();
-        }
+        gamesService.endClientGamesOnLeave(client);
 
         for (Map.Entry<String, ArrayList<ClientConnection>> entry : subscriptions.entrySet())
         {
@@ -314,15 +176,14 @@ public class ServerProcess implements Runnable
         connections = new ArrayList<ClientConnection>();
         messagesToProcess = new SynchronousQueue<Map<String, Object>>();
         subscriptions = new HashMap<String, ArrayList<ClientConnection>>();
-        matchmakingQueue = new SynchronousQueue<ClientConnection>();
-        games = new HashMap<String, GameProcess>();
         database = new DbManager();
+
+        //Microservices
+        accountsService = new AccountService(this, database);
+        gamesService = new GamesService(this, database);
 
         Thread messagingProcessThread = new Thread(this::handleClientMessagesProcess);
         messagingProcessThread.start();
-
-        Thread handleGameProcessThread = new Thread(this::handleGameProcess);
-        handleGameProcessThread.start();
 
         try
         {

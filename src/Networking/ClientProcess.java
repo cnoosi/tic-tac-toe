@@ -27,11 +27,19 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     DataOutputStream outputStream;
 
     private UIProcess ui;
-    private GameReplayProcess activeReplay;
     String username;
     private int userId;
     private String gameId;
     private String chatChannel;
+
+    // Information for active replays
+    private GameReplayProcess activeReplay;
+
+    // Information for fetching live & historic games
+    private int messagePreloadCount;
+    private int messagePreloadCountCompleted;
+    private ArrayList<String> liveGameList;
+    private ArrayList<String> historyGameList;
 
     public ClientProcess(Stage primaryStage)
     {
@@ -85,11 +93,9 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         long spectators = (long) map.get("Spectators");
         if (newRow != -1 && newCol != -1 && newValue != -1)
         {
-            System.out.println(newRow + " , " + newCol + " = " + newValue);
             ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
         }
-        if(winner != 0)
-            ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
+        ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }
 
     private void handleGameReplayMessage(Map<String, Object> map)
@@ -113,6 +119,39 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         long col = (long) map.get("Col");
 
         activeReplay.addMove(new Pair(timestamp, new Position((int) row, (int) col)));
+    }
+
+    private void handleFetchGameListMessage(Map<String, Object> map)
+    {
+        long gameListNum = (long) map.get("GameListType");
+        GameListType gameListType = GameListType.values()[(int) gameListNum];
+
+        if (gameListType == GameListType.MessageCountPreload)
+        {
+            long messageCount = (long) map.get("MessageCount");
+            messagePreloadCount = (int) messageCount;
+            messagePreloadCountCompleted = 0;
+            liveGameList = new ArrayList<>();
+            historyGameList = new ArrayList<>();
+        }
+        else if (gameListType == GameListType.Live)
+        {
+            String gameId = (String) map.get("GameId");
+            liveGameList.add(gameId);
+            messagePreloadCountCompleted++;
+        }
+        else if (gameListType == GameListType.History)
+        {
+            String gameId = (String) map.get("GameId");
+            historyGameList.add(gameId);
+            messagePreloadCountCompleted++;
+        }
+
+        if (messagePreloadCount == messagePreloadCountCompleted)
+        {
+            System.out.println("LIVE COUNT: " + liveGameList.size() + " || HISTORY COUNT: " + historyGameList.size());
+            //ui.gameHistoryRecieved(liveGameList, historyGameList);
+        }
     }
 
     public void handleMessagingProcess()
@@ -145,6 +184,11 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
                         case "GameHistoryMessage":
                             handleGameHistoryMessage(map);
                             break;
+                        case "FetchGameListMessage":
+                            handleFetchGameListMessage(map);
+                            break;
+                        default:
+                            System.out.println("Failed to process message: " + messageType);
                     }
                 }
             }
@@ -188,7 +232,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         {
             String username = message.getMessage().get(0); // holds username
             String password = message.getMessage().get(1); // holds password
-            // writeMessage(validateRequest) // has username and password
+            writeMessage(new AccountMessage(AccountAction.Login, username, password));
         }
 
         else if(messageType.equals("CreateAccount"))
@@ -242,10 +286,10 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
             //Test stuff *******
             //Put the user into queue
-            //writeMessage(new QueueMessage(true));
+            writeMessage(new FetchGameListMessage());
 
 
-            writeMessage(new SpectateMessage(true, "3012235e-db3f-41aa-a009-e54ae3883ae9"));
+            //writeMessage(new SpectateMessage(true, ""));
 
             Scanner input = new Scanner(System.in);
             while (clientAlive)
