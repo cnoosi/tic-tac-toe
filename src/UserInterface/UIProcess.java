@@ -197,7 +197,7 @@ public class UIProcess implements Subject, Observer
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-        else if(type.equals("UIMove"))
+        else if(type.equals("UIMove") || type.equals("ClearBoard"))
         {
             boardObservers.forEach(observer -> observer.update(message));
         }
@@ -206,6 +206,11 @@ public class UIProcess implements Subject, Observer
     /**********************************
      ***** Controlling UI methods *****
      **********************************/
+    public void clearBoard()
+    {
+        notifyObservers(new ObserverMessage("ClearBoard"));
+    }
+
     private String getFXML(String scene)
     {
         String fxml = "";

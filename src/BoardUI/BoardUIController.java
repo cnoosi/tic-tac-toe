@@ -213,6 +213,11 @@ public class BoardUIController implements Initializable, Observer, Subject
                 }
             });
         }
+
+        else if(type.equals("ClearBoard"))
+        {
+            imageList.forEach(imageView -> imageView.setImage(null));
+        }
     }
 
     @Override
