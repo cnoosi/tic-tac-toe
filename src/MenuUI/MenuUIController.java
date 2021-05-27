@@ -135,9 +135,9 @@ public class MenuUIController implements Initializable
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
         //********************************************
-        User current = new User();
-        current = UserDbManager.getInstance().getCurrentUser();
-        usernameLabel.setText(current.getUserName());
+        //User current = new User();
+        //current = UserDbManager.getInstance().getCurrentUser();
+        //usernameLabel.setText(current.getUserName());
 
 
         //********************************************

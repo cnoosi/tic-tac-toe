@@ -5,10 +5,7 @@ import Game.Position;
 import Linkers.ClientObserver;
 import Linkers.ClientSubject;
 import Linkers.GameObserver;
-import Messages.ChatMessage;
-import Messages.Message;
-import Messages.MoveMessage;
-import Messages.QueueMessage;
+import Messages.*;
 import UserInterface.UIProcess;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
@@ -179,22 +176,20 @@ public class ClientProcess implements Runnable, ClientObserver
 
             //Test stuff *******
             //Put the user into queue
-            //writeMessage(new QueueMessage(true));
+            writeMessage(new QueueMessage(true));
 
-            Scanner input = new Scanner(System.in);
-//            while (clientAlive)
-//            {
+//            Scanner input = new Scanner(System.in);
+            while (clientAlive)
+            {
 //                String newChat = input.nextLine();
 //                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
 //                writeMessage(chatMessage);
-
+//
 //                int row = input.nextInt();
 //                int col = input.nextInt();
 //                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
 //                writeMessage(moveRequest);
-//            }
-            //Test stuff *******
-
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -42,16 +42,10 @@ public class ClientConnection implements Runnable
         {
             outputStream.writeUTF(JSON.encode(message));
         }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        catch (Exception ex) {}
     }
 
-    public void setId(int id)
-    {
-        this.id = id;
-    }
+
 
     @Override
     public boolean equals(Object o)
@@ -81,9 +75,14 @@ public class ClientConnection implements Runnable
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            killClient();
+            server.disconnectClient(this);
         }
     }
 
+    public void killClient() {this.continueConnection = false;}
+    public void setId(int id) {this.id = id;}
+
     public int getId() {return id;}
+    public boolean isConnected() {return this.continueConnection;}
 }

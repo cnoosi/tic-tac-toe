@@ -6,13 +6,11 @@ import java.sql.*;
 
 public class UserDbManager {
 
-    private static UserDbManager instance = new UserDbManager();
     private ArrayList<User> userList = new ArrayList<>();
     private int currentUser;
 
     public UserDbManager()
     {
-        System.out.println("jeff");
         String sql = "SELECT * FROM User";
         ResultSet rs = null;
         userList.add(new User());

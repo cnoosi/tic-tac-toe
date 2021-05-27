@@ -1,8 +1,6 @@
 package MenuUI;
 
 import Game.OpenScene;
-import Messages.AccountMessage;
-import Networking.AccountAction;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +34,6 @@ public class UserMenuUIController {
         String   pass    = password.getText();
 
         //CHECKS TO SEE IF THE USER EXISTS
-        // Send AccountMessage to login via ClientProcess.writeMessage()
         //client.writeMessage(new AccountMessage(AccountAction.Login, user, null, null, pass));
     }
 

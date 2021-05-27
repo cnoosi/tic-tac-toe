@@ -40,7 +40,10 @@ public class ServerProcess implements Runnable
         boolean joinQueue = (boolean) map.get("InQueue");
         System.out.println("JOIN QUEUE: " + joinQueue);
         if (joinQueue)
-            matchmakingQueue.add(client);
+        {
+            if (client.getId() != 0)
+                matchmakingQueue.add(client);
+        }
         else
             matchmakingQueue.remove(client);
     }
@@ -228,6 +231,7 @@ public class ServerProcess implements Runnable
 
     public void subscribe(String topic, String topicType, ClientConnection client)
     {
+        System.out.println(client.getId() + " subscribed to: " + topic);
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients == null)
         {
@@ -240,10 +244,24 @@ public class ServerProcess implements Runnable
 
     public void unsubscribe(String topic, String topicType, ClientConnection client)
     {
+        System.out.println(client.getId() + " unsubscribed from: " + topic);
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients != null)
             return;
         client.writeMessage(new SubscribeMessage(topic, topicType, false));
+    }
+
+    public void disconnectClient(ClientConnection client)
+    {
+        for (Map.Entry<String, ArrayList<ClientConnection>> entry : subscriptions.entrySet())
+        {
+            ArrayList<ClientConnection> clients = entry.getValue();
+            for (int i = 0; i < clients.size(); i++)
+            {
+                if (clients.get(i) == client)
+                    unsubscribe(entry.getKey(), null, client);
+            }
+        }
     }
 
     public void processMessage(Map<String, Object> newMessage)

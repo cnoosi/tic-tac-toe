@@ -38,12 +38,13 @@ public class GameProcess implements Runnable
 
     private void gameEnded()
     {
+        System.out.println("Game process ended!");
         gameActive = false;
         endTime = System.currentTimeMillis();
         if (server != null)
         {
             GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
-                    -1, -1, -1);
+                                                    -1, -1, -1);
 
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
             server.unsubscribe("GAME_" + gameId, "Game", players.getFirst());
@@ -62,7 +63,6 @@ public class GameProcess implements Runnable
         {
             GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
                                                     -1, -1, -1);
-
         }
     }
 
@@ -126,15 +126,23 @@ public class GameProcess implements Runnable
     {
         while(gameActive)
         {
-            //Countdown texts
-            long lastMove = game.getLastMove() / 1000;
-            long currentTime = System.currentTimeMillis() / 1000;
-            if (currentTime - lastMove > MOVE_TIME_LIMIT)
+            // Check to see if both players are still active, if not, end the game (no winner obviously lol)
+            System.out.println("test");
+            boolean playersConnected = players.getFirst().isConnected() && players.getSecond().isConnected();
+            if (!playersConnected)
             {
-                // They ran out of time!
-                //System.out.println("TIME LIMIT HIT! TOKEN SWITCHED!");
-                //game.switchToken();
+                gameEnded();
             }
+
+//            //Countdown texts
+//            long lastMove = game.getLastMove() / 1000;
+//            long currentTime = System.currentTimeMillis() / 1000;
+//            if (currentTime - lastMove > MOVE_TIME_LIMIT)
+//            {
+//                // They ran out of time!
+//                //System.out.println("TIME LIMIT HIT! TOKEN SWITCHED!");
+//                //game.switchToken();
+//            }
         }
     }
 
