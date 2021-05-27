@@ -154,30 +154,40 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         if(messageType.equals("Login"))
         {
+            String username = message.getMessage().get(0); // holds username
+            String password = message.getMessage().get(1); // holds password
             // writeMessage(validateRequest) // has username and password
         }
 
         else if(messageType.equals("CreateAccount"))
         {
+            String username  = message.getMessage().get(0); // holds username
+            String firstName = message.getMessage().get(1); // holds first name
+            String lastName  = message.getMessage().get(2); // holds second name
+            String password  = message.getMessage().get(3); // holds password
             // writeMessage(createAccount)   // has username, first name, last name, password
         }
 
         else if(messageType.equals("MultiPlayer"))
         {
+            // Client has requested multi player game
+            // add the client to the game queue
             // join queue
         }
 
-        else if(messageType.equals("SinglePlayer"))
+        else if(messageType.equals("Move"))
         {
-            // new game with AI
+            int row = Integer.parseInt(message.getMessage().get(0)); // contains row index
+            int col = Integer.parseInt(message.getMessage().get(1)); // contains col index
+            //int token = Integer.parseInt(message.getMessage().get(2)); // contains client's token
+            // writeMessage(move)
         }
 
         else if(messageType.equals("Spectate"))
         {
-            //
+            // User has selected spectate mode
+            // IDK what to do with this
         }
-
-
     }
 
     @Override
