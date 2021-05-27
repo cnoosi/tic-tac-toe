@@ -1,7 +1,7 @@
 package Game;
 import Networking.ClientConnection;
 import Networking.GameProcess;
-import Networking.Position;
+//import Networking.Position;
 
 public class GameHistory {
 
@@ -91,14 +91,20 @@ public class GameHistory {
                 this.startingPlayerId = startingPlayerId;
         }
 
-        public void saveGameHistory(GameProcess gamep){
-                Game game = gamep.getGame(gameId);
-                GameProcess startTime = gamep.getStartTime(startTime);
-                GameProcess endTime = gamep.getEndTime(endTime);
-                Pair<ClientConnection, ClientConnection> players = gamep.getPlayers(player1Id, player2Id);
-                ClientConnection firstPlayer = players.getFirst(player1Id);
-                ClientConnection secondPlayer = players.getSecond(player2Id);
-                Game winnerToken = gamep.getWinner(winnerToken);
+//        public void saveGameHistory(GameProcess gamep){
+//                Game game = gamep.getGame(gameId);
+//                GameProcess startTime = gamep.getStartTime(startTime);
+//                GameProcess endTime = gamep.getEndTime(endTime);
+//                Pair<ClientConnection, ClientConnection> players = gamep.getPlayers(player1Id, player2Id);
+//                ClientConnection firstPlayer = players.getFirst(player1Id);
+//                ClientConnection secondPlayer = players.getSecond(player2Id);
+//                Game winnerToken = gamep.getWinner(winnerToken);
+//
+//        }
 
+        public String ToString()
+        {
+                return "\ngameid: " + this.gameId + "\nstarttime: " + this.startTime + "\nendtime: " + this.endTime + "\nplayer1id: " + this.player1Id
+                        + "\nplayer2id? " + this.player2Id + "\nstartingplayerid? " + this.startingPlayerId +"\nwinningplayerid? " + this.winnerToken + "\n\n";
         }
 }
