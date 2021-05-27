@@ -30,11 +30,13 @@ public class AccountService {
             boolean loginSuccess = database.userFound(username, password);
             if (loginSuccess)
             {
-                System.out.println("YOOOO LOG IN");
                 client.setId(database.getUserId(username));
                 client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
                         null, null, "success"));
             }
+            else
+                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
+                        null, null, "fail"));
         }
         else if (action == AccountAction.Register)
         {
@@ -46,7 +48,7 @@ public class AccountService {
             }
             else
                 client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
-                        null, null, "unavailable"));
+                        null, null, "fail"));
         }
         else if (action == AccountAction.Logout)
         {

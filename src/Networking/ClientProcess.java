@@ -154,6 +154,37 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         }
     }
 
+    private void handleAccountMessage(Map<String, Object> map)
+    {
+        long accountActionNum = (long) map.get("Action");
+        AccountAction accountAction = AccountAction.values()[(int) accountActionNum];
+        String response = (String) map.get("Response");
+
+//        if (accountAction == AccountAction.Login)
+//        {
+//            if (response.equals("success"))
+//                //ui.loginSuccess(true);
+//            else
+//                ui.loginSuccess(false);
+//        }
+//        else if (accountAction == AccountAction.Logout)
+//            ui.logoutSuccess(true);
+//        else if (accountAction == AccountAction.Register)
+//        {
+//            if (response.equals("success"))
+//                ui.registerSuccess(true);
+//            else
+//                ui.registerSuccess(false);
+//        }
+//        else if (accountAction == AccountAction.ChangeSettings)
+//        {
+//            if (response.equals("success"))
+//                ui.settingChangedSuccess(true);
+//            else
+//                ui.settingChangedSuccess(false);
+//        }
+    }
+
     public void handleMessagingProcess()
     {
         try
@@ -186,6 +217,9 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
                             break;
                         case "FetchGameListMessage":
                             handleFetchGameListMessage(map);
+                            break;
+                        case "AccountMessage":
+                            handleAccountMessage(map);
                             break;
                         default:
                             System.out.println("Failed to process message: " + messageType);
@@ -271,6 +305,11 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             String gameId = message.getMessage().get(0); // holds the gameId they want to spectate
             writeMessage(new SpectateMessage(true, gameId));
         }
+
+        else if (messageType.equals("GameHistoryUpdate"))
+        {
+            writeMessage(new FetchGameListMessage());
+        }
     }
 
     @Override
@@ -284,13 +323,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             Thread messagingProcessThread = new Thread(this::handleMessagingProcess);
             messagingProcessThread.start();
 
-            //Test stuff *******
-            //Put the user into queue
-            writeMessage(new FetchGameListMessage());
-
-
-            //writeMessage(new SpectateMessage(true, ""));
-
+            //Test stuff ******
             Scanner input = new Scanner(System.in);
             while (clientAlive)
             {
