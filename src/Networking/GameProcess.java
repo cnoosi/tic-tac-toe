@@ -20,13 +20,26 @@ public class GameProcess
 
     private final int MOVE_TIME_LIMIT = 30;
 
-    public GameProcess(ServerProcess server, String gameId, Pair players)
+    public GameProcess(ServerProcess server, String gameId, Pair<ClientConnection, ClientConnection> players)
     {
         game = new Game();
         this.server = server;
         this.gameId = gameId;
         this.players = players;
         this.spectators = new ArrayList<>();
+
+        //Subscribe the players
+        players.getFirst().setGameId(gameId);
+        players.getSecond().setGameId(gameId);
+
+        //Subscribe clients to the game AND game chat channel
+        server.unsubscribe("CHAT_GLOBAL", "Chat", players.getFirst());
+        server.unsubscribe("CHAT_GLOBAL", "Chat", players.getSecond());
+        server.subscribe("CHAT_" + gameId, "Chat", players.getFirst());
+        server.subscribe("CHAT_" + gameId, "Chat", players.getSecond());
+        //Subscribe clients to the game
+        server.subscribe("GAME_" + gameId, "Game", players.getFirst());
+        server.subscribe("GAME_" + gameId, "Game", players.getSecond());
     }
 
     public GameProcess(ClientProcess client)

@@ -183,18 +183,6 @@ public class ServerProcess implements Runnable
                     GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers);
                     games.put(newGameId, newGameProcess);
 
-                    gamePlayers.getFirst().setGameId(newGameId);
-                    gamePlayers.getSecond().setGameId(newGameId);
-
-                    //Subscribe clients to the game AND game chat channel
-                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getFirst());
-                    unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getSecond());
-                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.getFirst());
-                    subscribe("CHAT_" + newGameId, "Chat", gamePlayers.getSecond());
-                    //Subscribe clients to the game
-                    subscribe("GAME_" + newGameId, "Game", gamePlayers.getFirst());
-                    subscribe("GAME_" + newGameId, "Game", gamePlayers.getSecond());
-
                     //Let the players know they're out of the queue!
                     QueueMessage gameFoundMessage = new QueueMessage(false, newGameId);
                     gamePlayers.getFirst().writeMessage(gameFoundMessage);
