@@ -2,5 +2,5 @@ package Observers;
 
 public interface Observer
 {
-    void update(ObserverMessage message);
+    public void update(ObserverMessage message);
 }
