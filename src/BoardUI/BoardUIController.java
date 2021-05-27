@@ -2,9 +2,6 @@ package BoardUI;
 
 import MenuUI.*;
 import Linkers.*;
-import Observers.Observer;
-import Observers.ObserverMessage;
-import Observers.Subject;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,7 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class BoardUIController implements Initializable, Observer, Subject
+public class BoardUIController implements Initializable, BoardSubject, UIObserver
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
@@ -50,8 +47,6 @@ public class BoardUIController implements Initializable, Observer, Subject
     private MediaPlayer mp;
     private Media me;
 
-    private Observer UIProcess;
-
     @FXML
     public void handleButtonClick(ActionEvent event)
     {
@@ -60,20 +55,20 @@ public class BoardUIController implements Initializable, Observer, Subject
             if(event.getSource() == buttonList.get(button))
             {
                 Position pos = getPositionFromIndex(button);
-                ArrayList<String> move = new ArrayList<String>();
-                move.add(String.valueOf(pos.getRow()));
-                move.add(String.valueOf(pos.getCol()));
-                move.add(String.valueOf(token));
-
-                notifyObservers(new ObserverMessage("Move", move));
+                notifyObservers(pos, token);
             }
         }
     }
 
     @FXML
-    public void handleMenuClick(ActionEvent even)
+    public void handleMenuClick(ActionEvent even) throws Exception
     {
-        notifyObservers(new ObserverMessage("Home"));
+        Stage stage = (Stage) resetBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
+        Parent frame = root.load();
+        MenuUIController controller = (MenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
     }
 
     public void setImage(int token, int row, int col)
@@ -190,83 +185,38 @@ public class BoardUIController implements Initializable, Observer, Subject
     }
 
     @Override
-    public void update(ObserverMessage message)
-    {
-        String type = message.getMessageType();
-        System.out.println("Here at UIMove");
-        if(type.equals("UIMove"))
-        {
-            int row = Integer.parseInt(message.getMessage().get(0));
-            int col = Integer.parseInt(message.getMessage().get(1));
-            this.token = Integer.parseInt(message.getMessage().get(2));
-            Position pos = new Position(row, col);
-            Platform.runLater(new Runnable(){
-                @Override
-                public void run() {
-                    if(row == 20) {
-                        notificationLabel.setTextFill(Color.WHITE);
-                        notificationLabel.setText("Winner is: Player " + token);
-                        setDisable(true);
-                    }
-                    else
-                        setImage(token, row, col);
-                }
-            });
-        }
-    }
-
-    @Override
     public void addObserver(Object o)
     {
-        UIProcess = (Observer) o;
+        observers.add((BoardObserver) o);
     }
 
     @Override
     public void removeObserver(Object o)
     {
-        UIProcess = null;
+        observers.remove(o);
     }
 
     @Override
-    public void notifyObservers(ObserverMessage message)
+    public void notifyObservers(Position pos, int token)
     {
-        if(UIProcess != null)
-            UIProcess.update(message);
+        observers.forEach(observer -> observer.update(pos, token));
     }
 
-//    @Override
-//    public void addObserver(Object o)
-//    {
-//        observers.add((BoardObserver) o);
-//    }
-//
-//    @Override
-//    public void removeObserver(Object o)
-//    {
-//        observers.remove(o);
-//    }
-//
-//    @Override
-//    public void notifyObservers(Position pos, int token)
-//    {
-//        observers.forEach(observer -> observer.update(pos, token));
-//    }
-//
-//    @Override
-//    public void update(Position pos, int token)
-//    {
-//        this.token = token;
-//        Platform.runLater(new Runnable(){
-//            @Override
-//            public void run() {
-//                if(pos.getRow() == 20) {
-//                    notificationLabel.setTextFill(Color.WHITE);
-//                    notificationLabel.setText("Winner is: Player " + token);
-//                    setDisable(true);
-//                }
-//                else
-//                    setImage(token, pos.getRow(), pos.getCol());
-//            }
-//        });
-//    }
+    @Override
+    public void update(Position pos, int token)
+    {
+        this.token = token;
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                if(pos.getRow() == 20) {
+                    notificationLabel.setTextFill(Color.WHITE);
+                    notificationLabel.setText("Winner is: Player " + token);
+                    setDisable(true);
+                }
+                else
+                    setImage(token, pos.getRow(), pos.getCol());
+            }
+        });
+    }
 }

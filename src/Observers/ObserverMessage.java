@@ -13,12 +13,6 @@ public class ObserverMessage
         this.message = message;
     }
 
-    public ObserverMessage(String messageType)
-    {
-        this.messageType = messageType;
-        this.message = new ArrayList<>();
-    }
-
     public String getMessageType()
     {
         return messageType;
@@ -45,8 +39,8 @@ public class ObserverMessage
         String output;
 
         output = messageType + ":\n";
-        for(int i = 0; i < message.size(); i++)
-            output += message.get(i) + "\n";
+        for(String str : message)
+            output += str + "\n";
 
         return output;
     }

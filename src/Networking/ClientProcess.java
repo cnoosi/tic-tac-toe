@@ -5,8 +5,6 @@ import Game.Position;
 import Linkers.ClientObserver;
 import Linkers.ClientSubject;
 import Linkers.GameObserver;
-import Observers.Observer;
-import Observers.ObserverMessage;
 import Messages.*;
 import UserInterface.UIProcess;
 import javafx.geometry.Pos;
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ClientProcess implements Runnable, ClientObserver, Observer
+public class ClientProcess implements Runnable, ClientObserver
 {
     Socket client;
     boolean clientAlive = true;
@@ -31,12 +29,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     private int userId;
     private String gameId;
     private String chatChannel;
-
-    public ClientProcess(Stage primaryStage)
-    {
-        this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Menu");
-    }
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {
@@ -137,6 +129,12 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         }
     }
 
+    public ClientProcess(Stage primaryStage)
+    {
+        this.ui = new UIProcess(this, primaryStage);
+        ui.openPage("Board");
+    }
+
     @Override
     public void clientUpdate(Position pos)
     {
@@ -144,57 +142,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         {
             MoveMessage moveRequest = new MoveMessage(gameId, pos.getRow(), pos.getCol());
             writeMessage(moveRequest);
-        }
-    }
-
-    @Override
-    public void update(ObserverMessage message)
-    {
-        String messageType = message.getMessageType();
-
-        System.out.println(message); /***************/
-        if(messageType.equals("Login"))
-        {
-            String username = message.getMessage().get(0); // holds username
-            String password = message.getMessage().get(1); // holds password
-            // writeMessage(validateRequest) // has username and password
-        }
-
-        else if(messageType.equals("CreateAccount"))
-        {
-            String username  = message.getMessage().get(0); // holds username
-            String firstName = message.getMessage().get(1); // holds first name
-            String lastName  = message.getMessage().get(2); // holds second name
-            String password  = message.getMessage().get(3); // holds password
-            // writeMessage(createAccount)   // has username, first name, last name, password
-        }
-
-        else if(messageType.equals("MultiPlayer"))
-        {
-            writeMessage(new QueueMessage(true));
-            // Client has requested multi player game
-            // add the client to the game queue
-            // join queue
-        }
-
-        else if(messageType.equals("Move"))
-        {
-            int row = Integer.parseInt(message.getMessage().get(0)); // contains row index
-            int col = Integer.parseInt(message.getMessage().get(1)); // contains col index
-            System.out.println(row);
-            System.out.println(col);
-            System.out.println(clientAlive);
-            if(clientAlive)
-            {
-                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
-                writeMessage(moveRequest);
-            }
-        }
-
-        else if(messageType.equals("Spectate"))
-        {
-            // User has selected spectate mode
-            // IDK what to do with this
         }
     }
 
@@ -211,12 +158,13 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
             //Test stuff *******
             //Put the user into queue
+            writeMessage(new QueueMessage(true));
 
             writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
 
 //            Scanner input = new Scanner(System.in);
-//            while (clientAlive)
-//            {
+            while (clientAlive)
+            {
 //                String newChat = input.nextLine();
 //                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
 //                writeMessage(chatMessage);
@@ -225,7 +173,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 //                int col = input.nextInt();
 //                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
 //                writeMessage(moveRequest);
-//            }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
