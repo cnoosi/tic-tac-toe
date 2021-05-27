@@ -171,6 +171,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         else if(messageType.equals("MultiPlayer"))
         {
+            System.out.println("Here mult");
             writeMessage(new QueueMessage(true));
             // Client has requested multi player game
             // add the client to the game queue
@@ -211,7 +212,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
             //Test stuff *******
             //Put the user into queue
-            writeMessage(new QueueMessage(true));
+            //writeMessage(new QueueMessage(true));
 
 
             //writeMessage(new SpectateMessage(true, ""));
