@@ -13,6 +13,12 @@ public class ObserverMessage
         this.message = message;
     }
 
+    public ObserverMessage(String messageType)
+    {
+        this.messageType = messageType;
+        this.message = new ArrayList<>();
+    }
+
     public String getMessageType()
     {
         return messageType;

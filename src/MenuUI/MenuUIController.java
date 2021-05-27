@@ -2,6 +2,9 @@ package MenuUI;
 
 import BoardUI.*;
 import Game.*;
+import Observers.Observer;
+import Observers.ObserverMessage;
+import Observers.Subject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -22,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.IOError;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import javafx.scene.image.ImageView;
 import jdk.jshell.spi.ExecutionControlProvider;
@@ -35,7 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class MenuUIController implements Initializable
+public class MenuUIController implements Initializable, Observer, Subject
 {
     private       OpenScene openScene = new OpenScene();
     @FXML private Button    singlePlayerBtn;
@@ -51,34 +55,37 @@ public class MenuUIController implements Initializable
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Observer UIProcess;
 
 
     @FXML
     public void handleSinglePlayerMode(ActionEvent event) throws Exception
     {
-        Stage stage = (Stage) singlePlayerBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
-        Parent frame = root.load();
-        BoardUIController controller = (BoardUIController) root.getController();
-        controller.setLocalPlayerCount(1);
-        controller.resetGame();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Single Player Game");
-        mp.stop();
+        notifyObservers(new ObserverMessage("from Menu", new ArrayList<>()));
+//        Stage stage = (Stage) singlePlayerBtn.getScene().getWindow();
+//        FXMLLoader root = new FXMLLoader();
+//        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
+//        Parent frame = root.load();
+//        BoardUIController controller = (BoardUIController) root.getController();
+//        controller.setLocalPlayerCount(1);
+//        controller.resetGame();
+//        openScene.start(stage, frame, "Tic-Tac-Toe - Single Player Game");
+//        mp.stop();
     }
 
     @FXML
     public void handleTwoPlayerMode(ActionEvent event) throws Exception
     {
-        Stage stage = (Stage) multiPlayerBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
-        Parent frame = root.load();
-        BoardUIController controller = (BoardUIController) root.getController();
-        controller.setLocalPlayerCount(2);
-        controller.resetGame();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
-        mp.stop();
+        notifyObservers(new ObserverMessage("from Menu"));
+//        Stage stage = (Stage) multiPlayerBtn.getScene().getWindow();
+//        FXMLLoader root = new FXMLLoader();
+//        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
+//        Parent frame = root.load();
+//        BoardUIController controller = (BoardUIController) root.getController();
+//        controller.setLocalPlayerCount(2);
+//        controller.resetGame();
+//        openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
+//        mp.stop();
     }
 
     public void handleUserMenuButton(ActionEvent event) throws Exception{
@@ -192,5 +199,29 @@ public class MenuUIController implements Initializable
     }
 
 
+    // Observer & Subject Handling
+    @Override
+    public void update(ObserverMessage message)
+    {
 
+    }
+
+    @Override
+    public void addObserver(Object o)
+    {
+        UIProcess = (Observer) o;
+    }
+
+    @Override
+    public void removeObserver(Object o)
+    {
+        UIProcess = null;
+    }
+
+    @Override
+    public void notifyObservers(ObserverMessage message)
+    {
+        if(UIProcess != null)
+            UIProcess.update(message);
+    }
 }

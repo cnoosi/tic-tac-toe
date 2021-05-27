@@ -9,6 +9,8 @@ import Messages.ChatMessage;
 import Messages.Message;
 import Messages.MoveMessage;
 import Messages.QueueMessage;
+import Observers.Observer;
+import Observers.ObserverMessage;
 import UserInterface.UIProcess;
 import javafx.stage.Stage;
 
@@ -18,7 +20,7 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ClientProcess implements Runnable, ClientObserver
+public class ClientProcess implements Runnable, ClientObserver, Observer
 {
     Socket client;
     boolean clientAlive = true;
@@ -28,6 +30,12 @@ public class ClientProcess implements Runnable, ClientObserver
     private UIProcess ui;
     private String gameId;
     private String chatChannel;
+
+    public ClientProcess(Stage primaryStage)
+    {
+        this.ui = new UIProcess(this, primaryStage);
+        ui.openPage("Login");
+    }
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {
@@ -127,12 +135,6 @@ public class ClientProcess implements Runnable, ClientObserver
         }
     }
 
-    public ClientProcess(Stage primaryStage)
-    {
-        this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Board");
-    }
-
     @Override
     public void clientUpdate(Position pos)
     {
@@ -141,6 +143,39 @@ public class ClientProcess implements Runnable, ClientObserver
             MoveMessage moveRequest = new MoveMessage(gameId, pos.getRow(), pos.getCol());
             writeMessage(moveRequest);
         }
+    }
+
+    @Override
+    public void update(ObserverMessage message)
+    {
+        String messageType = message.getMessageType();
+
+        if(messageType.equals("Login"))
+        {
+            // writeMessage(validateRequest) // has username and password
+        }
+
+        else if(messageType.equals("CreateAccount"))
+        {
+            // writeMessage(createAccount)   // has username, first name, last name, password
+        }
+
+        else if(messageType.equals("MultiPlayer"))
+        {
+            // join queue
+        }
+
+        else if(messageType.equals("SinglePlayer"))
+        {
+            // new game with AI
+        }
+
+        else if(messageType.equals("Spectate"))
+        {
+            //
+        }
+
+
     }
 
     @Override

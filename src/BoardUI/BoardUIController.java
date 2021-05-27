@@ -2,6 +2,9 @@ package BoardUI;
 
 import MenuUI.*;
 import Linkers.*;
+import Observers.Observer;
+import Observers.ObserverMessage;
+import Observers.Subject;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,7 +27,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-public class BoardUIController implements Initializable, BoardSubject, UIObserver
+public class BoardUIController implements Initializable, Observer, Subject
 {
     private int                 playerCount = 1;
     private int                 boardSize = 3;
@@ -47,6 +50,8 @@ public class BoardUIController implements Initializable, BoardSubject, UIObserve
     private MediaPlayer mp;
     private Media me;
 
+    private Observer UIProcess;
+
     @FXML
     public void handleButtonClick(ActionEvent event)
     {
@@ -55,7 +60,8 @@ public class BoardUIController implements Initializable, BoardSubject, UIObserve
             if(event.getSource() == buttonList.get(button))
             {
                 Position pos = getPositionFromIndex(button);
-                notifyObservers(pos, token);
+               // notifyObservers(pos, token);
+                notifyObservers(new ObserverMessage("From board controller"));
             }
         }
     }
@@ -185,38 +191,63 @@ public class BoardUIController implements Initializable, BoardSubject, UIObserve
     }
 
     @Override
+    public void update(ObserverMessage message)
+    {
+
+    }
+
+    @Override
     public void addObserver(Object o)
     {
-        observers.add((BoardObserver) o);
+        UIProcess = (Observer) o;
     }
 
     @Override
     public void removeObserver(Object o)
     {
-        observers.remove(o);
+        UIProcess = null;
     }
 
     @Override
-    public void notifyObservers(Position pos, int token)
+    public void notifyObservers(ObserverMessage message)
     {
-        observers.forEach(observer -> observer.update(pos, token));
+        if(UIProcess != null)
+            UIProcess.update(message);
     }
 
-    @Override
-    public void update(Position pos, int token)
-    {
-        this.token = token;
-        Platform.runLater(new Runnable(){
-            @Override
-            public void run() {
-                if(pos.getRow() == 20) {
-                    notificationLabel.setTextFill(Color.WHITE);
-                    notificationLabel.setText("Winner is: Player " + token);
-                    setDisable(true);
-                }
-                else
-                    setImage(token, pos.getRow(), pos.getCol());
-            }
-        });
-    }
+//    @Override
+//    public void addObserver(Object o)
+//    {
+//        observers.add((BoardObserver) o);
+//    }
+//
+//    @Override
+//    public void removeObserver(Object o)
+//    {
+//        observers.remove(o);
+//    }
+//
+//    @Override
+//    public void notifyObservers(Position pos, int token)
+//    {
+//        observers.forEach(observer -> observer.update(pos, token));
+//    }
+//
+//    @Override
+//    public void update(Position pos, int token)
+//    {
+//        this.token = token;
+//        Platform.runLater(new Runnable(){
+//            @Override
+//            public void run() {
+//                if(pos.getRow() == 20) {
+//                    notificationLabel.setTextFill(Color.WHITE);
+//                    notificationLabel.setText("Winner is: Player " + token);
+//                    setDisable(true);
+//                }
+//                else
+//                    setImage(token, pos.getRow(), pos.getCol());
+//            }
+//        });
+//    }
 }
