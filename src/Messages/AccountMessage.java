@@ -5,12 +5,12 @@ import Networking.AccountAction;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountMessasge extends Message {
+public class AccountMessage extends Message {
     private AccountAction accountAction;
     private String username;
     private String password;
 
-    public AccountMessasge(AccountAction accountAction, String username, String password)
+    public AccountMessage(AccountAction accountAction, String username, String password)
     {
         this.accountAction = accountAction;
         this.username = username;

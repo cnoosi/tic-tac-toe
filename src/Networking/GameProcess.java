@@ -1,11 +1,10 @@
 package Networking;
 import Game.*;
 import Messages.GameMessage;
+import Messages.GameStatusMessage;
+import Messages.Message;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class GameProcess implements Runnable
 {
@@ -13,6 +12,7 @@ public class GameProcess implements Runnable
     private boolean gameActive = true;
     private String gameId;
     private Pair<ClientConnection, ClientConnection> players;
+    private ArrayList<ClientConnection> spectators;
     private long startTime = System.currentTimeMillis();
     private long endTime;
     private ServerProcess server;
@@ -26,22 +26,23 @@ public class GameProcess implements Runnable
         this.server = server;
         this.gameId = gameId;
         this.players = players;
+        this.spectators = new ArrayList<>();
     }
 
     public GameProcess(ClientProcess client)
     {
         game = new Game(2);
         this.client = client;
+        this.spectators = new ArrayList<>();
     }
 
     private void gameEnded()
     {
         gameActive = false;
         endTime = System.currentTimeMillis();
-        System.out.println("game is over!");
         if (server != null)
         {
-            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(),
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
                     -1, -1, -1);
 
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
@@ -59,7 +60,7 @@ public class GameProcess implements Runnable
         }
         else if (client != null)
         {
-            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(),
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
                                                     -1, -1, -1);
 
         }
@@ -76,16 +77,13 @@ public class GameProcess implements Runnable
         boolean moveMade = game.requestPosition(row, col, token);
         if (moveMade)
         {
-            System.out.println("A move was MADE by token: " + token);
-            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), row, col, token);
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
+                                                     row, col, token);
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
             int winner = game.checkWin(); //Update winner
             if (winner != 0)
                 gameEnded();
         }
-        else
-            System.out.println("A move was BLOCKED by token: " + token);
-        System.out.println(game);
     }
 
     public void requestMoveSinglePlayer(int row, int col)
@@ -94,15 +92,25 @@ public class GameProcess implements Runnable
         boolean moveMade = game.requestPosition(row, col, token);
         if (moveMade)
         {
-            System.out.println("A move was MADE by token: " + token);
-            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), row, col, token);
+            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
+                                                     row, col, token);
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
             int winner = game.checkWin(); //Update winner
             if (winner != 0)
                 gameEnded();
         }
-        else
-            System.out.println("A move was BLOCKED by token: " + token);
+    }
+
+    public void addSpectator(ClientConnection spectator)
+    {
+        spectators.add(spectator);
+        Message gameStatus = new GameStatusMessage(this.game);
+        spectator.writeMessage(gameStatus);
+    }
+
+    public void removeSpectator(ClientConnection spectator)
+    {
+        spectators.remove(spectator);
     }
 
     public void run()
@@ -126,4 +134,5 @@ public class GameProcess implements Runnable
     public long getStartTime() {return this.startTime;}
     public long getEndTime() {return this.endTime;}
     public Pair getPlayers() {return this.players;}
+    public int getSpectatorCount() {return this.spectators.size();}
 }

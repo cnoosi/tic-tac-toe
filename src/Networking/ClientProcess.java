@@ -10,11 +10,13 @@ import Messages.Message;
 import Messages.MoveMessage;
 import Messages.QueueMessage;
 import UserInterface.UIProcess;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -64,14 +66,30 @@ public class ClientProcess implements Runnable, ClientObserver
         long newRow = (long) map.get("NewRow");
         long newCol = (long) map.get("NewCol");
         long newValue = (long) map.get("NewValue");
+        long spectators = (long) map.get("Spectators");
         if (newRow != -1 && newCol != -1 && newValue != -1)
         {
             System.out.println(newRow + " , " + newCol + " = " + newValue);
             ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
         }
-        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
         if(winner != 0)
             ui.updateBoardUI((int) currentToken, (int) winner);
+            //ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
+    }
+
+    private void handleGameStatusMessage(Map<String, Object> map)
+    {
+        Game game = (Game) map.get("Game");
+        int winner = game.getWinner();
+        int currentToken = game.getToken();
+        ArrayList<Position> moves = game.getMoves();
+        for (int i = 0; i < moves.size(); i++)
+        {
+            int moveToken = i % 2 + 1;
+            ui.changeUIBoardToken(moves.get(i).getRow(), moves.get(i).getRow(), moveToken);
+        }
+        if(winner != 0)
+            ui.updateBoardUI(currentToken, winner);
     }
 
     private void handleChatMessage(Map<String, Object> map)
@@ -101,6 +119,9 @@ public class ClientProcess implements Runnable, ClientObserver
                             break;
                         case "GameMessage":
                             handleGameMessage(map);
+                            break;
+                        case "GameStatusMessage":
+                            handleGameStatusMessage(map);
                             break;
                         case "ChatMessage":
                             handleChatMessage(map);

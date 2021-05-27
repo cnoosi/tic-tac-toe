@@ -68,6 +68,21 @@ public class ServerProcess implements Runnable
         sendToSubscribedClients(channelName, new ChatMessage(playerName, playerChat, channelName), client);
     }
 
+    private void handleSpectateMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        boolean spectate = (boolean) map.get("Spectate");
+        String gameId = (String) map.get("GameId");
+        GameProcess findGame = games.get(gameId);
+        if (findGame != null)
+        {
+            if (spectate)
+                findGame.addSpectator(client);
+            else
+                findGame.removeSpectator(client);
+        }
+    }
+
     private void handleClientMessagesProcess()
     {
         try
@@ -88,6 +103,9 @@ public class ServerProcess implements Runnable
                         break;
                     case "ChatMessage":
                         handleChatMessage(map);
+                        break;
+                    case "SpectateMessage":
+                        handleSpectateMessage(map);
                         break;
                     default:
                         System.out.println("Failed to process message: " + messageType);
@@ -172,7 +190,6 @@ public class ServerProcess implements Runnable
 
     public void subscribe(String topic, String topicType, ClientConnection client)
     {
-        System.out.println("SUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients == null)
         {
@@ -185,7 +202,6 @@ public class ServerProcess implements Runnable
 
     public void unsubscribe(String topic, String topicType, ClientConnection client)
     {
-        System.out.println("UNSUBSCRIBE: " + topic + " CLIENT: " + client.getId());
         ArrayList<ClientConnection> clients = subscriptions.get(topic);
         if (clients != null)
             return;
