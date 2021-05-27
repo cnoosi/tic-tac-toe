@@ -54,68 +54,37 @@ public class MenuUIController implements Initializable, Observer, Subject
 
 
     @FXML
-    public void handleSinglePlayerMode(ActionEvent event) throws Exception
+    public void handleSinglePlayerMode(ActionEvent event)
     {
-        notifyObservers(new ObserverMessage("from Menu", new ArrayList<>()));
-//        Stage stage = (Stage) singlePlayerBtn.getScene().getWindow();
-//        FXMLLoader root = new FXMLLoader();
-//        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
-//        Parent frame = root.load();
-//        BoardUIController controller = (BoardUIController) root.getController();
-//        controller.setLocalPlayerCount(1);
-//        controller.resetGame();
-//        openScene.start(stage, frame, "Tic-Tac-Toe - Single Player Game");
-//        mp.stop();
+        notifyObservers(new ObserverMessage("SinglePlayer"));
+        mp.stop();
     }
 
     @FXML
-    public void handleTwoPlayerMode(ActionEvent event) throws Exception
+    public void handleTwoPlayerMode(ActionEvent event)
     {
-        notifyObservers(new ObserverMessage("from Menu"));
-//        Stage stage = (Stage) multiPlayerBtn.getScene().getWindow();
-//        FXMLLoader root = new FXMLLoader();
-//        root.setLocation(getClass().getResource("/BoardUI/BoardUI.fxml"));
-//        Parent frame = root.load();
-//        BoardUIController controller = (BoardUIController) root.getController();
-//        controller.setLocalPlayerCount(2);
-//        controller.resetGame();
-//        openScene.start(stage, frame, "Tic-Tac-Toe - Two Player Game");
-//        mp.stop();
-    }
-
-    public void handleUserMenuButton(ActionEvent event) throws Exception{
-        Stage stage = (Stage) userMenuBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("UserMenuUI.fxml"));
-        Parent frame = root.load();
-        UserMenuUIController controller = (UserMenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - User Menu");
+        notifyObservers(new ObserverMessage("MultiPlayer"));
         mp.stop();
     }
 
-    public void handleGameHistoryButton(ActionEvent event) throws Exception{
-        Stage stage = (Stage) gameHistoryBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/GameHistoryUI/GameHistoryUI.fxml"));
-        Parent frame = root.load();
-        GameHistoryUIController controller = (GameHistoryUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Game History");
+    public void handleUserMenuButton(ActionEvent event)
+    {
+        notifyObservers(new ObserverMessage("UserMenu"));
         mp.stop();
     }
 
-    public void handleAdminDashButton(ActionEvent event) throws Exception{
-        Stage stage = (Stage) adminDashBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/AdminDashUI/AdminDashUI.fxml"));
-        Parent frame = root.load();
-        AdminDashUIController controller = (AdminDashUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Admin Dash");
+    public void handleGameHistoryButton(ActionEvent event)
+    {
+        notifyObservers(new ObserverMessage("GameHistory"));
         mp.stop();
     }
 
-    public void stop(){
-        mp.stop();
+    /***************************************************/
+    public void handleAdminDashButton(ActionEvent event)
+    {
+        // Should not be here
     }
+    /****************************************************/
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -124,7 +93,7 @@ public class MenuUIController implements Initializable, Observer, Subject
         //********************************************
         //TESTING DATABASE
         //********************************************
-        Scanner scanner = new Scanner(System.in);
+//        Scanner scanner = new Scanner(System.in);
 ////        Database db = new Database();
 //        System.out.println("Database Control Panel\n----------------\n" +
 //                            "1) Add new user\n" +
@@ -222,7 +191,13 @@ public class MenuUIController implements Initializable, Observer, Subject
     @Override
     public void update(ObserverMessage message)
     {
+        String type = message.getMessageType();
 
+        if(type.equals("MusicPlayer"))
+        {
+            System.out.println("MusicPlayer");
+            mp.play();
+        }
     }
 
     @Override

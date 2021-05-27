@@ -1,6 +1,7 @@
 package UserInterface;
 
 import BoardUI.BoardUIController;
+import Game.*;
 import Game.Position;
 import MenuUI.MenuUIController;
 import MenuUI.UserMenuUIController;
@@ -21,10 +22,8 @@ import java.util.ArrayList;
 public class UIProcess implements Subject, Observer
 {
     ClientProcess client;
-
-    Stage mainStage;
-    ArrayList<UIObserver> observers;
-    ArrayList<ClientObserver> clientObservers;
+    Game localGame;
+    Scene scene;
 
     //FXMl Loaders
     FXMLLoader menuLoader;
@@ -86,6 +85,9 @@ public class UIProcess implements Subject, Observer
             this.addObserver(loginController);
             this.addObserver(menuController);
             this.addObserver(boardController);
+
+            // default scene
+            scene = new Scene(menuRoot);
         }
         catch(Exception e)
         {
@@ -97,15 +99,69 @@ public class UIProcess implements Subject, Observer
     @Override
     public void update(ObserverMessage message)
     {
-//        if(message.getMessageType().equals("Login")) {
-//            System.out.println(message.toString());
-//
-//            //Test
-//            message.setMessageType("Sheesh");
-//            notifyObservers(message);
-//        }
+        String type = message.getMessageType();
 
-        System.out.println(message.toString());
+        // Generic
+        if(type.equals("Home"))
+        {
+            openPage("Menu");
+            notifyObservers(new ObserverMessage("MusicPlayer"));
+        }
+
+        // Main Menu Actions
+        else if(type.equals("UserMenu"))
+        {
+            openPage("Login");
+        }
+
+        else if(type.equals("SinglePlayer"))
+        {
+            openPage("Board");
+            localGame = new Game();
+        }
+
+        else if(type.equals("MultiPlayer"))
+        {
+            openPage("Board");
+        }
+
+        else if(type.equals("GameHistory")) // modify later
+        {
+            openPage("GameHistory");
+        }
+
+        else if(type.equals("Spectate"))
+        {
+
+        }
+
+        // User Menu (Login Page) Actions
+        else if(type.equals("Logout"))
+        {
+           notifyObservers(message);
+        }
+
+        else if(type.equals("Login"))
+        {
+            notifyObservers(message);
+        }
+
+        else if(type.equals("CreateAccount"))
+        {
+            notifyObservers(message);
+        }
+
+        else if(type.equals("LocalMove"))
+        {
+
+        }
+
+        else if(type.equals("Move"))
+        {
+            notifyObservers(message);
+        }
+
+        System.out.println(type);
     }
 
     // Handle observers - UIProcess being subject
@@ -138,39 +194,12 @@ public class UIProcess implements Subject, Observer
     @Override
     public void notifyObservers(ObserverMessage message)
     {
-        String messageType = message.getMessageType();
-        switch (messageType)
-        {
-            case "LoginMessage":
-
+        String type = message.getMessageType();
+        if(type.equals("MusicPlayer")) {
+            menuObservers.forEach(observer -> observer.update(message));
         }
-        loginObservers.get(0).update(message);
+
     }
-
-//    public UIProcess(ClientProcess client, Stage primaryStage)
-//    {
-//        this.client = client;
-//        this.mainStage = primaryStage;
-//        this.observers = new ArrayList<>();
-//        this.clientObservers = new ArrayList<>();
-//        try
-//        {
-//            FXMLLoader boardLoader = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
-//            this.boardRoot = boardLoader.load();
-//            this.boardController = boardLoader.getController();
-//            boardController.addObserver(this);
-//            this.addObserver(boardController);
-//            //this.addClientObserver(client);
-//
-//            FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/MenuUI/MenuUI.fxml"));
-//            this.menuRoot = menuLoader.load();
-//            this.menuController = menuLoader.getController();
-//        }
-//        catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
 
     /**********************************
      ***** Controlling UI methods *****
@@ -197,20 +226,20 @@ public class UIProcess implements Subject, Observer
     {
         if(page.equals("Login"))
         {
-            Scene newScene = new Scene(this.loginRoot);
-            primaryStage.setScene(newScene);
+            scene.setRoot(loginRoot);
+            primaryStage.setScene(scene);
             primaryStage.show();
         }
         else if (page.equals("Menu"))
         {
-            Scene newScene = new Scene(this.menuRoot);
-            primaryStage.setScene(newScene);
+            scene.setRoot(menuRoot);
+            primaryStage.setScene(scene);
             primaryStage.show();
         }
         else if (page.equals("Board"))
         {
-            Scene newScene = new Scene(this.boardRoot);
-            primaryStage.setScene(newScene);
+            scene.setRoot(boardRoot);
+            primaryStage.setScene(scene);
             primaryStage.show();
         }
     }
@@ -244,50 +273,4 @@ public class UIProcess implements Subject, Observer
     {
         //notifyObservers(new Position(20, 20), currentToken);
     }
-
-
-//    @Override
-//    public void addObserver(Object o)
-//    {
-//        observers.add((UIObserver) o);
-//    }
-//
-//    @Override
-//    public void removeObserver(Object o)
-//    {
-//        observers.remove(o);
-//    }
-//
-//    @Override
-//    public void notifyObservers(Position pos, int token)
-//    {
-//        observers.forEach(observer -> observer.update(pos, token));
-//    }
-//
-//    //
-//    @Override
-//    public void update(Position pos, int token)
-//    {
-//        System.out.println(pos.toString());
-//        notifyClientObservers(pos);
-//    }
-//
-//    //
-//    @Override
-//    public void addClientObserver(Object o)
-//    {
-//        clientObservers.add((ClientObserver) o);
-//    }
-//
-//    @Override
-//    public void removeClientObserver(Object o)
-//    {
-//        clientObservers.remove(o);
-//    }
-//
-//    @Override
-//    public void notifyClientObservers(Position pos)
-//    {
-//        clientObservers.forEach(clientObserver -> clientObserver.clientUpdate(pos));
-//    }
 }

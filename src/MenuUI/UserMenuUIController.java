@@ -109,13 +109,9 @@ public class UserMenuUIController implements Observer, Subject
         //client.writeMessage(new AccountMessage(AccountAction.Logout));
     }
 
-    public void handleHomeBtn(ActionEvent event) throws Exception {
-        Stage stage = (Stage) homeBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        Parent frame = root.load();
-        MenuUIController controller = (MenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+    public void handleHomeBtn(ActionEvent event)
+    {
+        notifyObservers(new ObserverMessage("Home"));
     }
 
     // Observer & Subject Handling

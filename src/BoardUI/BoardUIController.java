@@ -67,14 +67,9 @@ public class BoardUIController implements Initializable, Observer, Subject
     }
 
     @FXML
-    public void handleMenuClick(ActionEvent even) throws Exception
+    public void handleMenuClick(ActionEvent even)
     {
-        Stage stage = (Stage) resetBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        Parent frame = root.load();
-        MenuUIController controller = (MenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+        notifyObservers(new ObserverMessage("Home"));
     }
 
     public void setImage(int token, int row, int col)
