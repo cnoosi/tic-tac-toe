@@ -1,4 +1,4 @@
-package Networking;
+package Messages;
 
 public enum AccountAction {
     Register,

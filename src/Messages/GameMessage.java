@@ -9,14 +9,16 @@ public class GameMessage extends Message {
     private int newValue;
     private int winner;
     private int currentToken;
+    private int spectators;
 
-    public GameMessage(int currentToken, int winner, int newRow, int newCol, int newValue)
+    public GameMessage(int currentToken, int winner, int spectators, int newRow, int newCol, int newValue)
     {
         this.currentToken = currentToken;
         this.winner = winner;
         this.newRow = newRow;
         this.newCol = newCol;
         this.newValue = newValue;
+        this.spectators = spectators;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class GameMessage extends Message {
         newMap.put("NewRow", newRow);
         newMap.put("NewCol", newCol);
         newMap.put("NewValue", newValue);
+        newMap.put("Spectators", spectators);
         return newMap;
     }
 }

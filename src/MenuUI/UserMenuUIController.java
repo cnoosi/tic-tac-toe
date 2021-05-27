@@ -1,7 +1,5 @@
 package MenuUI;
 
-import Game.Database;
-import Game.DbManager;
 import Game.OpenScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import Observers.*;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -62,6 +59,12 @@ public class UserMenuUIController implements Observer, Subject
 //        }
 
         notifyObservers(new ObserverMessage("Login", userInfo));
+        //Scanner  scanner = new Scanner(System.in);
+        //String   user    = userName.getText();
+        //String   pass    = password.getText();
+
+        //CHECKS TO SEE IF THE USER EXISTS
+        //client.writeMessage(new AccountMessage(AccountAction.Login, user, null, null, pass));
     }
 
     //********************************************
@@ -97,11 +100,15 @@ public class UserMenuUIController implements Observer, Subject
 //            userValidation2.setText("account successfully created!!");
 //        }
 
+        //client.writeMessage(new AccountMessage(AccountAction.Register, user, firstN, lastN, pass));
+
+        //userValidation2.setText("that username is already taken");
     }
-    
-    public void handleLogoutButton(ActionEvent event) throws Exception{
-            DbManager.getInstance().setCurrentUserIndex(0);
+
+    public void handleLogoutButton(ActionEvent event) throws Exception {
+        //client.writeMessage(new AccountMessage(AccountAction.Logout));
     }
+
     public void handleHomeBtn(ActionEvent event) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         FXMLLoader root = new FXMLLoader();

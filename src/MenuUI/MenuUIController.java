@@ -9,10 +9,8 @@ import Observers.Subject;
 import GameHistoryUI.GameHistoryUIController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
@@ -24,21 +22,14 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-
 import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javafx.scene.image.ImageView;
-import jdk.jshell.spi.ExecutionControlProvider;
 
-import javax.xml.crypto.Data;
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MenuUIController implements Initializable, Observer, Subject
@@ -179,9 +170,9 @@ public class MenuUIController implements Initializable, Observer, Subject
         //********************************************
         //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
         //********************************************
-        User current = new User();
-        current = DbManager.getInstance().getCurrentUser();
-        usernameLabel.setText(current.getUserName());
+        //User current = new User();
+        //current = UserDbManager.getInstance().getCurrentUser();
+        //usernameLabel.setText(current.getUserName());
 
 
         //********************************************

@@ -5,18 +5,17 @@ import Game.Position;
 import Linkers.ClientObserver;
 import Linkers.ClientSubject;
 import Linkers.GameObserver;
-import Messages.ChatMessage;
-import Messages.Message;
-import Messages.MoveMessage;
-import Messages.QueueMessage;
 import Observers.Observer;
 import Observers.ObserverMessage;
+import Messages.*;
 import UserInterface.UIProcess;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -28,6 +27,8 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     DataOutputStream outputStream;
 
     private UIProcess ui;
+    String username;
+    private int userId;
     private String gameId;
     private String chatChannel;
 
@@ -72,14 +73,15 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         long newRow = (long) map.get("NewRow");
         long newCol = (long) map.get("NewCol");
         long newValue = (long) map.get("NewValue");
+        long spectators = (long) map.get("Spectators");
         if (newRow != -1 && newCol != -1 && newValue != -1)
         {
             System.out.println(newRow + " , " + newCol + " = " + newValue);
             ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
         }
-        System.out.println("Current token: " + currentToken + " || Winner: " + winner);
         if(winner != 0)
             ui.updateBoardUI((int) currentToken, (int) winner);
+            //ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }
 
     private void handleChatMessage(Map<String, Object> map)
@@ -193,22 +195,28 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             //Put the user into queue
             writeMessage(new QueueMessage(true));
 
-            Scanner input = new Scanner(System.in);
-//            while (clientAlive)
-//            {
+            writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
+
+//            Scanner input = new Scanner(System.in);
+            while (clientAlive)
+            {
 //                String newChat = input.nextLine();
 //                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
 //                writeMessage(chatMessage);
-
+//
 //                int row = input.nextInt();
 //                int col = input.nextInt();
 //                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
 //                writeMessage(moveRequest);
-//            }
-            //Test stuff *******
-
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+    public void setUsername(String username) {this.username = username;}
+    public void setId(int userId) {this.userId = userId;}
+
+    public String getUsername() {return this.username;}
+    public int getUserId() {return this.userId;}
 }

@@ -13,7 +13,7 @@ public class Main extends Application
     public void start(Stage primaryStage) throws Exception
     {
         //This ONLY starts on the client, so we can start the ui here
-        ClientProcess newClient =  new ClientProcess(primaryStage);
+        ClientProcess newClient = new ClientProcess(primaryStage);
         Thread clientThread = new Thread(newClient);
         clientThread.start();
 
