@@ -77,4 +77,10 @@ public class MovesHistory {
     public void setCol(int col) {
         this.col = col;
     }
+
+    public String ToString()
+    {
+        return "\ngameid: " + this.gameId + "\nplayerid: " + this.playerId + "\nrow: " + this.row + "\ncol: " + this.col
+                + "\ntime? " + this.time + "\nmoveindex? " + "\n\n";
+    }
 }
