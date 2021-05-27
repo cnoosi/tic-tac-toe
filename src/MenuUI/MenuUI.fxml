@@ -21,5 +21,7 @@
       </Button>
       <Button fx:id="userMenuBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleUserMenuButton" style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: purple;" text="User Menu" />
       <Label fx:id="usernameLabel" layoutX="116.0" layoutY="14.0" prefHeight="30.0" prefWidth="114.0" style="-fx-text-fill: purple; -fx-font-size: 14;" />
+      <Button fx:id="gameHistoryBtn" layoutX="15.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleGameHistoryButton" prefHeight="30.0" prefWidth="86.0" style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: purple;" text="Game Hist" />
+      <Button fx:id="adminDashBtn" layoutX="15.0" layoutY="94.0" mnemonicParsing="false" onAction="#handleAdminDashButton" prefHeight="30.0" prefWidth="86.0" style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: purple;" text="Admin Dash" />
    </children>
 </AnchorPane>

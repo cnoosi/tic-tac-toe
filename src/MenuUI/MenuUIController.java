@@ -1,7 +1,9 @@
 package MenuUI;
 
+import AdminDashUI.AdminDashUIController;
 import BoardUI.*;
 import Game.*;
+import GameHistoryUI.GameHistoryUIController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -41,6 +43,8 @@ public class MenuUIController implements Initializable
     @FXML private Button    singlePlayerBtn;
     @FXML private Button    multiPlayerBtn;
     @FXML private Button    userMenuBtn;
+    @FXML private Button    gameHistoryBtn;
+    @FXML private Button    adminDashBtn;
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
@@ -88,6 +92,30 @@ public class MenuUIController implements Initializable
         Parent frame = root.load();
         UserMenuUIController controller = (UserMenuUIController) root.getController();
         openScene.start(stage, frame, "Tic-Tac-Toe - User Menu");
+        mp.stop();
+    }
+
+    public void handleGameHistoryButton(ActionEvent event) throws Exception{
+        Stage stage = (Stage) gameHistoryBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/GameHistoryUI/GameHistoryUI.fxml"));
+        Parent frame = root.load();
+        GameHistoryUIController controller = (GameHistoryUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Game History");
+        mp.stop();
+    }
+
+    public void handleAdminDashButton(ActionEvent event) throws Exception{
+        Stage stage = (Stage) adminDashBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/AdminDashUI/AdminDashUI.fxml"));
+        Parent frame = root.load();
+        AdminDashUIController controller = (AdminDashUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Admin Dash");
+        mp.stop();
+    }
+
+    public void stop(){
         mp.stop();
     }
 
