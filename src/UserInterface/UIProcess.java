@@ -125,6 +125,7 @@ public class UIProcess implements Subject, Observer
         else if(type.equals("MultiPlayer"))
         {
             openPage("Board");
+            notifyObservers(message);
         }
 
         else if(type.equals("GameHistory")) // modify later
@@ -192,12 +193,15 @@ public class UIProcess implements Subject, Observer
             menuObservers.forEach(observer -> observer.update(message));
         }
 
-        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount") || type.equals("Move"))
+        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount")
+                || type.equals("Move") || type.equals("MultiPlayer"))
         {
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-        else if(type.equals("UIMove"))
+
+
+        else if(type.equals("UIMove") || type.equals("ClearBoard"))
         {
             boardObservers.forEach(observer -> observer.update(message));
         }
@@ -206,6 +210,11 @@ public class UIProcess implements Subject, Observer
     /**********************************
      ***** Controlling UI methods *****
      **********************************/
+    public void clearBoard()
+    {
+        notifyObservers(new ObserverMessage("ClearBoard"));
+    }
+
     private String getFXML(String scene)
     {
         String fxml = "";
