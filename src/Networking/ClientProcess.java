@@ -80,8 +80,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
         }
         if(winner != 0)
-            ui.updateBoardUI((int) currentToken, (int) winner);
-            //ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
+            ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }
 
     private void handleChatMessage(Map<String, Object> map)
@@ -152,7 +151,8 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     {
         String messageType = message.getMessageType();
 
-        System.out.println(message); /***************/
+        System.out.println("UI ATTEMPT MESSAGE: " + message);
+        /***************/
         if(messageType.equals("Login"))
         {
             String username = message.getMessage().get(0); // holds username
@@ -211,8 +211,10 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
             //Test stuff *******
             //Put the user into queue
+            writeMessage(new QueueMessage(true));
 
-            writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
+
+            //writeMessage(new SpectateMessage(true, ""));
 
 //            Scanner input = new Scanner(System.in);
 //            while (clientAlive)

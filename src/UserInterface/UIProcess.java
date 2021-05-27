@@ -278,7 +278,7 @@ public class UIProcess implements Subject, Observer
         notifyObservers(new ObserverMessage("UIMove", move));
     }
 
-    public void updateBoardUI(int currentToken, int winner)
+    public void updateBoardUI(int currentToken, int winner, int spectators)
     {
         //notifyObservers(new Position(20, 20), currentToken);
     }

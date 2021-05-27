@@ -104,18 +104,19 @@ public class GameProcess
 
     public void requestMove(ClientConnection client, int row, int col)
     {
-        int token = getToken(client);
-        if (token != 0)
+        if (gameActive)
         {
-            boolean moveMade = game.requestPosition(row, col, token);
-            if (moveMade) 
-            {
-                GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
-                        row, col, token);
-                server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
-                int winner = game.checkWin(); //Update winner
-                if (winner != 0)
-                    gameEnded();
+            int token = getToken(client);
+            if (token != 0) {
+                boolean moveMade = game.requestPosition(row, col, token);
+                if (moveMade) {
+                    GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
+                            row, col, token);
+                    server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+                    int winner = game.checkWin(); //Update winner
+                    if (winner != 0)
+                        gameEnded();
+                }
             }
         }
     }

@@ -209,7 +209,6 @@ public class DbManager {
 
     public void addMoves(String gameId, int playerId, int row, int col, String time, int moveIndex)
     {
-        System.out.println("yo2");
         String gameSql = "INSERT INTO Moves(Id,PlayerId,Row,Col,Time,MoveIndex) VALUES(?,?,?,?,?,?)";
         try (Connection gameConn = this.connect();
              PreparedStatement gamePstmt = gameConn.prepareStatement(gameSql)) {
