@@ -118,6 +118,31 @@ public class DbManager {
         return -1;
     }
 
+    public GameHistory getGameHistory(String gameId)
+    {
+        for (GameHistory game : gameList)
+        {
+            if (game.getGameId().equals(gameId))
+            {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<MovesHistory> getMoveHistory(String gameId)
+    {
+        ArrayList<MovesHistory> moves = new ArrayList<>();
+        for (MovesHistory move : movesList)
+        {
+            if (move.getGameId().equals(gameId))
+            {
+                moves.add(move.getMoveIndex(), move);
+            }
+        }
+        return moves;
+    }
+
     public void addUser(String userName, String firstName, String lastName, String password)
     {
         String sql = "INSERT INTO User(UserName,FirstName,LastName,Password,Deleted) VALUES(?,?,?,?,?)";
