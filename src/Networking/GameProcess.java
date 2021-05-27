@@ -6,7 +6,7 @@ import Messages.Message;
 
 import java.util.ArrayList;
 
-public class GameProcess implements Runnable
+public class GameProcess
 {
     private Game game;
     private boolean gameActive = true;
@@ -36,7 +36,7 @@ public class GameProcess implements Runnable
         this.spectators = new ArrayList<>();
     }
 
-    private void gameEnded()
+    public void gameEnded()
     {
         System.out.println("Game process ended!");
         gameActive = false;
@@ -45,6 +45,9 @@ public class GameProcess implements Runnable
         {
             GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
                                                     -1, -1, -1);
+
+            players.getFirst().setGameId(null);
+            players.getSecond().setGameId(null);
 
             server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
             server.unsubscribe("GAME_" + gameId, "Game", players.getFirst());
@@ -120,30 +123,6 @@ public class GameProcess implements Runnable
     public void removeSpectator(ClientConnection spectator)
     {
         spectators.remove(spectator);
-    }
-
-    public void run()
-    {
-        while(gameActive)
-        {
-            // Check to see if both players are still active, if not, end the game (no winner obviously lol)
-            System.out.println("test");
-            boolean playersConnected = players.getFirst().isConnected() && players.getSecond().isConnected();
-            if (!playersConnected)
-            {
-                gameEnded();
-            }
-
-//            //Countdown texts
-//            long lastMove = game.getLastMove() / 1000;
-//            long currentTime = System.currentTimeMillis() / 1000;
-//            if (currentTime - lastMove > MOVE_TIME_LIMIT)
-//            {
-//                // They ran out of time!
-//                //System.out.println("TIME LIMIT HIT! TOKEN SWITCHED!");
-//                //game.switchToken();
-//            }
-        }
     }
 
     public String getId() {return this.gameId;}

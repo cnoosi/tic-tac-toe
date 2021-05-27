@@ -181,6 +181,9 @@ public class ServerProcess implements Runnable
                     GameProcess newGameProcess = new GameProcess(this, newGameId, gamePlayers);
                     games.put(newGameId, newGameProcess);
 
+                    gamePlayers.getFirst().setGameId(newGameId);
+                    gamePlayers.getSecond().setGameId(newGameId);
+
                     //Subscribe clients to the game AND game chat channel
                     unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getFirst());
                     unsubscribe("CHAT_GLOBAL", "Chat", gamePlayers.getSecond());
@@ -194,9 +197,6 @@ public class ServerProcess implements Runnable
                     QueueMessage gameFoundMessage = new QueueMessage(false, newGameId);
                     gamePlayers.getFirst().writeMessage(gameFoundMessage);
                     gamePlayers.getSecond().writeMessage(gameFoundMessage);
-
-                    Thread handleNewGameThread = new Thread(newGameProcess);
-                    handleNewGameThread.start();
 
                     //Clear pair for another matchmaking attempt
                     gamePlayers = new Pair<>();
@@ -253,6 +253,14 @@ public class ServerProcess implements Runnable
 
     public void disconnectClient(ClientConnection client)
     {
+        // Check if the player is in an active game
+        String gameId = client.getGameId();
+        if (gameId != null)
+        {
+            GameProcess findGame = games.get(gameId);
+            findGame.gameEnded();
+        }
+
         for (Map.Entry<String, ArrayList<ClientConnection>> entry : subscriptions.entrySet())
         {
             ArrayList<ClientConnection> clients = entry.getValue();

@@ -10,6 +10,7 @@ public class ClientConnection implements Runnable
 {
     Socket client;
     boolean continueConnection = true;
+    String gameId;
     int id;
     DataInputStream inputStream;
     DataOutputStream outputStream;
@@ -81,8 +82,10 @@ public class ClientConnection implements Runnable
     }
 
     public void killClient() {this.continueConnection = false;}
+    public void setGameId(String gameId) {this.gameId = gameId;}
     public void setId(int id) {this.id = id;}
 
+    public String getGameId() {return this.gameId;}
     public int getId() {return id;}
     public boolean isConnected() {return this.continueConnection;}
 }
