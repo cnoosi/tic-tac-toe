@@ -19,11 +19,11 @@ public class UserMenuUIController implements Observer, Subject
     @FXML private Button homeBtn;
     @FXML private Button loginBtn;
     @FXML private TextField userName;
-    @FXML private TextField password;
+    @FXML private PasswordField password;
     @FXML private TextField userName2;
     @FXML private TextField firstName;
     @FXML private TextField lastName;
-    @FXML private TextField password2;
+    @FXML private PasswordField password2;
     @FXML private Label userValidation;
     @FXML private Label userValidation2;
     private OpenScene openScene = new OpenScene();
