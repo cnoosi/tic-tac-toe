@@ -76,27 +76,6 @@ public class ClientProcess implements Runnable, ClientObserver
             //ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }
 
-    private void handleGameStatusMessage(Map<String, Object> map)
-    {
-        Game game = (Game) map.get("Game");
-        int winner = game.getWinner();
-        int currentToken = game.getToken();
-        Map<String, Pair<Integer, Position>> moves = game.getMoves();
-        for (Map.Entry<String, Pair<Integer, Position>> entry : moves.entrySet())
-        {
-            int moveIndex = entry.getValue().getFirst();
-            int moveToken;
-            if (moveIndex % 2 == 0)
-                moveToken = 1;
-            else
-                moveToken = 2;
-            Position pos = entry.getValue().getSecond();
-            ui.changeUIBoardToken(pos.getRow(), pos.getRow(), moveToken);
-        }
-        if(winner != 0)
-            ui.updateBoardUI(currentToken, winner);
-    }
-
     private void handleChatMessage(Map<String, Object> map)
     {
         String playerName = (String) map.get("PlayerName");
@@ -124,9 +103,6 @@ public class ClientProcess implements Runnable, ClientObserver
                             break;
                         case "GameMessage":
                             handleGameMessage(map);
-                            break;
-                        case "GameStatusMessage":
-                            handleGameStatusMessage(map);
                             break;
                         case "ChatMessage":
                             handleChatMessage(map);
@@ -183,6 +159,8 @@ public class ClientProcess implements Runnable, ClientObserver
             //Test stuff *******
             //Put the user into queue
             writeMessage(new QueueMessage(true));
+
+            writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
 
 //            Scanner input = new Scanner(System.in);
             while (clientAlive)

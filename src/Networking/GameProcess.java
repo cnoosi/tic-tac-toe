@@ -1,10 +1,10 @@
 package Networking;
 import Game.*;
 import Messages.GameMessage;
-import Messages.GameStatusMessage;
 import Messages.Message;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GameProcess
 {
@@ -56,6 +56,15 @@ public class GameProcess
             server.unsubscribe("CHAT_" + gameId, "Chat", players.getSecond());
             server.subscribe("CHAT_GLOBAL", "Chat", players.getFirst());
             server.subscribe("CHAT_GLOBAL", "Chat", players.getSecond());
+
+            // Unsubscribe all spectators
+            for (int i = 0; i < spectators.size(); i++)
+            {
+                ClientConnection client = spectators.get(i);
+                server.unsubscribe("GAME_" + gameId, "Game", client);
+                server.unsubscribe("CHAT_" + gameId, "Chat", client);
+                server.subscribe("CHAT_GLOBAL", "Chat", client);
+            }
 
             // Call database function
             server.saveGameData(this);
@@ -116,13 +125,34 @@ public class GameProcess
     public void addSpectator(ClientConnection spectator)
     {
         spectators.add(spectator);
-        Message gameStatus = new GameStatusMessage(this.game);
-        spectator.writeMessage(gameStatus);
+        int currentToken = game.getToken();
+        int winnerToken = game.getWinnerToken();
+        int spectators = getSpectatorCount();
+        Map<String, Pair<Integer, Position>> moves = this.game.getMoves();
+        for (Map.Entry<String, Pair<Integer, Position>> entry : moves.entrySet())
+        {
+            int moveIndex = entry.getValue().getFirst();
+            int token;
+            if (moveIndex % 2 == 0)
+                token = 1;
+            else
+                token = 2;
+            Position pos = entry.getValue().getSecond();
+            GameMessage gameMessage = new GameMessage(currentToken, winnerToken, spectators,
+                                                      pos.getRow(), pos.getCol(), token);
+            spectator.writeMessage(gameMessage);
+        }
+        server.unsubscribe("CHAT_GLOBAL", "Chat", spectator);
+        server.subscribe("GAME_" + gameId, "Game", spectator);
+        server.subscribe("CHAT_" + gameId, "Chat", spectator);
     }
 
     public void removeSpectator(ClientConnection spectator)
     {
         spectators.remove(spectator);
+        server.unsubscribe("GAME_" + gameId, "Game", spectator);
+        server.unsubscribe("CHAT_" + gameId, "Chat", spectator);
+        server.subscribe("CHAT_GLOBAL", "Chat", spectator);
     }
 
     public String getId() {return this.gameId;}

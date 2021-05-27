@@ -42,7 +42,7 @@ public class ServerProcess implements Runnable
         System.out.println("JOIN QUEUE: " + joinQueue);
         if (joinQueue)
         {
-            if (client.getId() != 0)
+            //if (client.getId() != -1)
                 matchmakingQueue.add(client);
         }
         else
@@ -75,6 +75,7 @@ public class ServerProcess implements Runnable
         boolean spectate = (boolean) map.get("Spectate");
         String gameId = (String) map.get("GameId");
         GameProcess findGame = games.get(gameId);
+        System.out.println(findGame);
         if (findGame != null)
         {
             if (spectate)
