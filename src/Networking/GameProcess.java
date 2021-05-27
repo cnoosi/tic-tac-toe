@@ -68,21 +68,30 @@ public class GameProcess implements Runnable
 
     public int getToken(ClientConnection client)
     {
-        return players.getFirst() == client ? 1 : 2;
+        // had to make this more specific so non-players cant request moves
+        int token = 0;
+        if (players.getFirst() == client)
+            token = 1;
+        else if (players.getSecond() == client)
+            token = 2;
+        return token;
     }
 
     public void requestMove(ClientConnection client, int row, int col)
     {
         int token = getToken(client);
-        boolean moveMade = game.requestPosition(row, col, token);
-        if (moveMade)
+        if (token != 0)
         {
-            GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
-                                                     row, col, token);
-            server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
-            int winner = game.checkWin(); //Update winner
-            if (winner != 0)
-                gameEnded();
+            boolean moveMade = game.requestPosition(row, col, token);
+            if (moveMade) 
+            {
+                GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
+                        row, col, token);
+                server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
+                int winner = game.checkWin(); //Update winner
+                if (winner != 0)
+                    gameEnded();
+            }
         }
     }
 
