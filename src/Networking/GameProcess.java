@@ -58,7 +58,7 @@ public class GameProcess
             server.subscribe("CHAT_GLOBAL", "Chat", players.getSecond());
 
             // Call database function
-            // db.saveGameHistory(this);
+            server.saveGameData(this);
 
             server.killGameProcess(gameId);
         }

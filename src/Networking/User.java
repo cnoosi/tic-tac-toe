@@ -1,4 +1,4 @@
-package Game;
+package Networking;
 
 public class User {
 

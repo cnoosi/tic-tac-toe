@@ -1,5 +1,6 @@
 package Networking;
 
+import Game.*;
 import Messages.*;
 
 import java.net.InetAddress;
@@ -20,7 +21,7 @@ public class ServerProcess implements Runnable
     private Map<String, GameProcess> games;
     private BlockingQueue<ClientConnection> matchmakingQueue;
     private BlockingQueue<Map<String, Object>> messagesToProcess;
-    private UserDbManager userDatabase;
+    private DbManager database;
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {
@@ -93,19 +94,19 @@ public class ServerProcess implements Runnable
         String lastName = (String) map.get("LastName");
         if (action == AccountAction.Login)
         {
-            boolean loginSuccess = userDatabase.userFound(username, password);
+            boolean loginSuccess = database.userFound(username, password);
             if (loginSuccess)
             {
-                client.setId(userDatabase.getUserId(username));
+                client.setId(database.getUserId(username));
                 client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
                                     null, null, "success"));
             }
         }
         else if (action == AccountAction.Register)
         {
-            if (userDatabase.userAvailable(username))
+            if (database.userAvailable(username))
             {
-                userDatabase.addUser(username, firstName, lastName, password);
+                database.addUser(username, firstName, lastName, password);
                 client.writeMessage(new AccountMessage(AccountAction.Register, null, null,
                                     null, null, "success"));
             }
@@ -215,6 +216,33 @@ public class ServerProcess implements Runnable
         games.remove(findGame);
     }
 
+    public void saveGameData(GameProcess game)
+    {
+        Game gameObj = game.getGame();
+        Map<String, Pair<Integer, Position>> moves = gameObj.getMoves();
+        String gameId = game.getId();
+        long startTime = game.getStartTime();
+        long endTime = game.getEndTime();
+        Pair<ClientConnection, ClientConnection> players = game.getPlayers();
+        int playerId1 = players.getFirst().getId();
+        int playerId2 = players.getSecond().getId();
+        int winnerToken = gameObj.getWinnerToken();
+        database.addGame(gameId, startTime, endTime, playerId1, playerId2, playerId1, winnerToken);
+
+        for (Map.Entry<String, Pair<Integer, Position>> entry : moves.entrySet())
+        {
+            String time = entry.getKey();
+            int moveIndex = entry.getValue().getFirst();
+            int playerId;
+            if (moveIndex % 2 == 0)
+                playerId = playerId1;
+            else
+                playerId = playerId2;
+            Position pos = entry.getValue().getSecond();
+            database.addMoves(gameId, playerId, pos.getRow(), pos.getCol(), time, moveIndex);
+        }
+    }
+
     public void sendToSubscribedClients(String topic, Message newMessage, ClientConnection ignoreClient)
     {
         ArrayList<ClientConnection> subs = subscriptions.get(topic);
@@ -285,7 +313,7 @@ public class ServerProcess implements Runnable
         subscriptions = new HashMap<String, ArrayList<ClientConnection>>();
         matchmakingQueue = new SynchronousQueue<ClientConnection>();
         games = new HashMap<String, GameProcess>();
-        userDatabase = new UserDbManager();
+        database = new DbManager();
 
         Thread messagingProcessThread = new Thread(this::handleClientMessagesProcess);
         messagingProcessThread.start();

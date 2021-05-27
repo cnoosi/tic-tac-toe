@@ -81,11 +81,17 @@ public class ClientProcess implements Runnable, ClientObserver
         Game game = (Game) map.get("Game");
         int winner = game.getWinner();
         int currentToken = game.getToken();
-        ArrayList<Position> moves = game.getMoves();
-        for (int i = 0; i < moves.size(); i++)
+        Map<String, Pair<Integer, Position>> moves = game.getMoves();
+        for (Map.Entry<String, Pair<Integer, Position>> entry : moves.entrySet())
         {
-            int moveToken = i % 2 + 1;
-            ui.changeUIBoardToken(moves.get(i).getRow(), moves.get(i).getRow(), moveToken);
+            int moveIndex = entry.getValue().getFirst();
+            int moveToken;
+            if (moveIndex % 2 == 0)
+                moveToken = 1;
+            else
+                moveToken = 2;
+            Position pos = entry.getValue().getSecond();
+            ui.changeUIBoardToken(pos.getRow(), pos.getRow(), moveToken);
         }
         if(winner != 0)
             ui.updateBoardUI(currentToken, winner);
@@ -150,7 +156,7 @@ public class ClientProcess implements Runnable, ClientObserver
     public ClientProcess(Stage primaryStage)
     {
         this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Menu");
+        ui.openPage("Board");
     }
 
     @Override

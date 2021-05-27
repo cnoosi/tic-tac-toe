@@ -1,6 +1,14 @@
 package Game;
 
+import Networking.ClientConnection;
+import Networking.Pair;
+import javafx.geometry.Pos;
+
+import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game implements Cloneable
 {
@@ -10,7 +18,7 @@ public class Game implements Cloneable
     private int                 moveIndex = 0;
     private long                lastMove = System.currentTimeMillis();
     private int                 winnerToken = 0;
-    private ArrayList<Position> moves = new ArrayList<Position>();
+    private Map<String, Pair<Integer, Position>> moves = new HashMap<String, Pair<Integer, Position>>();
     private int                 localPlayers;
     private ComputerAlgorithm   ai;
 
@@ -81,8 +89,10 @@ public class Game implements Cloneable
         if (this.token == playerToken && getPosition(i, j) == 0)
         {
             setPosition(i, j, playerToken);
-            this.moves.add(new Position(i, j));
+            String currentTime = "" + System.currentTimeMillis();
+            this.moves.put(currentTime, new Pair((Integer) moveIndex, new Position(i, j)));
             switchToken();
+            moveIndex++;
             // Make a move for the AI if only single player
             if (this.token == 2 && this.localPlayers == 1)
             {
@@ -208,7 +218,7 @@ public class Game implements Cloneable
     }
 
     public int getWinnerToken() {return this.winnerToken;}
-    public ArrayList<Position> getMoves() {return this.moves;}
+    public Map<String, Pair<Integer, Position>> getMoves() {return this.moves;}
 
     @Override
     public String toString()

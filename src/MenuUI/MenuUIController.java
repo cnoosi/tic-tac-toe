@@ -2,7 +2,6 @@ package MenuUI;
 
 import BoardUI.*;
 import Game.*;
-import Networking.UserDbManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

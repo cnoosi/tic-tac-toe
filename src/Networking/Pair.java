@@ -13,6 +13,12 @@ public class Pair <C1, C2>
         this.second = null;
     }
 
+    public Pair(C1 c1, C2 c2)
+    {
+        this.first = c1;
+        this.second = c2;
+    }
+
     public C1 getFirst()
     {
         return first;
