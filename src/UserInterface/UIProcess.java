@@ -44,9 +44,10 @@ public class UIProcess implements Subject, Observer
     Stage primaryStage;
 
     //Observers
-    ArrayList<Observer> loginObservers = new ArrayList<>();
-    ArrayList<Observer> menuObservers  = new ArrayList<>();
-    ArrayList<Observer> boardObservers = new ArrayList<>();
+    ArrayList<Observer> loginObservers  = new ArrayList<>();
+    ArrayList<Observer> menuObservers   = new ArrayList<>();
+    ArrayList<Observer> boardObservers  = new ArrayList<>();
+    ArrayList<Observer> clientObservers = new ArrayList<>();
 
     // Updated Constructor
     public UIProcess(ClientProcess client, Stage primaryStage)
@@ -85,6 +86,7 @@ public class UIProcess implements Subject, Observer
             this.addObserver(loginController);
             this.addObserver(menuController);
             this.addObserver(boardController);
+            this.addObserver(client);
 
             // default scene
             scene = new Scene(menuRoot);
@@ -135,33 +137,16 @@ public class UIProcess implements Subject, Observer
 
         }
 
-        // User Menu (Login Page) Actions
-        else if(type.equals("Logout"))
-        {
-           notifyObservers(message);
-        }
-
-        else if(type.equals("Login"))
-        {
-            notifyObservers(message);
-        }
-
-        else if(type.equals("CreateAccount"))
-        {
-            notifyObservers(message);
-        }
-
         else if(type.equals("LocalMove"))
         {
 
         }
 
-        else if(type.equals("Move"))
+        // User Menu Actions
+        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount") || type.equals("Move"))
         {
             notifyObservers(message);
         }
-
-        System.out.println(type);
     }
 
     // Handle observers - UIProcess being subject
@@ -176,6 +161,9 @@ public class UIProcess implements Subject, Observer
 
         else if(o instanceof  BoardUIController)
             boardObservers.add((Observer) o);
+
+        else if(o instanceof ClientProcess)
+            clientObservers.add((Observer) o);
     }
 
     @Override
@@ -189,16 +177,30 @@ public class UIProcess implements Subject, Observer
 
         else if(o instanceof  BoardUIController)
             boardObservers.remove(o);
+
+        else if(o instanceof ClientProcess)
+            clientObservers.remove(o);
     }
 
     @Override
     public void notifyObservers(ObserverMessage message)
     {
         String type = message.getMessageType();
-        if(type.equals("MusicPlayer")) {
+
+        if(type.equals("MusicPlayer"))
+        {
             menuObservers.forEach(observer -> observer.update(message));
         }
 
+        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount") || type.equals("Move"))
+        {
+            clientObservers.forEach(observer -> observer.update(message));
+        }
+
+        else if(type.equals("UIMove"))
+        {
+            boardObservers.forEach(observer -> observer.update(message));
+        }
     }
 
     /**********************************
@@ -266,7 +268,14 @@ public class UIProcess implements Subject, Observer
 
     public void changeUIBoardToken(int row, int col, int newToken)
     {
-        //notifyObservers(new Position(row, col), newToken);
+        System.out.println("function called");
+        ArrayList<String> move = new ArrayList<>();
+
+        move.add(String.valueOf(row));
+        move.add(String.valueOf(col));
+        move.add(String.valueOf(newToken));
+
+        notifyObservers(new ObserverMessage("UIMove", move));
     }
 
     public void updateBoardUI(int currentToken, int winner)

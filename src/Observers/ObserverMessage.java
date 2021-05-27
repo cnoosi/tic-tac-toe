@@ -45,8 +45,8 @@ public class ObserverMessage
         String output;
 
         output = messageType + ":\n";
-        for(String str : message)
-            output += str + "\n";
+        for(int i = 0; i < message.size(); i++)
+            output += message.get(i) + "\n";
 
         return output;
     }

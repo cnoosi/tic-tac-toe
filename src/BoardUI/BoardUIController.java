@@ -60,8 +60,12 @@ public class BoardUIController implements Initializable, Observer, Subject
             if(event.getSource() == buttonList.get(button))
             {
                 Position pos = getPositionFromIndex(button);
-               // notifyObservers(pos, token);
-                notifyObservers(new ObserverMessage("From board controller"));
+                ArrayList<String> move = new ArrayList<String>();
+                move.add(String.valueOf(pos.getRow()));
+                move.add(String.valueOf(pos.getCol()));
+                move.add(String.valueOf(token));
+
+                notifyObservers(new ObserverMessage("Move", move));
             }
         }
     }
@@ -188,7 +192,27 @@ public class BoardUIController implements Initializable, Observer, Subject
     @Override
     public void update(ObserverMessage message)
     {
-
+        String type = message.getMessageType();
+        System.out.println("Here at UIMove");
+        if(type.equals("UIMove"))
+        {
+            int row = Integer.parseInt(message.getMessage().get(0));
+            int col = Integer.parseInt(message.getMessage().get(1));
+            this.token = Integer.parseInt(message.getMessage().get(2));
+            Position pos = new Position(row, col);
+            Platform.runLater(new Runnable(){
+                @Override
+                public void run() {
+                    if(row == 20) {
+                        notificationLabel.setTextFill(Color.WHITE);
+                        notificationLabel.setText("Winner is: Player " + token);
+                        setDisable(true);
+                    }
+                    else
+                        setImage(token, row, col);
+                }
+            });
+        }
     }
 
     @Override
