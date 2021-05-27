@@ -75,13 +75,27 @@ public class ServerProcess implements Runnable
         boolean spectate = (boolean) map.get("Spectate");
         String gameId = (String) map.get("GameId");
         GameProcess findGame = games.get(gameId);
-        System.out.println(findGame);
         if (findGame != null)
         {
             if (spectate)
                 findGame.addSpectator(client);
             else
                 findGame.removeSpectator(client);
+        }
+        else
+        {
+            GameHistory game = database.getGameHistory(gameId);
+            if (game != null)
+            {
+                ArrayList<MovesHistory> moves = database.getMoveHistory(gameId);
+                client.writeMessage(new GameReplayMessage(game.getPlayer1Id(), game.getPlayer1Id(),
+                                                          game.getWinnerToken(), moves.size(), game.getStartTime()));
+                for (int i = 0; i < moves.size(); i++)
+                {
+                    MovesHistory move = moves.get(i);
+                    client.writeMessage(new GameHistoryMessage(i, move.getTime(), move.getRow(), move.getCol()));
+                }
+            }
         }
     }
 

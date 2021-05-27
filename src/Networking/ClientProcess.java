@@ -27,6 +27,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     DataOutputStream outputStream;
 
     private UIProcess ui;
+    private GameReplayProcess activeReplay;
     String username;
     private int userId;
     private String gameId;
@@ -66,6 +67,14 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             ui.leaveQueue();
     }
 
+    private void handleChatMessage(Map<String, Object> map)
+    {
+        String playerName = (String) map.get("PlayerName");
+        String playerChat = (String) map.get("PlayerChat");
+        ui.newChat(playerName, playerChat);
+    }
+
+
     private void handleGameMessage(Map<String, Object> map)
     {
         long currentToken = (long) map.get("CurrentToken");
@@ -83,11 +92,27 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }
 
-    private void handleChatMessage(Map<String, Object> map)
+    private void handleGameReplayMessage(Map<String, Object> map)
     {
-        String playerName = (String) map.get("PlayerName");
-        String playerChat = (String) map.get("PlayerChat");
-        ui.newChat(playerName, playerChat);
+        long player1Id = (long) map.get("Player1Id");
+        long player2Id = (long) map.get("Player2Id");
+        long winnerToken = (long) map.get("WinnerToken");
+        long totalMoveCount = (long) map.get("TotalMoveCount");
+        long startTime = (long) map.get("StartTime");
+        activeReplay = new GameReplayProcess(this, (int) player1Id, (int) player2Id,
+                                             (int) winnerToken, (int) totalMoveCount, startTime);
+
+        Thread activeReplayThread = new Thread(activeReplay);
+        activeReplayThread.start();
+    }
+
+    private void handleGameHistoryMessage(Map<String, Object> map)
+    {
+        String timestamp = (String) map.get("Timestamp");
+        long row = (long) map.get("Row");
+        long col = (long) map.get("Col");
+
+        activeReplay.addMove(new Pair(timestamp, new Position((int) row, (int) col)));
     }
 
     public void handleMessagingProcess()
@@ -108,11 +133,17 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
                         case "QueueMessage":
                             handleQueueMessage(map);
                             break;
+                        case "ChatMessage":
+                            handleChatMessage(map);
+                            break;
                         case "GameMessage":
                             handleGameMessage(map);
                             break;
-                        case "ChatMessage":
-                            handleChatMessage(map);
+                        case "GameReplayMessage":
+                            handleGameReplayMessage(map);
+                            break;
+                        case "GameHistoryMessage":
+                            handleGameHistoryMessage(map);
                             break;
                     }
                 }
@@ -193,8 +224,8 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         else if(messageType.equals("Spectate"))
         {
-            // User has selected spectate mode
-            // IDK what to do with this
+            String gameId = message.getMessage().get(0); // holds the gameId they want to spectate
+            writeMessage(new SpectateMessage(true, gameId));
         }
     }
 
@@ -211,23 +242,17 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
             //Test stuff *******
             //Put the user into queue
-            writeMessage(new QueueMessage(true));
+            //writeMessage(new QueueMessage(true));
 
 
-            //writeMessage(new SpectateMessage(true, ""));
+            //writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
 
-//            Scanner input = new Scanner(System.in);
-//            while (clientAlive)
-//            {
-//                String newChat = input.nextLine();
-//                ChatMessage chatMessage = new ChatMessage(newChat, this.chatChannel);
-//                writeMessage(chatMessage);
-//
-//                int row = input.nextInt();
-//                int col = input.nextInt();
-//                MoveMessage moveRequest = new MoveMessage(gameId, row, col);
-//                writeMessage(moveRequest);
-//            }
+            Scanner input = new Scanner(System.in);
+            while (clientAlive)
+            {
+                String newGameId = input.nextLine();
+                writeMessage(new SpectateMessage(true, newGameId));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -238,4 +263,5 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
     public String getUsername() {return this.username;}
     public int getUserId() {return this.userId;}
+    public UIProcess getUi() {return this.ui;}
 }

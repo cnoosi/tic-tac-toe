@@ -2,6 +2,7 @@ package Networking;
 import Game.*;
 import Messages.GameMessage;
 import Messages.Message;
+import Messages.SpectateMessage;
 
 import java.util.ArrayList;
 import java.util.Map;

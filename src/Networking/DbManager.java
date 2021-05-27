@@ -132,13 +132,19 @@ public class DbManager {
 
     public ArrayList<MovesHistory> getMoveHistory(String gameId)
     {
-        ArrayList<MovesHistory> moves = new ArrayList<>();
+        Map<Integer, MovesHistory> moveMap = new HashMap<Integer, MovesHistory>();
+
         for (MovesHistory move : movesList)
         {
-            if (move.getGameId().equals(gameId))
-            {
-                moves.add(move.getMoveIndex(), move);
+            if (move.getGameId().equals(gameId)) {
+                moveMap.put(move.getMoveIndex(), move);
             }
+        }
+
+        ArrayList<MovesHistory> moves = new ArrayList<>();
+        for (Map.Entry<Integer, MovesHistory> entry: moveMap.entrySet())
+        {
+            moves.add(entry.getValue());
         }
         return moves;
     }
