@@ -28,6 +28,8 @@ public class ClientProcess implements Runnable, ClientObserver
     DataOutputStream outputStream;
 
     private UIProcess ui;
+    String username;
+    private int userId;
     private String gameId;
     private String chatChannel;
 
@@ -151,7 +153,7 @@ public class ClientProcess implements Runnable, ClientObserver
     public ClientProcess(Stage primaryStage)
     {
         this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Board");
+        ui.openPage("Menu");
     }
 
     @Override
@@ -177,7 +179,7 @@ public class ClientProcess implements Runnable, ClientObserver
 
             //Test stuff *******
             //Put the user into queue
-            writeMessage(new QueueMessage(true));
+            //writeMessage(new QueueMessage(true));
 
             Scanner input = new Scanner(System.in);
 //            while (clientAlive)
@@ -197,4 +199,10 @@ public class ClientProcess implements Runnable, ClientObserver
             ex.printStackTrace();
         }
     }
+
+    public void setUsername(String username) {this.username = username;}
+    public void setId(int userId) {this.userId = userId;}
+
+    public String getUsername() {return this.username;}
+    public int getUserId() {return this.userId;}
 }

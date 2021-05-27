@@ -16,9 +16,9 @@ public class ClientConnection implements Runnable
     Thread clientThread;
     ServerProcess server;
 
-    public ClientConnection(int id, Socket c, ServerProcess server) throws Exception
+    public ClientConnection(Socket c, ServerProcess server) throws Exception
     {
-        this.id = id;
+        this.id = -1;
         this.client = c;
         this.outputStream = new DataOutputStream(c.getOutputStream());
         this.inputStream = new DataInputStream(c.getInputStream());
@@ -48,7 +48,10 @@ public class ClientConnection implements Runnable
         }
     }
 
-    public int getId() {return id;}
+    public void setId(int id)
+    {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o)
@@ -81,4 +84,6 @@ public class ClientConnection implements Runnable
             ex.printStackTrace();
         }
     }
+
+    public int getId() {return id;}
 }

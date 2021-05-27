@@ -1,8 +1,8 @@
 package MenuUI;
 
-import Game.Database;
-import Game.DbManager;
 import Game.OpenScene;
+import Messages.AccountMessage;
+import Networking.AccountAction;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 
-import javax.swing.*;
 import java.util.Scanner;
 
 public class UserMenuUIController {
@@ -33,24 +32,12 @@ public class UserMenuUIController {
     //********************************************
     public void handleLoginBtn(ActionEvent event) throws Exception{
         Scanner  scanner = new Scanner(System.in);
-//      Database db      = new Database();
         String   user    = userName.getText();
         String   pass    = password.getText();
-        boolean  userValid;
 
         //CHECKS TO SEE IF THE USER EXISTS
-        userValid = DbManager.getInstance().userFound(user,pass);
-//      userValid = db.find(user,pass);
-
-        if(userValid)
-        {
-            userValidation.setText("user has been found!");
-            DbManager.getInstance().setCurrentUser(user);
-        }
-        else
-        {
-            userValidation.setText("User not found");
-        }
+        // Send AccountMessage to login via ClientProcess.writeMessage()
+        //client.writeMessage(new AccountMessage(AccountAction.Login, user, null, null, pass));
     }
 
     //********************************************
@@ -63,22 +50,15 @@ public class UserMenuUIController {
         String lastN  = lastName.getText();
         String pass   = password2.getText();
 
-        boolean available = DbManager.getInstance().userAvailable(user);
-        if (!available)
-        {
-            userValidation2.setText("that username is already taken");
-        }
-        else
-        {
-            DbManager.getInstance().addUser(user,firstN,lastN,pass);
-            userValidation2.setText("account successfully created!!");
-        }
+        //client.writeMessage(new AccountMessage(AccountAction.Register, user, firstN, lastN, pass));
 
+        //userValidation2.setText("that username is already taken");
     }
     
-    public void handleLogoutButton(ActionEvent event) throws Exception{
-            DbManager.getInstance().setCurrentUserIndex(0);
+    public void handleLogoutButton(ActionEvent event) throws Exception {
+        //client.writeMessage(new AccountMessage(AccountAction.Logout));
     }
+
     public void handleHomeBtn(ActionEvent event) throws Exception {
         Stage stage = (Stage) homeBtn.getScene().getWindow();
         FXMLLoader root = new FXMLLoader();

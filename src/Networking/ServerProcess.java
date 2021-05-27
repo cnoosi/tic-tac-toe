@@ -1,11 +1,7 @@
 package Networking;
 
-import Messages.ChatMessage;
-import Messages.Message;
-import Messages.QueueMessage;
-import Messages.SubscribeMessage;
+import Messages.*;
 
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,6 +20,7 @@ public class ServerProcess implements Runnable
     private Map<String, GameProcess> games;
     private BlockingQueue<ClientConnection> matchmakingQueue;
     private BlockingQueue<Map<String, Object>> messagesToProcess;
+    private UserDbManager userDatabase;
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {
@@ -83,6 +80,44 @@ public class ServerProcess implements Runnable
         }
     }
 
+    private void handleAccountMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        AccountAction action = (AccountAction) map.get("Action");
+        String username = (String) map.get("Username");
+        String password = (String) map.get("Password");
+        String firstName = (String) map.get("FirstName");
+        String lastName = (String) map.get("LastName");
+        if (action == AccountAction.Login)
+        {
+            boolean loginSuccess = userDatabase.userFound(username, password);
+            if (loginSuccess)
+            {
+                client.setId(userDatabase.getUserId(username));
+                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
+                                    null, null, "success"));
+            }
+        }
+        else if (action == AccountAction.Register)
+        {
+            if (userDatabase.userAvailable(username))
+            {
+                userDatabase.addUser(username, firstName, lastName, password);
+                client.writeMessage(new AccountMessage(AccountAction.Register, null, null,
+                                    null, null, "success"));
+            }
+            else
+                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
+                                    null, null, "unavailable"));
+        }
+        else if (action == AccountAction.Logout)
+        {
+            client.setId(0);
+            client.writeMessage(new AccountMessage(AccountAction.Logout, null, null,
+                               null, null, "success"));
+        }
+    }
+
     private void handleClientMessagesProcess()
     {
         try
@@ -106,6 +141,9 @@ public class ServerProcess implements Runnable
                         break;
                     case "SpectateMessage":
                         handleSpectateMessage(map);
+                        break;
+                    case "AccountMessage":
+                        handleAccountMessage(map);
                         break;
                     default:
                         System.out.println("Failed to process message: " + messageType);
@@ -221,6 +259,7 @@ public class ServerProcess implements Runnable
         subscriptions = new HashMap<String, ArrayList<ClientConnection>>();
         matchmakingQueue = new SynchronousQueue<ClientConnection>();
         games = new HashMap<String, GameProcess>();
+        userDatabase = new UserDbManager();
 
         Thread messagingProcessThread = new Thread(this::handleClientMessagesProcess);
         messagingProcessThread.start();
@@ -235,8 +274,7 @@ public class ServerProcess implements Runnable
             while (keepServerRunning)
             {
                 Socket clientSocketConnection = server.accept();
-                ClientConnection newConnection = new ClientConnection(connections.size() + 1,
-                                                                        clientSocketConnection, this);
+                ClientConnection newConnection = new ClientConnection(clientSocketConnection, this);
                 connections.add(newConnection);
                 InetAddress inetAddress = clientSocketConnection.getInetAddress();
                 System.out.println("Accepted connection from " + inetAddress.getHostAddress());

@@ -1,14 +1,16 @@
-package Game;
+package Networking;
+import Game.User;
+
 import java.util.*;
 import java.sql.*;
 
-public class DbManager {
+public class UserDbManager {
 
-    private static DbManager instance = new DbManager();
+    private static UserDbManager instance = new UserDbManager();
     private ArrayList<User> userList = new ArrayList<>();
     private int currentUser;
 
-    private DbManager()
+    public UserDbManager()
     {
         System.out.println("jeff");
         String sql = "SELECT * FROM User";
@@ -30,11 +32,6 @@ public class DbManager {
             }
 
         } catch(SQLException e) { System.out.println(e.getMessage()); }
-    }
-
-    public static DbManager getInstance()
-    {
-        return instance;
     }
 
     //********************************************
@@ -72,17 +69,16 @@ public class DbManager {
         return available;
     }
 
-    public void setCurrentUser(String userName)
+    public int getUserId(String username)
     {
         for(User u: userList)
         {
-            if(u.getUserName().equals(userName)){
-                currentUser = userList.indexOf(u);
-                System.out.println("current index: " + currentUser);
-            }
+            if (u.getUserName().equals(username))
+                return u.getId();
         }
-        System.out.println("current index: " + currentUser);
+        return -1;
     }
+
 
     public void setCurrentUser(int id)
     {
