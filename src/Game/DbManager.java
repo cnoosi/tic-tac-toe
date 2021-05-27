@@ -272,10 +272,4 @@ public class DbManager {
         }
     }
 
-    public void printAllGames(){
-        for(GameHistory g: gameList){
-            System.out.println(g.toString());
-        }
-    }
-
 }
