@@ -82,7 +82,7 @@ public class DbManager {
         boolean found = false;
         for (User u: userList)
         {
-            if((u.getUserName().equals(user)) && (u.getPassword().equals(pass)))
+            if((u.getUserName().equals(user)) && (u.getPassword().equals(pass)) && !u.isDeleted())
             {
                 found = true;
                 break;

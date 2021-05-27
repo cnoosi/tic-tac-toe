@@ -100,7 +100,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         long totalMoveCount = (long) map.get("TotalMoveCount");
         long startTime = (long) map.get("StartTime");
         activeReplay = new GameReplayProcess(this, (int) player1Id, (int) player2Id,
-                                             (int) winnerToken, (int) totalMoveCount, startTime);
+                                             (int) totalMoveCount, (int) winnerToken, startTime);
 
         Thread activeReplayThread = new Thread(activeReplay);
         activeReplayThread.start();
@@ -245,7 +245,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             //writeMessage(new QueueMessage(true));
 
 
-            //writeMessage(new SpectateMessage(true, "323003f2-e4cc-4a86-8d89-d4e65bce3de3"));
+            writeMessage(new SpectateMessage(true, "3012235e-db3f-41aa-a009-e54ae3883ae9"));
 
             Scanner input = new Scanner(System.in);
             while (clientAlive)

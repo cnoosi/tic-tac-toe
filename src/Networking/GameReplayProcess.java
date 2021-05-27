@@ -48,7 +48,7 @@ public class GameReplayProcess implements Runnable
                 if (loadedMoves) {
                     if (startReplayTime == 0)
                     {
-                        //client.getUi().clearBoard();
+                        client.getUi().clearBoard();
                         startReplayTime = System.currentTimeMillis();
                     }
 
@@ -59,6 +59,7 @@ public class GameReplayProcess implements Runnable
                         Pair<String, Position> nextMove = moves.get(currentMove);
                         Long timestamp = Long.parseLong(nextMove.getFirst());
                         long moveTimePosition = timestamp - startTime;
+
                         if (replayTimePosition > moveTimePosition) {
                             int token;
                             if (currentMove % 2 == 0)
