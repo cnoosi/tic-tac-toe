@@ -61,19 +61,51 @@ public class BoardUIController implements Initializable, Observer, Subject
         {
             if(event.getSource() == buttonList.get(button))
             {
-                System.out.println(singlePlayer);
                 Position pos = getPositionFromIndex(button);
-                ArrayList<String> move = new ArrayList<String>();
-                move.add(String.valueOf(pos.getRow()));
-                move.add(String.valueOf(pos.getCol()));
-                move.add(String.valueOf(token));
 
                 if(singlePlayer)
                 {
-                    
+
+                    ArrayList<String> move = new ArrayList<String>();
+                    move.add(String.valueOf(pos.getRow()));
+                    move.add(String.valueOf(pos.getCol()));
+                    move.add(String.valueOf(1));
+                    boolean moveMade = game.requestPosition(pos.getRow(), pos.getCol(), 1);
+                    if (moveMade)
+                    {
+                        update(new ObserverMessage("UIMove", move));
+
+                        int winnerToken1 = game.checkWin();
+                        move.add(String.valueOf(winnerToken1));
+                        update(new ObserverMessage("UIMove", move));
+
+                        if (winnerToken1 == 0)
+                        {
+                            Position aiPos = ai.getMove(game);
+                            ArrayList<String> aiMove = new ArrayList<String>();
+                            aiMove.add(String.valueOf(aiPos.getRow()));
+                            aiMove.add(String.valueOf(aiPos.getCol()));
+                            aiMove.add(String.valueOf(2));
+                            boolean aiMoveMade = game.requestPosition(aiPos.getRow(), aiPos.getCol(), 2);
+                            if (aiMoveMade)
+                            {
+                                update(new ObserverMessage("UIMove", aiMove));
+
+                                int winnerToken2 = game.checkWin();
+                                aiMove.add(String.valueOf(winnerToken2));
+                                update(new ObserverMessage("UIMove", aiMove));
+                            }
+                        }
+                    }
                 }
                 else
+                {
+                    ArrayList<String> move = new ArrayList<String>();
+                    move.add(String.valueOf(pos.getRow()));
+                    move.add(String.valueOf(pos.getCol()));
+                    move.add(String.valueOf(token));
                     notifyObservers(new ObserverMessage("Move", move));
+                }
             }
         }
     }
@@ -121,44 +153,6 @@ public class BoardUIController implements Initializable, Observer, Subject
         }
     }
 
-    public void setResult(int token, int winner)
-    {
-        notificationLabel.setText("Winner is: " + token);
-        setDisable(true);
-    }
-
-    public Label getNotificationLabel()
-    {
-        return notificationLabel;
-    }
-
-    public void checkWin()
-    {
-        int winner = game.checkWin();
-        System.out.println(winner);
-        if (winner != 0)
-        {
-            if (winner == -1)
-            {
-                notificationLabel.setTextFill(new Color(1, 1, 0, 1));
-                notificationLabel.setText("Tie!");
-            }
-            else if (winner == 1)
-            {
-                notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
-                notificationLabel.setText("Player " + winner + " wins!");
-            }
-            else if (winner == 2)
-            {
-                notificationLabel.setTextFill(new Color(1, 0, 1, 1));
-                notificationLabel.setText("Player " + winner + " wins!");
-            }
-            setDisable(true);
-            game_has_winner = true;
-        }
-        game_has_winner = false;
-    }
-
     public void setDisable(boolean mode)
     {
         for(Button btn : buttonList)
@@ -167,21 +161,8 @@ public class BoardUIController implements Initializable, Observer, Subject
 
     public void setSinglePlayer(boolean mode)
     {
-        singlePlayer = mode;
-    }
-
-    public void setLocalPlayerCount(int playerCount)
-    {
-        this.playerCount = playerCount;
-    }
-
-    public void resetGame()
-    {
-        game = new Game(boardSize, playerCount);
-        updateTokens();
         setDisable(false);
-        game_has_winner = false;
-        notificationLabel.setText("");
+        singlePlayer = mode;
     }
 
     @Override
