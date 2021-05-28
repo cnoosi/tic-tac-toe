@@ -66,4 +66,10 @@ public class Pair <C1, C2>
     public int hashCode() {
         return Objects.hash(first, second);
     }
+
+    @Override
+    public String toString()
+    {
+        return "First Player: " + first.toString() + "\nSecond Player" + second.toString() + " \n";
+    }
 }

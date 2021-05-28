@@ -190,11 +190,6 @@ public class UIProcess implements Subject, Observer
             clearBoard();
         }
 
-        else if(type.equals("LocalMove"))
-        {
-
-        }
-
         else if(type.equals("ReplayGame"))
         {
             clearBoard();

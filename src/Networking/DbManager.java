@@ -154,6 +154,8 @@ public class DbManager {
 
     public ArrayList<GameHistory> getAllGames() {return this.gameList;}
 
+    public ArrayList<User> getAllPlayers() {return this.userList;}
+
     public ArrayList<GameHistory> getGameHistoryForUser(int userId)
     {
         ArrayList<GameHistory> history = new ArrayList<>();
