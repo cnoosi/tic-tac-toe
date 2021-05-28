@@ -66,10 +66,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         boolean inQueue = (boolean) map.get("InQueue");
         String gameId = (String) map.get("GameId");
         if (!inQueue && gameId != null)
-        {
-            ui.startGame();
             this.gameId = gameId;
-        }
         else if (inQueue)
             ui.joinQueue();
         else
@@ -150,7 +147,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         if (messagePreloadCount == messagePreloadCountCompleted)
         {
-            System.out.println("LIVE COUNT: " + liveGameList.size() + " || HISTORY COUNT: " + historyGameList.size());
             ui.gameHistoryRecieved(liveGameList, historyGameList);
         }
     }
