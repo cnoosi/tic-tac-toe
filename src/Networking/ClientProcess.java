@@ -29,8 +29,8 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     DataOutputStream outputStream;
 
     private UIProcess ui;
-    String username;
-    private int userId;
+    String username = "Logged Out";
+
     private String gameId;
     private String chatChannel;
 
@@ -160,13 +160,22 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         if (accountAction == AccountAction.Login)
         {
+            String username = (String) map.get("Username");
             if (response.equals("success"))
+            {
+                this.username = username;
+                ui.setActiveUsername(this.username);
                 ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged in", "You have successfully logged in.");
+            }
             else
                 ui.createAlert(Alert.AlertType.ERROR, "INCORRECT USERNAME OR PASSWORD", "The username and password do not match, retry entering your password");
         }
         else if (accountAction == AccountAction.Logout)
+        {
+            this.username = "Logged Out";
+            ui.setActiveUsername(this.username);
             ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged out", "You have successfully logged out.");
+        }
         else if (accountAction == AccountAction.Register)
         {
             if (response.equals("success"))
@@ -315,7 +324,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         else if (messageType.equals("ChangeName"))
         {
-            System.out.println("client knows whats up");
             String password  = message.getMessage().get(0); // holds username
             String firstName = message.getMessage().get(1); // holds first name
             String lastName  = message.getMessage().get(2); // holds second name
@@ -403,9 +411,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     }
 
     public void setUsername(String username) {this.username = username;}
-    public void setId(int userId) {this.userId = userId;}
 
     public String getUsername() {return this.username;}
-    public int getUserId() {return this.userId;}
     public UIProcess getUi() {return this.ui;}
 }

@@ -32,7 +32,7 @@ public class AccountService {
             if (loginSuccess)
             {
                 client.setId(database.getUserId(username));
-                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
+                client.writeMessage(new AccountMessage(AccountAction.Login, username, null,
                         null, null, "success"));
             }
             else

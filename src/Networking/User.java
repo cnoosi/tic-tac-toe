@@ -9,7 +9,8 @@ public class User {
     private String  password;
     private boolean deleted;
 
-    public User(){
+    public User()
+    {
         id = -1;
         userName  = "Logged-Out";
         firstName = "Not";
@@ -30,7 +31,6 @@ public class User {
             setDeleted(true);
 
     }
-
 
     public int getId() {
         return id;

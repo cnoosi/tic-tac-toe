@@ -29,11 +29,6 @@ public class ServerProcess implements Runnable
     private AccountService accountsService;
     private GamesService gamesService;
 
-//    public ServerProcess(Stage primaryStage)
-//    {
-//        this.serverUIProcess = new ServerUIProcess(this, primaryStage);
-//    }
-
     private void handleSubscribeMessage(Map<String, Object> map)
     {
         ClientConnection client = (ClientConnection) map.get("Client");

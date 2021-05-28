@@ -347,6 +347,11 @@ public class UIProcess implements Subject, Observer
         }
     }
 
+    public void setActiveUsername(String username)
+    {
+        // do something with their username
+    }
+
     public void newChat(String playerName, String playerChat)
     {
         System.out.println("add new chat: " + playerName + ": " + playerChat);
@@ -402,6 +407,5 @@ public class UIProcess implements Subject, Observer
                 errorAlert.showAndWait();
             }
         });
-
     }
 }
