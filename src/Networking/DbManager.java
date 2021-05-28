@@ -157,6 +157,8 @@ public class DbManager {
         return null;
     }
 
+    public ArrayList<GameHistory> getAllGames() {return this.gameList;}
+
     public ArrayList<GameHistory> getGameHistoryForUser(int userId)
     {
         ArrayList<GameHistory> history = new ArrayList<>();
@@ -278,10 +280,7 @@ public class DbManager {
                 + "WHERE Username = ?";
 
         String sql = "UPDATE User Set " + columnToEdit + " = ? WHERE Username = ?";
-        //String sql = "UPDATE " + TABLE_NAME + " SET " + ColumnName + " = '" + newValue + "' WHERE " + Column + " = " + rowId;
 
-
-        System.out.println("Username: " + userName + " New firstName: " + newString);
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,newString);

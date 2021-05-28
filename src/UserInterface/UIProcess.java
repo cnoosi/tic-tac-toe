@@ -393,7 +393,6 @@ public class UIProcess implements Subject, Observer
 
     public void createAlert(Alert.AlertType alertType, String header, String content)
     {
-        System.out.println(header + " : " + content);
         Platform.runLater(new Runnable(){
             @Override
             public void run() {

@@ -226,4 +226,8 @@ public class ServerProcess implements Runnable
             catch (Exception ex) {}
         }
     }
+
+    public DbManager getDatabase() {return this.database;}
+    public ArrayList<ClientConnection> getConnections() {return this.connections;}
+    public GamesService getGamesService() {return this.gamesService;}
 }
