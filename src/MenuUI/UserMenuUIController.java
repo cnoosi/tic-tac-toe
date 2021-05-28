@@ -4,14 +4,22 @@ import Game.OpenScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import Observers.*;
+
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class UserMenuUIController implements Observer, Subject
+public class UserMenuUIController implements Observer, Subject, Initializable
 {
     @FXML private Button homeBtn;
     @FXML private Button loginBtn;
@@ -27,6 +35,9 @@ public class UserMenuUIController implements Observer, Subject
 
     private Observer UIProcess;
 
+    @FXML private MediaView mv;
+    private MediaPlayer mp;
+    private Media me;
 
     //********************************************
     //LOGIN FUNCTION
@@ -90,5 +101,16 @@ public class UserMenuUIController implements Observer, Subject
     {
         if(UIProcess != null)
             UIProcess.update(message);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
+        String path = new File("src/resources/images/background.mp4").getAbsolutePath();
+        me = new Media(new File(path).toURI().toString());
+        mp = new MediaPlayer(me);
+        mv.setMediaPlayer(mp);
+        mp.setAutoPlay(true);
+        mp.setCycleCount(MediaPlayer.INDEFINITE);
     }
 }

@@ -12,8 +12,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -43,6 +47,10 @@ public class UserPrefUIController implements Initializable, Observer, Subject
     @FXML PasswordField passwordDelete;
 
     private Observer UIProcess;
+
+    @FXML private MediaView mv;
+    private MediaPlayer mp;
+    private Media me;
 
     public void handleNameChange(ActionEvent event) throws Exception
     {
@@ -109,12 +117,6 @@ public class UserPrefUIController implements Initializable, Observer, Subject
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle)
-    {
-
-    }
-
-    @Override
     public void update(ObserverMessage message)
     {
 
@@ -136,5 +138,16 @@ public class UserPrefUIController implements Initializable, Observer, Subject
     public void notifyObservers(ObserverMessage message)
     {
         UIProcess.update(message);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
+        String path = new File("src/resources/images/background.mp4").getAbsolutePath();
+        me = new Media(new File(path).toURI().toString());
+        mp = new MediaPlayer(me);
+        mv.setMediaPlayer(mp);
+        mp.setAutoPlay(true);
+        mp.setCycleCount(MediaPlayer.INDEFINITE);
     }
 }
