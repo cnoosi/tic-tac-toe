@@ -39,7 +39,7 @@ public class MenuUIController implements Initializable, Observer, Subject
     @FXML private Button    multiPlayerBtn;
     @FXML private Button    userMenuBtn;
     @FXML private Button    gameHistoryBtn;
-    @FXML private Button    adminDashBtn;
+    @FXML private Button    userPrefBtn;
     @FXML private MediaView mv;
     @FXML private ImageView sngl;
     @FXML private ImageView mlti;
@@ -47,9 +47,6 @@ public class MenuUIController implements Initializable, Observer, Subject
 
     private MediaPlayer mp;
     private Media me;
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
     private Observer UIProcess;
 
 
@@ -79,6 +76,13 @@ public class MenuUIController implements Initializable, Observer, Subject
         mp.stop();
     }
 
+    public void setInteractablesDisabled(boolean disabled)
+    {
+        singlePlayerBtn.setDisable(disabled);
+        multiPlayerBtn.setDisable(disabled);
+        gameHistoryBtn.setDisable(disabled);
+        userPrefBtn.setDisable(disabled);
+    }
 
     @FXML
     public void handleUserPrefBtn(ActionEvent event)
@@ -97,58 +101,11 @@ public class MenuUIController implements Initializable, Observer, Subject
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String path = new File("src/resources/images/comp 1.mp4").getAbsolutePath();
 
-        //********************************************
-        //TESTING DATABASE
-        //********************************************
-//        Scanner scanner = new Scanner(System.in);
-////        Database db = new Database();
-//        System.out.println("Database Control Panel\n----------------\n" +
-//                            "1) Add new user\n" +
-//                            "2) Remove existing user\n" +
-//                            "3) Show existing users\n" +
-//                            "0) Continue to game\n");
-//        int userInput = scanner.nextInt();
-//        while (userInput != 0){
-//            switch (userInput){
-//                case 1:
-////                    System.out.println(db.connect());
-////                    System.out.println("Enter UserName FirstName LastName Password");
-////                    scanner.nextLine();
-////                    db.insert(scanner.nextLine(),scanner.nextLine(),scanner.nextLine(),scanner.nextLine());
-////                    break;
-//                case 2:
-////                    System.out.println(("Enter the UserName you wish to delete: "));
-////                    scanner.nextLine();
-////                    db.deleteRow(scanner.nextLine());
-////                    break;
-//                case 3:
-//                    DbManager.getInstance().printAllUsers();
-//                    break;
-//                case 0:
-//                    break;
-//            }
-//            System.out.println("Database Control Panel\n----------------\n" +
-//                    "1) Add new user\n" +
-//                    "2) Remove existing user\n" +
-//                    "3) Show existing users\n" +
-//                    "0) Continue to game\n");
-//            userInput = scanner.nextInt();
-//        }
-
-
-
         me = new Media(new File(path).toURI().toString());
         mp = new MediaPlayer(me);
         mv.setMediaPlayer(mp);
         mp.setAutoPlay(true);
         mp.setCycleCount(MediaPlayer.INDEFINITE);
-
-        //********************************************
-        //ADDING GRAPHICS TO THE SINGLE PLAYER BUTTON
-        //********************************************
-        //User current = new User();
-        //current = UserDbManager.getInstance().getCurrentUser();
-        //usernameLabel.setText(current.getUserName());
 
 
         //********************************************
@@ -202,8 +159,22 @@ public class MenuUIController implements Initializable, Observer, Subject
 
         if(type.equals("MusicPlayer"))
         {
-            System.out.println("MusicPlayer");
             mp.play();
+        }
+        else if (type.equals("UserStatusChanged"))
+        {
+            String username = message.getMessage().get(0);
+            boolean isLoggedIn = Boolean.parseBoolean(message.getMessage().get(1));
+            if (isLoggedIn)
+            {
+                setInteractablesDisabled(false);
+                usernameLabel.setText(username);
+            }
+            else
+            {
+                setInteractablesDisabled(true);
+                usernameLabel.setText("Logged Out");
+            }
         }
     }
 

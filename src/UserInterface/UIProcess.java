@@ -19,6 +19,7 @@ import Observers.*;
 
 import javax.crypto.AEADBadTagException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //BoardObserver, ClientSubject, UISubject,
@@ -259,7 +260,7 @@ public class UIProcess implements Subject, Observer
     {
         String type = message.getMessageType();
 
-        if(type.equals("MusicPlayer"))
+        if(type.equals("MusicPlayer") || type.equals("UserStatusChanged"))
         {
             menuObservers.forEach(observer -> observer.update(message));
         }
@@ -346,8 +347,12 @@ public class UIProcess implements Subject, Observer
         }
     }
 
-    public void setActiveUsername(String username)
+    public void setActiveUsername(boolean isLoggedIn, String username)
     {
+        ArrayList<String> messageData = new ArrayList<>();
+        messageData.add(username);
+        messageData.add(String.valueOf(isLoggedIn));
+        notifyObservers(new ObserverMessage("UserStatusChanged", messageData));
         // do something with their username
     }
 

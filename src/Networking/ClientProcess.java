@@ -161,7 +161,7 @@ public class ClientProcess implements Runnable, Observer
             if (response.equals("success"))
             {
                 this.username = username;
-                ui.setActiveUsername(this.username);
+                ui.setActiveUsername(true, this.username);
                 ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged in", "You have successfully logged in.");
             }
             else
@@ -170,7 +170,7 @@ public class ClientProcess implements Runnable, Observer
         else if (accountAction == AccountAction.Logout)
         {
             this.username = "Logged Out";
-            ui.setActiveUsername(this.username);
+            ui.setActiveUsername(false, this.username);
             ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged out", "You have successfully logged out.");
         }
         else if (accountAction == AccountAction.Register)
@@ -190,7 +190,12 @@ public class ClientProcess implements Runnable, Observer
         else if (accountAction == AccountAction.ChangeUsername)
         {
             if (response.equals("success"))
+            {
+                String username = (String) map.get("Username");
+                this.username = username;
+                ui.setActiveUsername(true, username);
                 ui.createAlert(Alert.AlertType.CONFIRMATION, "USERNAME CHANGED", "You have successfully changed your username, please restart the game in order for changes to fully take place");
+            }
             else
                 ui.createAlert(Alert.AlertType.ERROR, "USERNAME NOT AVAILABLE", "The username you chose is already taken by another player");
         }

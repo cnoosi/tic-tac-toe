@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application
@@ -12,6 +13,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        Font.loadFont(getClass().getResourceAsStream("/resources/images/Streamster.ttf"), 12);
+
         //This ONLY starts on the client, so we can start the ui here
         ClientProcess newClient = new ClientProcess(primaryStage);
         Thread clientThread = new Thread(newClient);

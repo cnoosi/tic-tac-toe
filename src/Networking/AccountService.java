@@ -82,7 +82,8 @@ public class AccountService {
                 if (database.userFound(currentUsername, password))
                 {
                     database.changeInfo("Username", newValue, currentUsername);
-                    client.writeMessage(new AccountMessage(AccountAction.ChangeUsername, "success"));
+                    client.writeMessage(new AccountMessage(AccountAction.ChangeUsername, newValue, null,
+                            null, null, null, "success"));
                 }
                 else
                 {
