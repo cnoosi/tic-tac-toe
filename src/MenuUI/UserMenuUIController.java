@@ -1,5 +1,7 @@
 package MenuUI;
 
+import Game.Database;
+import Game.DbManager;
 import Game.OpenScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,12 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
-import Observers.*;
-import java.util.ArrayList;
+
+import javax.swing.*;
 import java.util.Scanner;
 
-public class UserMenuUIController implements Observer, Subject
-{
+public class UserMenuUIController {
+
     @FXML private Button homeBtn;
     @FXML private Button loginBtn;
     @FXML private TextField userName;
@@ -21,50 +23,53 @@ public class UserMenuUIController implements Observer, Subject
     @FXML private TextField firstName;
     @FXML private TextField lastName;
     @FXML private PasswordField password2;
+    @FXML private PasswordField password3;
     @FXML private Label userValidation;
     @FXML private Label userValidation2;
     private OpenScene openScene = new OpenScene();
-
-    private Observer UIProcess;
 
 
     //********************************************
     //LOGIN FUNCTION
     //********************************************
     public void handleLoginBtn(ActionEvent event) throws Exception{
-//        Scanner  scanner = new Scanner(System.in);
-////      Database db      = new Database();
-//        String   user    = userName.getText();
-//        String   pass    = password.getText();
-//        ArrayList<String> information = new ArrayList<>();
-//        information.add(user);
-//        information.add(pass);
-
-        ArrayList<String> userInfo = new ArrayList<>() {{add(userName.getText()); add(password.getText());}};
-
-//        boolean  userValid;
-//
-//        //CHECKS TO SEE IF THE USER EXISTS
-//        userValid = DbManager.getInstance().userFound(user,pass);
-////      userValid = db.find(user,pass);
-//
-//        if(userValid)
-//        {
-//            userValidation.setText("user has been found!");
-//            DbManager.getInstance().setCurrentUser(user);
-//        }
-//        else
-//        {
-//            userValidation.setText("User not found");
-//        }
-
-        notifyObservers(new ObserverMessage("Login", userInfo));
-        //Scanner  scanner = new Scanner(System.in);
-        //String   user    = userName.getText();
-        //String   pass    = password.getText();
+        Scanner  scanner = new Scanner(System.in);
+//      Database db      = new Database();
+        String   user    = userName.getText();
+        String   pass    = password.getText();
+        boolean  userValid;
 
         //CHECKS TO SEE IF THE USER EXISTS
-        //client.writeMessage(new AccountMessage(AccountAction.Login, user, null, null, pass));
+        userValid = DbManager.getInstance().userFound(user,pass);
+//      userValid = db.find(user,pass);
+
+        if(userValid)
+        {
+            if(DbManager.getInstance().isUserDeleted(user))
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("DELETED USER");
+                errorAlert.setContentText("The following account can not be accessed because it has been deleted");
+                errorAlert.showAndWait();
+            }
+            else
+            {
+
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setHeaderText("USER FOUND");
+                errorAlert.setContentText("you are logged in! Welcome back " + user);
+                errorAlert.showAndWait();
+                DbManager.getInstance().setCurrentUser(user);
+            }
+
+        }
+        else
+        {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("USER NOT FOUND");
+            errorAlert.setContentText("The following username and password do not match any existing users, try re-entering username and password");
+            errorAlert.showAndWait();
+        }
     }
 
     //********************************************
@@ -72,71 +77,51 @@ public class UserMenuUIController implements Observer, Subject
     //********************************************
     public void handleCreateAcctBtn(ActionEvent event) throws Exception {
 
-//        String user   = userName2.getText();
-//        String firstN = firstName.getText();
-//        String lastN  = lastName.getText();
-//        String pass   = password2.getText();
+        String user   = userName2.getText();
+        String firstN = firstName.getText();
+        String lastN  = lastName.getText();
+        String pass   = password2.getText();
 
-        ArrayList<String> userInfo = new ArrayList<>()
+        boolean available = DbManager.getInstance().userAvailable(user);
+        if (!available)
         {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("USERNAME NOT AVAILABLE");
+            errorAlert.setContentText("The following username is already taken by another player, try a different one");
+            errorAlert.showAndWait();
+        }
+        else
+        {
+            if(pass.equals(password3.getText()))
             {
-                add(userName2.getText());
-                add(firstName.getText());
-                add(lastName.getText());
-                add(password2.getText());
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setHeaderText("ACCOUNT SUCCESSFULLY CREATED");
+                errorAlert.setContentText("Account is created! Welcome " + user);
+                errorAlert.showAndWait();
+                DbManager.getInstance().addUser(user,firstN,lastN,pass);
             }
-        };
+            else
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("PASSWORDS DO NOT MATCH");
+                errorAlert.setContentText("The password and password confirmation fields do not match, make sure they are the same");
+                errorAlert.showAndWait();
+            }
 
-        notifyObservers(new ObserverMessage("CreateAccount", userInfo));
+        }
 
-//        boolean available = DbManager.getInstance().userAvailable(user);
-//        if (!available)
-//        {
-//            userValidation2.setText("that username is already taken");
-//        }
-//        else
-//        {
-//            DbManager.getInstance().addUser(user,firstN,lastN,pass);
-//            userValidation2.setText("account successfully created!!");
-//        }
-
-        //client.writeMessage(new AccountMessage(AccountAction.Register, user, firstN, lastN, pass));
-
-        //userValidation2.setText("that username is already taken");
+    }
+    
+    public void handleLogoutButton(ActionEvent event) throws Exception{
+            DbManager.getInstance().setCurrentUserIndex(0);
+    }
+    public void handleHomeBtn(ActionEvent event) throws Exception {
+        Stage stage = (Stage) homeBtn.getScene().getWindow();
+        FXMLLoader root = new FXMLLoader();
+        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
+        Parent frame = root.load();
+        MenuUIController controller = (MenuUIController) root.getController();
+        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
     }
 
-    public void handleLogoutButton(ActionEvent event) throws Exception {
-        //client.writeMessage(new AccountMessage(AccountAction.Logout));
-    }
-
-    public void handleHomeBtn(ActionEvent event)
-    {
-        notifyObservers(new ObserverMessage("Home"));
-    }
-
-    // Observer & Subject Handling
-    @Override
-    public void update(ObserverMessage message)
-    {
-        userValidation.setText(message.getMessageType());
-    }
-
-    @Override
-    public void addObserver(Object o)
-    {
-        UIProcess = (Observer) o;
-    }
-
-    @Override
-    public void removeObserver(Object o)
-    {
-        UIProcess = null;
-    }
-
-    @Override
-    public void notifyObservers(ObserverMessage message)
-    {
-        if(UIProcess != null)
-            UIProcess.update(message);
-    }
 }

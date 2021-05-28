@@ -67,7 +67,7 @@ public class GameReplayProcess implements Runnable
                             else
                                 token = 2;
                             Position pos = nextMove.getSecond();
-                            client.getUi().changeUIBoardToken(pos.getRow(), pos.getCol(), token);
+                            client.getUi().changeUIBoardToken(pos.getRow(), pos.getCol(), token, winnerToken);
                             currentMove++;
                         }
                     }

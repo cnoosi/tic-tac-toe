@@ -113,10 +113,10 @@ public class GameProcess
             if (token != 0) {
                 boolean moveMade = game.requestPosition(row, col, token);
                 if (moveMade) {
-                    GameMessage newMessage = new GameMessage(game.getToken(), game.getWinner(), getSpectatorCount(),
-                            row, col, token);
-                    server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
                     int winner = game.checkWin(); //Update winner
+                    GameMessage newMessage = new GameMessage(game.getToken(), winner, getSpectatorCount(),
+                                                             row, col, token);
+                    server.sendToSubscribedClients("GAME_" + gameId, newMessage, null);
                     if (winner != 0)
                         gameEnded();
                 }

@@ -337,13 +337,14 @@ public class UIProcess implements Subject, Observer
 
     }
 
-    public void changeUIBoardToken(int row, int col, int newToken)
+    public void changeUIBoardToken(int row, int col, int newToken, int winnerToken)
     {
         ArrayList<String> move = new ArrayList<>();
 
         move.add(String.valueOf(row));
         move.add(String.valueOf(col));
         move.add(String.valueOf(newToken));
+        move.add(String.valueOf(winnerToken));
 
         notifyObservers(new ObserverMessage("UIMove", move));
     }
