@@ -206,30 +206,36 @@ public class BoardUIController implements Initializable, Observer, Subject
     public void update(ObserverMessage message)
     {
         String type = message.getMessageType();
-        System.out.println("Here at UIMove");
         if(type.equals("UIMove"))
         {
-            int row = Integer.parseInt(message.getMessage().get(0));
-            int col = Integer.parseInt(message.getMessage().get(1));
-            this.token = Integer.parseInt(message.getMessage().get(2));
-            Position pos = new Position(row, col);
             Platform.runLater(new Runnable(){
                 @Override
                 public void run() {
-                    if(row == 20) {
+                    int row = Integer.parseInt(message.getMessage().get(0));
+                    int col = Integer.parseInt(message.getMessage().get(1));
+                    int currentToken = Integer.parseInt(message.getMessage().get(2));
+                    int currentWinner = 0;
+                    if (message.getMessage().size() == 4)
+                        currentWinner = Integer.parseInt(message.getMessage().get(3));
+                    if(currentWinner != 0)
+                    {
                         notificationLabel.setTextFill(Color.WHITE);
-                        notificationLabel.setText("Winner is: Player " + token);
+                        if (currentWinner != -1)
+                            notificationLabel.setText("Winner is: Player " + currentWinner);
+                        else
+                            notificationLabel.setText("It's a tie!");
                         setDisable(true);
                     }
-                    else
-                        setImage(token, row, col);
+                    setImage(currentToken, row, col);
                 }
             });
         }
 
         else if(type.equals("ClearBoard"))
         {
+            setDisable(false);
             imageList.forEach(imageView -> imageView.setImage(null));
+            notificationLabel.setText("");
         }
 
         else if(type.equals("SinglePlayerMode"))
