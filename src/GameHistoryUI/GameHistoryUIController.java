@@ -90,27 +90,30 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         liveGamesList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
+    public void clearListViews()
+    {
+        liveGamesList.getItems().clear();
+        gameHistoryList.getItems().clear();
+    }
+
     @Override
     public void update(ObserverMessage message)
     {
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                gameHistoryId = new ArrayList<>();
-                liveGamesId   = new ArrayList<>();
 
-                //liveGamesList.getItems().clear();
-                gameHistoryList.getItems().clear();
+                clearListViews();
                 System.out.println("history update");
                 String type = message.getMessageType();
 
                 if (type.equals("liveGameList"))
                 {
                     liveGamesId = message.getMessage();
+                    System.out.println(liveGamesId);
                     for(int i = 0; i < liveGamesId.size(); i++)
                     {
-                        if(!liveGamesList.getItems().contains("Live Game " + i))
-                            liveGamesList.getItems().add("Live Game " + i);
+                        System.out.println("Trying to add");
                     }
 //                    System.out.println(message.getMessage());
 //                    for(String item : message.getMessage())
