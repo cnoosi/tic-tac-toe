@@ -143,8 +143,7 @@ public class GamesService {
 
     public void killGameProcess(String gameId)
     {
-        GameProcess findGame = games.get(gameId);
-        games.remove(findGame);
+        games.remove(gameId);
     }
 
     public void saveGameData(GameProcess game)
