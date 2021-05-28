@@ -21,19 +21,23 @@ public class UserPrefUIController implements Initializable {
     private OpenScene openScene = new OpenScene();
 
     //Name Change UI elements
-    @FXML TextField firstName;
-    @FXML TextField lastName;
+    @FXML TextField     firstName;
+    @FXML TextField     lastName;
     @FXML PasswordField pass;
 
     //UserName Change UI elements
-    @FXML TextField currentUsername;
-    @FXML TextField newUsername;
+    @FXML TextField     currentUsername;
+    @FXML TextField     newUsername;
     @FXML PasswordField pass1;
 
     //Password Change UI elements
     @FXML PasswordField currentPassword;
     @FXML PasswordField newPassword;
     @FXML PasswordField passwordConfirm;
+
+    //User Delete UI elemts
+    @FXML TextField     userNameDelete;
+    @FXML PasswordField passwordDelete;
 
     public void handleNameChange(ActionEvent event) throws Exception{
         String newFirst     = firstName.getText();
@@ -122,6 +126,38 @@ public class UserPrefUIController implements Initializable {
             errorAlert.showAndWait();
         }
 
+    }
+
+    public void handleDeleteUser(ActionEvent event)
+    {
+        String username = userNameDelete.getText();
+        String password = passwordDelete.getText();
+        if(username.equals(DbManager.getInstance().getCurrentUser().getUserName()))
+        {
+            boolean userValid   = DbManager.getInstance().userFound(DbManager.getInstance().getCurrentUser().getUserName(),password);
+            if(userValid)
+            {
+                DbManager.getInstance().deleteUser(DbManager.getInstance().getCurrentUser().getUserName());
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setHeaderText("USER DELETED");
+                errorAlert.setContentText("You have successfully deleted your account, please restart the game in order for changes to fully take place");
+                errorAlert.showAndWait();
+            }
+            else
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("INCORRECT PASSWORD");
+                errorAlert.setContentText("The username and password do not match, retry entering your password");
+                errorAlert.showAndWait();
+            }
+        }
+        else
+        {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("INCORRECT USERNAME");
+            errorAlert.setContentText("Username doesn't match the current account retry entering your username");
+            errorAlert.showAndWait();
+        }
     }
 
     public void handleHomeButton(ActionEvent event) throws Exception{

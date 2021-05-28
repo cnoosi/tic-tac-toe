@@ -44,12 +44,30 @@ public class UserMenuUIController {
 
         if(userValid)
         {
-            userValidation.setText("user has been found!");
-            DbManager.getInstance().setCurrentUser(user);
+            if(DbManager.getInstance().isUserDeleted(user))
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("DELETED USER");
+                errorAlert.setContentText("The following account can not be accessed because it has been deleted");
+                errorAlert.showAndWait();
+            }
+            else
+            {
+
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setHeaderText("USER FOUND");
+                errorAlert.setContentText("you are logged in! Welcome back " + user);
+                errorAlert.showAndWait();
+                DbManager.getInstance().setCurrentUser(user);
+            }
+
         }
         else
         {
-            userValidation.setText("User not found");
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("USER NOT FOUND");
+            errorAlert.setContentText("The following username and password do not match any existing users, try re-entering username and password");
+            errorAlert.showAndWait();
         }
     }
 

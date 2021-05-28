@@ -55,6 +55,23 @@ public class DbManager {
         return found;
     }
 
+    public boolean isUserDeleted(String user)
+    {
+        boolean deleted = false;
+        for(User u:userList)
+        {
+            if(u.getUserName().equals(user))
+            {
+                if(u.isDeleted())
+                {
+                    deleted = true;
+                    break;
+                }
+            }
+        }
+        return deleted;
+    }
+
     //********************************************
     //CHECKS IF USERNAME IS TAKEN OR NOT
     //********************************************
@@ -166,6 +183,19 @@ public class DbManager {
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,newString);
+            pstmt.setString(2,userName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void deleteUser(String userName)
+    {
+        String sql = "UPDATE User SET Deleted = ? WHERE Username = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1,1);
             pstmt.setString(2,userName);
             pstmt.executeUpdate();
         } catch (SQLException e) {
