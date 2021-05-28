@@ -161,29 +161,29 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         AccountAction accountAction = AccountAction.values()[(int) accountActionNum];
         String response = (String) map.get("Response");
 
-        if (accountAction == AccountAction.Login)
-        {
-            if (response.equals("success"))
-                //ui.loginSuccess(true);
-            else
-                ui.loginSuccess(false);
-        }
-        else if (accountAction == AccountAction.Logout)
-            ui.logoutSuccess(true);
-        else if (accountAction == AccountAction.Register)
-        {
-            if (response.equals("success"))
-                ui.registerSuccess(true);
-            else
-                ui.registerSuccess(false);
-        }
-        else if (accountAction == AccountAction.ChangeSettings)
-        {
-            if (response.equals("success"))
-                ui.settingChangedSuccess(true);
-            else
-                ui.settingChangedSuccess(false);
-        }
+//        if (accountAction == AccountAction.Login)
+//        {
+//            if (response.equals("success"))
+//                //ui.loginSuccess(true);
+//            else
+//                ui.loginSuccess(false);
+//        }
+//        else if (accountAction == AccountAction.Logout)
+//            ui.logoutSuccess(true);
+//        else if (accountAction == AccountAction.Register)
+//        {
+//            if (response.equals("success"))
+//                ui.registerSuccess(true);
+//            else
+//                ui.registerSuccess(false);
+//        }
+//        else if (accountAction == AccountAction.ChangeSettings)
+//        {
+//            if (response.equals("success"))
+//                ui.settingChangedSuccess(true);
+//            else
+//                ui.settingChangedSuccess(false);
+//        }
     }
 
     private void handleGetGameDataMessage(Map<String, Object> map)
