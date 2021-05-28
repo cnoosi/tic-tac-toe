@@ -2,7 +2,9 @@ package Networking;
 
 import Game.*;
 import Messages.*;
-
+import UserInterface.ServerUIProcess;
+import UserInterface.UIProcess;
+import javafx.stage.Stage;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,10 +23,16 @@ public class ServerProcess implements Runnable
     private Map<String, ArrayList<ClientConnection>> subscriptions;
     private BlockingQueue<Map<String, Object>> messagesToProcess;
     private DbManager database;
+    private ServerUIProcess serverUIProcess;
 
     // Microservices
     private AccountService accountsService;
     private GamesService gamesService;
+
+    public ServerProcess(Stage primaryStage)
+    {
+        this.serverUIProcess = new ServerUIProcess(this, primaryStage);
+    }
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {

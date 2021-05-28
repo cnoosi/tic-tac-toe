@@ -206,23 +206,21 @@ public class BoardUIController implements Initializable, Observer, Subject
     public void update(ObserverMessage message)
     {
         String type = message.getMessageType();
-        if(type.equals("UIMove"))
-        {
+        if(type.equals("UIMove")) {
             int row = Integer.parseInt(message.getMessage().get(0));
             int col = Integer.parseInt(message.getMessage().get(1));
             this.token = Integer.parseInt(message.getMessage().get(2));
             Position pos = new Position(row, col);
-            if(row == 20) {
+            if (row == 20) {
                 notificationLabel.setTextFill(Color.WHITE);
                 notificationLabel.setText("Winner is: Player " + token);
                 setDisable(true);
-            }
-            else
+            } else
                 setImage(token, row, col);
-
         }
 
         else if(type.equals("ClearBoard"))
+        {
             imageList.forEach(imageView -> imageView.setImage(null));
         }
 

@@ -104,27 +104,27 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
     @Override
     public void update(ObserverMessage message)
     {
-        String type = message.getMessageType();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                String type = message.getMessageType();
 
-        if (type.equals("liveGameList"))
-        {
-            liveGamesList.getItems().clear();
-            liveGamesId = message.getMessage();
-            for(int i = 0; i < liveGamesId.size(); i++)
-            {
-                System.out.println("ADDING " + i);
-                liveGamesList.getItems().add("Live Game " + i);
+                if (type.equals("liveGameList")) {
+                    liveGamesList.getItems().clear();
+                    liveGamesId = message.getMessage();
+                    for (int i = 0; i < liveGamesId.size(); i++) {
+                        System.out.println("ADDING " + i);
+                        liveGamesList.getItems().add("Live Game " + i);
+                    }
+                } else if (type.equals("historyGameList")) {
+                    gameHistoryList.getItems().clear();
+                    gameHistoryId = message.getMessage();
+                    for (int i = 0; i < gameHistoryId.size(); i++) {
+                        gameHistoryList.getItems().add("Previous Game " + i);
+                    }
+                }
             }
-        }
-        else if(type.equals("historyGameList"))
-        {
-            gameHistoryList.getItems().clear();
-            gameHistoryId = message.getMessage();
-            for(int i = 0; i < gameHistoryId.size(); i++)
-            {
-                gameHistoryList.getItems().add("Previous Game " + i);
-            }
-        }
+        });
     }
 
     @Override
