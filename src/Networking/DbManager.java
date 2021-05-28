@@ -91,6 +91,23 @@ public class DbManager {
         return found;
     }
 
+    public boolean isUserDeleted(String user)
+    {
+        boolean deleted = false;
+        for(User u:userList)
+        {
+            if(u.getUserName().equals(user))
+            {
+                if(u.isDeleted())
+                {
+                    deleted = true;
+                    break;
+                }
+            }
+        }
+        return deleted;
+    }
+
     //********************************************
     //CHECKS IF USERNAME IS TAKEN OR NOT
     //********************************************
@@ -251,7 +268,41 @@ public class DbManager {
         }
 
         movesList.add(new MovesHistory(gameId, playerId, row, col, time, moveIndex));
+    }
 
+    public void changeInfo(String columnToEdit, String newString, String userName ){
+        //String sql = "UPDATE User SET FirstName = " + newFirst + " WHERE Username = " + userName;
+
+        String sqll = "UPDATE User SET FirstName = ? , "
+                + "LastName = ? "
+                + "WHERE Username = ?";
+
+        String sql = "UPDATE User Set " + columnToEdit + " = ? WHERE Username = ?";
+        //String sql = "UPDATE " + TABLE_NAME + " SET " + ColumnName + " = '" + newValue + "' WHERE " + Column + " = " + rowId;
+
+
+        System.out.println("Username: " + userName + " New firstName: " + newString);
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,newString);
+            pstmt.setString(2,userName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void deleteUser(String userName)
+    {
+        String sql = "UPDATE User SET Deleted = ? WHERE Username = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1,1);
+            pstmt.setString(2,userName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static Connection connect()
