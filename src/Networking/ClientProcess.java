@@ -269,7 +269,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     {
         String messageType = message.getMessageType();
 
-        System.out.println("UI ATTEMPT MESSAGE: " + message);
         /***************/
         if(messageType.equals("Login"))
         {

@@ -193,7 +193,6 @@ public class BoardUIController implements Initializable, Observer, Subject
     public void update(ObserverMessage message)
     {
         String type = message.getMessageType();
-        System.out.println("Here at UIMove");
         if(type.equals("UIMove"))
         {
             int row = Integer.parseInt(message.getMessage().get(0));
@@ -206,16 +205,12 @@ public class BoardUIController implements Initializable, Observer, Subject
                 setDisable(true);
             }
             else
-            {
-                System.out.println("setting image to token: " + token);
                 setImage(token, row, col);
-            }
+
         }
 
         else if(type.equals("ClearBoard"))
-        {
             imageList.forEach(imageView -> imageView.setImage(null));
-        }
     }
 
     @Override

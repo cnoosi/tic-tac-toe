@@ -319,7 +319,6 @@ public class UIProcess implements Subject, Observer
 
     public void changeUIBoardToken(int row, int col, int newToken)
     {
-        System.out.println("function called");
         ArrayList<String> move = new ArrayList<>();
 
         move.add(String.valueOf(row));
