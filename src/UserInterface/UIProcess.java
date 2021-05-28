@@ -118,6 +118,7 @@ public class UIProcess implements Subject, Observer
         {
             openPage("Menu");
             notifyObservers(new ObserverMessage("MusicPlayer"));
+            localGame = null;
         }
 
         // Main Menu Actions
@@ -131,6 +132,25 @@ public class UIProcess implements Subject, Observer
             clearBoard();
             openPage("Board");
             localGame = new Game();
+            notifyObservers(new ObserverMessage("SinglePlayerMode"));
+        }
+
+        else if(type.equals("SinglePlayerMove"))
+        {
+            System.out.println("here");
+            int row = Integer.parseInt(message.getMessage().get(0));
+            int col = Integer.parseInt(message.getMessage().get(1));
+            int token = Integer.parseInt(message.getMessage().get(2));
+            System.out.println(row + " " + col + " " + token);
+
+            if(localGame.checkWin() == 0)
+            {
+                if(localGame.requestPosition(row, col, token))
+                    localGame.setPosition(row, col, token);
+                updateBoardUI(row, col, token);
+                System.out.println(localGame);
+            }
+
         }
 
         else if(type.equals("MultiPlayer"))
@@ -227,7 +247,7 @@ public class UIProcess implements Subject, Observer
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-        else if(type.equals("UIMove") || type.equals("ClearBoard"))
+        else if(type.equals("UIMove") || type.equals("ClearBoard") || type.equals("SinglePlayerMode"))
         {
             boardObservers.forEach(observer -> observer.update(message));
         }
