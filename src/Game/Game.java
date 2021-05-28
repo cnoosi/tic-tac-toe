@@ -20,12 +20,14 @@ public class Game implements Cloneable
     private int                 winnerToken = 0;
     private Map<String, Pair<Integer, Position>> moves = new HashMap<String, Pair<Integer, Position>>();
     private int                 localPlayers;
+    private ComputerAlgorithm   ai;
 
     public Game()
     {
         this.boardSize = 3;
         this.boardData = new int[boardSize][boardSize];
         this.localPlayers = 2;
+        ai = new Minimax();
     }
 
     public Game(int localPlayers)
@@ -33,6 +35,7 @@ public class Game implements Cloneable
         this.boardSize = 3;
         this.boardData = new int[boardSize][boardSize];
         this.localPlayers = localPlayers;
+        ai = new Minimax();
     }
 
     public Game(int boardSize, int localPlayers)
@@ -40,6 +43,7 @@ public class Game implements Cloneable
         this.boardSize = boardSize;
         this.boardData = new int[boardSize][boardSize];
         this.localPlayers = localPlayers;
+        ai = new Minimax();
     }
 
     public Game(int[][] boardData, int boardSize, int localPlayers)
@@ -47,6 +51,7 @@ public class Game implements Cloneable
         this.boardData = boardData;
         this.boardSize = boardSize;
         this.localPlayers = localPlayers;
+        ai = new Minimax();
     }
 
     public int[][] getBoardData()
@@ -88,6 +93,12 @@ public class Game implements Cloneable
             this.moves.put(currentTime, new Pair((Integer) moveIndex, new Position(i, j)));
             switchToken();
             moveIndex++;
+            // Make a move for the AI if only single player
+            if (this.token == 2 && this.localPlayers == 1)
+            {
+                Position pos = ai.getMove(this);
+                requestPosition(pos.getRow(), pos.getCol(), playerToken);
+            }
             return true;
         }
         return false;
