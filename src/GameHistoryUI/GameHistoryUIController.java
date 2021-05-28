@@ -5,15 +5,18 @@ import MenuUI.MenuUIController;
 import Observers.Observer;
 import Observers.ObserverMessage;
 import Observers.Subject;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameHistoryUIController implements Initializable, Observer, Subject
@@ -46,6 +49,10 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //    spectate game
         //
         //**********************************
+        ArrayList<String> currentGame = new ArrayList<>();
+        currentGame.add(gameHistoryList.getItems().get(gameHistoryList.getSelectionModel().getSelectedIndex()));
+        System.out.println(currentGame);
+        notifyObservers(new ObserverMessage("ReplayGame", currentGame));
     }
 
     public void handleIdSelection() throws Exception{
@@ -55,16 +62,16 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //
         //**********************************
         gameInfo.setText(gameHistoryList.getSelectionModel().getSelectedItem());
-
     }
 
+    public void handleLiveIdSelection()
+    {
+        gameInfo.setText(liveGamesList.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML
     public void handleHomeBtn(ActionEvent event) throws Exception {
-        Stage stage = (Stage) homeBtn.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        Parent frame = root.load();
-        MenuUIController controller = (MenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+        notifyObservers(new ObserverMessage("Home"));
     }
 
     @Override
@@ -75,14 +82,32 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //
         //**********************************
         gameHistoryList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        gameHistoryList.getItems().add("peepee");
-        gameHistoryList.getItems().add("poopoo");
+        liveGamesList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     @Override
     public void update(ObserverMessage message)
     {
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                gameHistoryList.getItems().clear();
+                liveGamesList.getItems().clear();
+                System.out.println("history update");
+                String type = message.getMessageType();
 
+                if (type.equals("liveGameList"))
+                {
+                    for(String item : message.getMessage())
+                        liveGamesList.getItems().add(item);
+                }
+                else if(type.equals("historyGameList"))
+                {
+                    for(String item : message.getMessage())
+                        gameHistoryList.getItems().add(item);
+                }
+            }
+        });
     }
 
     @Override

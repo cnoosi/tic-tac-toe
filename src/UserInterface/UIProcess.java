@@ -89,7 +89,7 @@ public class UIProcess implements Subject, Observer
             loginController.addObserver(this);
             menuController.addObserver(this);
             boardController.addObserver(this);
-            //historyController.addObserver(this);
+            historyController.addObserver(this);
 
             // add observers
             this.addObserver(loginController);
@@ -140,7 +140,9 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("GameHistory")) // modify later
         {
-            openPage("GameHistory");
+            openPage("History");
+            message.setMessageType("GameHistoryUpdate");
+            notifyObservers(message);
         }
 
         else if(type.equals("Spectate"))
@@ -151,6 +153,12 @@ public class UIProcess implements Subject, Observer
         else if(type.equals("LocalMove"))
         {
 
+        }
+
+        else if(type.equals("ReplayGame"))
+        {
+            notifyObservers(message);
+            openPage("Board");
         }
 
         // User Menu Actions
@@ -210,16 +218,21 @@ public class UIProcess implements Subject, Observer
         }
 
         else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount")
-                || type.equals("Move") || type.equals("MultiPlayer"))
+                || type.equals("Move") || type.equals("MultiPlayer") || type.equals("GameHistoryUpdate") ||
+                type.equals("ReplayGame"))
         {
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-
-
         else if(type.equals("UIMove") || type.equals("ClearBoard"))
         {
             boardObservers.forEach(observer -> observer.update(message));
+        }
+
+
+        else if(type.equals("liveGameList") || type.equals("historyGameList"))
+        {
+            historyObservers.forEach(observer -> observer.update(message));
         }
     }
 
@@ -282,6 +295,15 @@ public class UIProcess implements Subject, Observer
     {
         System.out.println("add new chat: " + playerName + ": " + playerChat);
     }
+
+    //ui.gameHistoryRecieved(liveGameList, historyGameList);
+
+    public void gameHistoryRecieved(ArrayList<String> liveGameList, ArrayList<String> historyGameList)
+    {
+        notifyObservers(new ObserverMessage("liveGameList", liveGameList));
+        notifyObservers(new ObserverMessage("historyGameList", historyGameList));
+    }
+
 
     public void startGame()
     {
