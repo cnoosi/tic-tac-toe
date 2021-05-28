@@ -72,8 +72,6 @@ public class AdminDashUIController implements Initializable, Subject, Observer
         information.add(currentUsername.getText());
         information.add(password.getText());
 
-        System.out.println(information);
-
         notifyObservers(new ObserverMessage("UserChange", information));
     }
 
