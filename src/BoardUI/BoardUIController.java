@@ -61,12 +61,7 @@ public class BoardUIController implements Initializable, Observer, Subject
         {
             if(event.getSource() == buttonList.get(button))
             {
-                System.out.println(singlePlayer);
                 Position pos = getPositionFromIndex(button);
-                ArrayList<String> move = new ArrayList<String>();
-                move.add(String.valueOf(pos.getRow()));
-                move.add(String.valueOf(pos.getCol()));
-                move.add(String.valueOf(token));
 
                 if(singlePlayer)
                 {
@@ -103,7 +98,13 @@ public class BoardUIController implements Initializable, Observer, Subject
                     }
                 }
                 else
+                {
+                    ArrayList<String> move = new ArrayList<String>();
+                    move.add(String.valueOf(pos.getRow()));
+                    move.add(String.valueOf(pos.getCol()));
+                    move.add(String.valueOf(token));
                     notifyObservers(new ObserverMessage("Move", move));
+                }
             }
         }
     }
@@ -134,23 +135,6 @@ public class BoardUIController implements Initializable, Observer, Subject
         return new Position(row, col);
     }
 
-    public void updateTokens()
-    {
-        notificationLabel.setText("");
-        for (int i = 0; i < game.getBoardSize(); i++) {
-            for (int j = 0; j < game.getBoardSize(); j++) {
-                ImageView image = imageList.get(getIndexFromRowCol(i, j));
-                int tokenAtPosition = game.getPosition(i, j);
-                if (tokenAtPosition == 0)
-                    image.setImage(null);
-                else if (tokenAtPosition == 1)
-                    image.setImage(XToken);
-                else if (tokenAtPosition == 2)
-                    image.setImage(YToken);
-            }
-        }
-    }
-
     public void setDisable(boolean mode)
     {
         for(Button btn : buttonList)
@@ -159,21 +143,8 @@ public class BoardUIController implements Initializable, Observer, Subject
 
     public void setSinglePlayer(boolean mode)
     {
-        singlePlayer = mode;
-    }
-
-    public void setLocalPlayerCount(int playerCount)
-    {
-        this.playerCount = playerCount;
-    }
-
-    public void resetGame()
-    {
-        game = new Game(boardSize, playerCount);
-        updateTokens();
         setDisable(false);
-        game_has_winner = false;
-        notificationLabel.setText("");
+        singlePlayer = mode;
     }
 
     @Override
@@ -198,14 +169,18 @@ public class BoardUIController implements Initializable, Observer, Subject
     public void update(ObserverMessage message)
     {
         String type = message.getMessageType();
-        if(type.equals("UIMove"))
-        {
+
+        if(type.equals("UIMove")) {
+            int row = Integer.parseInt(message.getMessage().get(0));
+            int col = Integer.parseInt(message.getMessage().get(1));
+            int currentToken = Integer.parseInt(message.getMessage().get(2));
+            int currentWinner;
+            if (message.getMessage().size() == 4)
+                currentWinner = Integer.parseInt(message.getMessage().get(3));
+
             Platform.runLater(new Runnable(){
                 @Override
                 public void run() {
-                    int row = Integer.parseInt(message.getMessage().get(0));
-                    int col = Integer.parseInt(message.getMessage().get(1));
-                    int currentToken = Integer.parseInt(message.getMessage().get(2));
                     int currentWinner = 0;
                     if (message.getMessage().size() == 4)
                         currentWinner = Integer.parseInt(message.getMessage().get(3));
@@ -225,7 +200,9 @@ public class BoardUIController implements Initializable, Observer, Subject
 
         else if(type.equals("ClearBoard"))
         {
+            setDisable(false);
             imageList.forEach(imageView -> imageView.setImage(null));
+            notificationLabel.setText("");
         }
 
         else if(type.equals("SinglePlayerMode"))
@@ -253,40 +230,4 @@ public class BoardUIController implements Initializable, Observer, Subject
         if(UIProcess != null)
             UIProcess.update(message);
     }
-
-//    @Override
-//    public void addObserver(Object o)
-//    {
-//        observers.add((BoardObserver) o);
-//    }
-//
-//    @Override
-//    public void removeObserver(Object o)
-//    {
-//        observers.remove(o);
-//    }
-//
-//    @Override
-//    public void notifyObservers(Position pos, int token)
-//    {
-//        observers.forEach(observer -> observer.update(pos, token));
-//    }
-//
-//    @Override
-//    public void update(Position pos, int token)
-//    {
-//        this.token = token;
-//        Platform.runLater(new Runnable(){
-//            @Override
-//            public void run() {
-//                if(pos.getRow() == 20) {
-//                    notificationLabel.setTextFill(Color.WHITE);
-//                    notificationLabel.setText("Winner is: Player " + token);
-//                    setDisable(true);
-//                }
-//                else
-//                    setImage(token, pos.getRow(), pos.getCol());
-//            }
-//        });
-//    }
 }

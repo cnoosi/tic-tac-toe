@@ -91,7 +91,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         long spectators = (long) map.get("Spectators");
         if (newRow != -1 && newCol != -1 && newValue != -1)
         {
-            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue);
+            ui.changeUIBoardToken((int) newRow, (int) newCol, (int) newValue, (int) winner);
         }
         ui.updateBoardUI((int) currentToken, (int) winner, (int) spectators);
     }

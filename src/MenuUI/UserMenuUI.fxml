@@ -16,15 +16,17 @@
       <Label layoutX="301.0" layoutY="356.0" style="-fx-text-fill: purple;" text="Password:" />
       <Button fx:id="loginBtn" layoutX="414.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleLoginBtn" text="Login" />
       <Label fx:id="userValidation" layoutX="338.0" layoutY="485.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
-      <Label layoutX="774.0" layoutY="244.0" style="-fx-text-fill: purple;" text="Username:" />
-      <Label layoutX="773.0" layoutY="290.0" style="-fx-text-fill: purple;" text="First name:" />
-      <Label layoutX="773.0" layoutY="335.0" style="-fx-text-fill: purple;" text="Last Name:" />
-      <Label layoutX="776.0" layoutY="379.0" style="-fx-text-fill: purple;" text="Password:" />
+      <Label layoutX="733.0" layoutY="244.0" style="-fx-text-fill: purple;" text="Username:" />
+      <Label layoutX="732.0" layoutY="290.0" style="-fx-text-fill: purple;" text="First name:" />
+      <Label layoutX="732.0" layoutY="335.0" style="-fx-text-fill: purple;" text="Last Name:" />
+      <Label layoutX="735.0" layoutY="379.0" style="-fx-text-fill: purple;" text="Password:" />
       <TextField fx:id="userName2" layoutX="845.0" layoutY="240.0" />
       <TextField fx:id="firstName" layoutX="845.0" layoutY="286.0" />
       <TextField fx:id="lastName" layoutX="845.0" layoutY="331.0" />
       <PasswordField fx:id="password2" layoutX="846.0" layoutY="375.0" />
-      <Button fx:id="createAcctBtn" layoutX="871.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
+      <PasswordField fx:id="password3" layoutX="846.0" layoutY="414.0" />
+      <Button fx:id="createAcctBtn" layoutX="871.0" layoutY="465.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
       <Label fx:id="userValidation2" layoutX="821.0" layoutY="477.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
+      <Label layoutX="735.0" layoutY="418.0" style="-fx-text-fill: purple;" text="Confirm Password:" />
    </children>
 </AnchorPane>
