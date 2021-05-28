@@ -61,50 +61,19 @@ public class BoardUIController implements Initializable, Observer, Subject
         {
             if(event.getSource() == buttonList.get(button))
             {
+                System.out.println(singlePlayer);
                 Position pos = getPositionFromIndex(button);
+                ArrayList<String> move = new ArrayList<String>();
+                move.add(String.valueOf(pos.getRow()));
+                move.add(String.valueOf(pos.getCol()));
+                move.add(String.valueOf(token));
 
                 if(singlePlayer)
                 {
-                    ArrayList<String> move = new ArrayList<String>();
-                    move.add(String.valueOf(pos.getRow()));
-                    move.add(String.valueOf(pos.getCol()));
-                    move.add(String.valueOf(1));
-                    boolean moveMade = game.requestPosition(pos.getRow(), pos.getCol(), 1);
-                    if (moveMade)
-                    {
-                        update(new ObserverMessage("UIMove", move));
-
-                        int winnerToken1 = game.checkWin();
-                        move.add(String.valueOf(winnerToken1));
-                        update(new ObserverMessage("UIMove", move));
-
-                        if (winnerToken1 == 0)
-                        {
-                            Position aiPos = ai.getMove(game);
-                            ArrayList<String> aiMove = new ArrayList<String>();
-                            aiMove.add(String.valueOf(aiPos.getRow()));
-                            aiMove.add(String.valueOf(aiPos.getCol()));
-                            aiMove.add(String.valueOf(2));
-                            boolean aiMoveMade = game.requestPosition(aiPos.getRow(), aiPos.getCol(), 2);
-                            if (aiMoveMade)
-                            {
-                                update(new ObserverMessage("UIMove", aiMove));
-
-                                int winnerToken2 = game.checkWin();
-                                aiMove.add(String.valueOf(winnerToken2));
-                                update(new ObserverMessage("UIMove", aiMove));
-                            }
-                        }
-                    }
+                    
                 }
                 else
-                {
-                    ArrayList<String> move = new ArrayList<String>();
-                    move.add(String.valueOf(pos.getRow()));
-                    move.add(String.valueOf(pos.getCol()));
-                    move.add(String.valueOf(token));
                     notifyObservers(new ObserverMessage("Move", move));
-                }
             }
         }
     }
@@ -135,6 +104,61 @@ public class BoardUIController implements Initializable, Observer, Subject
         return new Position(row, col);
     }
 
+    public void updateTokens()
+    {
+        notificationLabel.setText("");
+        for (int i = 0; i < game.getBoardSize(); i++) {
+            for (int j = 0; j < game.getBoardSize(); j++) {
+                ImageView image = imageList.get(getIndexFromRowCol(i, j));
+                int tokenAtPosition = game.getPosition(i, j);
+                if (tokenAtPosition == 0)
+                    image.setImage(null);
+                else if (tokenAtPosition == 1)
+                    image.setImage(XToken);
+                else if (tokenAtPosition == 2)
+                    image.setImage(YToken);
+            }
+        }
+    }
+
+    public void setResult(int token, int winner)
+    {
+        notificationLabel.setText("Winner is: " + token);
+        setDisable(true);
+    }
+
+    public Label getNotificationLabel()
+    {
+        return notificationLabel;
+    }
+
+    public void checkWin()
+    {
+        int winner = game.checkWin();
+        System.out.println(winner);
+        if (winner != 0)
+        {
+            if (winner == -1)
+            {
+                notificationLabel.setTextFill(new Color(1, 1, 0, 1));
+                notificationLabel.setText("Tie!");
+            }
+            else if (winner == 1)
+            {
+                notificationLabel.setTextFill(new Color(0.2, 1, 1, 1));
+                notificationLabel.setText("Player " + winner + " wins!");
+            }
+            else if (winner == 2)
+            {
+                notificationLabel.setTextFill(new Color(1, 0, 1, 1));
+                notificationLabel.setText("Player " + winner + " wins!");
+            }
+            setDisable(true);
+            game_has_winner = true;
+        }
+        game_has_winner = false;
+    }
+
     public void setDisable(boolean mode)
     {
         for(Button btn : buttonList)
@@ -143,8 +167,21 @@ public class BoardUIController implements Initializable, Observer, Subject
 
     public void setSinglePlayer(boolean mode)
     {
-        setDisable(false);
         singlePlayer = mode;
+    }
+
+    public void setLocalPlayerCount(int playerCount)
+    {
+        this.playerCount = playerCount;
+    }
+
+    public void resetGame()
+    {
+        game = new Game(boardSize, playerCount);
+        updateTokens();
+        setDisable(false);
+        game_has_winner = false;
+        notificationLabel.setText("");
     }
 
     @Override
@@ -169,40 +206,30 @@ public class BoardUIController implements Initializable, Observer, Subject
     public void update(ObserverMessage message)
     {
         String type = message.getMessageType();
+        System.out.println("Here at UIMove");
         if(type.equals("UIMove"))
         {
             int row = Integer.parseInt(message.getMessage().get(0));
             int col = Integer.parseInt(message.getMessage().get(1));
-            int currentToken = Integer.parseInt(message.getMessage().get(2));
-            int currentWinner;
-            if (message.getMessage().size() == 4)
-                currentWinner = Integer.parseInt(message.getMessage().get(3));
-
+            this.token = Integer.parseInt(message.getMessage().get(2));
+            Position pos = new Position(row, col);
             Platform.runLater(new Runnable(){
                 @Override
                 public void run() {
-                    int currentWinner = 0;
-                    if (message.getMessage().size() == 4)
-                        currentWinner = Integer.parseInt(message.getMessage().get(3));
-                    if(currentWinner != 0)
-                    {
+                    if(row == 20) {
                         notificationLabel.setTextFill(Color.WHITE);
-                        if (currentWinner != -1)
-                            notificationLabel.setText("Winner is: Player " + currentWinner);
-                        else
-                            notificationLabel.setText("It's a tie!");
+                        notificationLabel.setText("Winner is: Player " + token);
                         setDisable(true);
                     }
-                    setImage(currentToken, row, col);
+                    else
+                        setImage(token, row, col);
                 }
             });
         }
 
         else if(type.equals("ClearBoard"))
         {
-            setDisable(false);
             imageList.forEach(imageView -> imageView.setImage(null));
-            notificationLabel.setText("");
         }
 
         else if(type.equals("SinglePlayerMode"))
@@ -230,4 +257,40 @@ public class BoardUIController implements Initializable, Observer, Subject
         if(UIProcess != null)
             UIProcess.update(message);
     }
+
+//    @Override
+//    public void addObserver(Object o)
+//    {
+//        observers.add((BoardObserver) o);
+//    }
+//
+//    @Override
+//    public void removeObserver(Object o)
+//    {
+//        observers.remove(o);
+//    }
+//
+//    @Override
+//    public void notifyObservers(Position pos, int token)
+//    {
+//        observers.forEach(observer -> observer.update(pos, token));
+//    }
+//
+//    @Override
+//    public void update(Position pos, int token)
+//    {
+//        this.token = token;
+//        Platform.runLater(new Runnable(){
+//            @Override
+//            public void run() {
+//                if(pos.getRow() == 20) {
+//                    notificationLabel.setTextFill(Color.WHITE);
+//                    notificationLabel.setText("Winner is: Player " + token);
+//                    setDisable(true);
+//                }
+//                else
+//                    setImage(token, pos.getRow(), pos.getCol());
+//            }
+//        });
+//    }
 }
