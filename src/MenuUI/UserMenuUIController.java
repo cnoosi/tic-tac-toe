@@ -23,6 +23,7 @@ public class UserMenuUIController {
     @FXML private TextField firstName;
     @FXML private TextField lastName;
     @FXML private PasswordField password2;
+    @FXML private PasswordField password3;
     @FXML private Label userValidation;
     @FXML private Label userValidation2;
     private OpenScene openScene = new OpenScene();
@@ -84,12 +85,29 @@ public class UserMenuUIController {
         boolean available = DbManager.getInstance().userAvailable(user);
         if (!available)
         {
-            userValidation2.setText("that username is already taken");
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("USERNAME NOT AVAILABLE");
+            errorAlert.setContentText("The following username is already taken by another player, try a different one");
+            errorAlert.showAndWait();
         }
         else
         {
-            DbManager.getInstance().addUser(user,firstN,lastN,pass);
-            userValidation2.setText("account successfully created!!");
+            if(pass.equals(password3.getText()))
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setHeaderText("ACCOUNT SUCCESSFULLY CREATED");
+                errorAlert.setContentText("Account is created! Welcome " + user);
+                errorAlert.showAndWait();
+                DbManager.getInstance().addUser(user,firstN,lastN,pass);
+            }
+            else
+            {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setHeaderText("PASSWORDS DO NOT MATCH");
+                errorAlert.setContentText("The password and password confirmation fields do not match, make sure they are the same");
+                errorAlert.showAndWait();
+            }
+
         }
 
     }
