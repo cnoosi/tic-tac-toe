@@ -11,7 +11,7 @@ public class Main extends Application
     public void start(Stage primaryStage) throws Exception
     {
         OpenScene sceneOpener = new OpenScene();
-        sceneOpener.start(primaryStage, "/UserControlsUI/UserPrefUI.fxml", "Tic-Tac-Toe - Menu");
+        sceneOpener.start(primaryStage, "/MenuUI/MenuUI.fxml", "Tic-Tac-Toe - Menu");
     }
 
     public static void main(String[] args) {

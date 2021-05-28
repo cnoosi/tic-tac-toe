@@ -105,6 +105,7 @@ public class Database {
             ps.setString(1, userName);
             rs = ps.executeQuery();
 
+
             if (rs.next()){
                 found = true;
             }

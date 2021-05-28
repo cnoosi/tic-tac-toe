@@ -4,10 +4,12 @@ import AdminDashUI.AdminDashUIController;
 import BoardUI.*;
 import Game.*;
 import GameHistoryUI.GameHistoryUIController;
+import UserControlsUI.UserPrefUIController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -115,6 +117,25 @@ public class MenuUIController implements Initializable
         mp.stop();
     }
 
+    public void handleUserPrefBtn(ActionEvent event) throws Exception {
+
+        if (DbManager.getInstance().getCurrentUser().getUserName() == "Logged-Out")
+        {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("You Are Not Logged In");
+            errorAlert.setContentText("Log in in order to access this window");
+            errorAlert.showAndWait();
+        }
+        else{
+            Stage stage = (Stage) adminDashBtn.getScene().getWindow();
+            FXMLLoader root = new FXMLLoader();
+            root.setLocation(getClass().getResource("/UserControlsUI/UserPrefUI.fxml"));
+            Parent frame = root.load();
+            UserPrefUIController controller = (UserPrefUIController) root.getController();
+            openScene.start(stage, frame, "Tic-Tac-Toe - Admin Dash");
+            mp.stop();
+        }
+    }
     public void stop(){
         mp.stop();
     }

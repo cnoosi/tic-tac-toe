@@ -16,13 +16,13 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField layoutX="566.0" layoutY="238.0" />
-                        <TextField layoutX="566.0" layoutY="275.0" />
+                        <TextField fx:id="firstName" layoutX="566.0" layoutY="238.0" />
+                        <TextField fx:id="lastName" layoutX="566.0" layoutY="275.0" />
                         <Label layoutX="474.0" layoutY="242.0" prefHeight="17.0" prefWidth="82.0" text="First Name:" />
-                        <PasswordField layoutX="566.0" layoutY="311.0" />
+                        <PasswordField fx:id="pass" layoutX="566.0" layoutY="311.0" />
                         <Label layoutX="474.0" layoutY="279.0" prefHeight="17.0" prefWidth="82.0" text="Last Name:" />
                         <Label layoutX="474.0" layoutY="315.0" prefHeight="17.0" prefWidth="82.0" text="Password:" />
-                        <Button layoutX="614.0" layoutY="361.0" mnemonicParsing="false" text="Submit" />
+                        <Button layoutX="614.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleSubmitButton" text="Submit" />
                      </children>
                   </AnchorPane>
             </content>

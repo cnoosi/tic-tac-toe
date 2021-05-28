@@ -121,6 +121,8 @@ public class DbManager {
             System.out.println(e.getMessage());
         }
 
+
+
         sql = "SELECT * FROM User WHERE UserName = ?";
         ResultSet rs = null;
         int id = -2;
@@ -147,6 +149,28 @@ public class DbManager {
             System.out.println("new user added successfully! id: " + id + " username: " + userName + " deleted: " + deleted);
         }
 
+    }
+
+    public void changeName(String newFirst, String newLast, String userName ){
+        //String sql = "UPDATE User SET FirstName = " + newFirst + " WHERE Username = " + userName;
+
+        String sql = "UPDATE User SET FirstName = ? , "
+                + "LastName = ? "
+                + "WHERE Username = ?";
+        
+        //String sql = "UPDATE " + TABLE_NAME + " SET " + ColumnName + " = '" + newValue + "' WHERE " + Column + " = " + rowId;
+
+
+        System.out.println("Username: " + userName + " New firstName: " + newFirst);
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,newFirst);
+            pstmt.setString(2,newLast);
+            pstmt.setString(3,userName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static Connection connect()
