@@ -298,9 +298,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         {
             int row = Integer.parseInt(message.getMessage().get(0)); // contains row index
             int col = Integer.parseInt(message.getMessage().get(1)); // contains col index
-            System.out.println(row);
-            System.out.println(col);
-            System.out.println(clientAlive);
             if(clientAlive)
             {
                 MoveMessage moveRequest = new MoveMessage(gameId, row, col);
