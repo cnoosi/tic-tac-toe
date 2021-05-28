@@ -9,6 +9,7 @@ import Observers.Observer;
 import Observers.ObserverMessage;
 import Messages.*;
 import UserInterface.UIProcess;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
@@ -150,7 +151,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         if (messagePreloadCount == messagePreloadCountCompleted)
         {
             System.out.println("LIVE COUNT: " + liveGameList.size() + " || HISTORY COUNT: " + historyGameList.size());
-            //ui.gameHistoryRecieved(liveGameList, historyGameList);
+            ui.gameHistoryRecieved(liveGameList, historyGameList);
         }
     }
 
@@ -191,7 +192,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         String player2Name = (String) map.get("Player2Name");
         long gameDuration = (long) map.get("GameDuration");
         long winnerToken = (long) map.get("WinnerToken");
-        ui.gameDataReceived(player1Name, player2Name, (int) gameDuration, (int) winnerToken);
+        //ui.gameDataReceived(player1Name, player2Name, (int) gameDuration, (int) winnerToken);
     }
 
     public void handleMessagingProcess()
@@ -312,7 +313,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             }
         }
 
-        else if(messageType.equals("Spectate"))
+        else if(messageType.equals("Spectate") || messageType.equals("ReplayGame"))
         {
             String gameId = message.getMessage().get(0); // holds the gameId they want to spectate
             writeMessage(new SpectateMessage(true, gameId));

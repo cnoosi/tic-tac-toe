@@ -3,6 +3,7 @@ package UserInterface;
 import BoardUI.BoardUIController;
 import Game.*;
 import Game.Position;
+import GameHistoryUI.GameHistoryUIController;
 import MenuUI.MenuUIController;
 import MenuUI.UserMenuUIController;
 import Networking.ClientProcess;
@@ -29,25 +30,29 @@ public class UIProcess implements Subject, Observer
     FXMLLoader menuLoader;
     FXMLLoader boardLoader;
     FXMLLoader loginLoader;
+    FXMLLoader historyLoader;
 
     //FXML Holder
     Parent menuRoot;
     Parent boardRoot;
     Parent loginRoot;
+    Parent historyRoot;
 
     //Controllers
     MenuUIController menuController;
     BoardUIController boardController;
     UserMenuUIController loginController;
+    GameHistoryUIController historyController;
 
     //Primary Stage
     Stage primaryStage;
 
     //Observers
-    ArrayList<Observer> loginObservers  = new ArrayList<>();
-    ArrayList<Observer> menuObservers   = new ArrayList<>();
-    ArrayList<Observer> boardObservers  = new ArrayList<>();
-    ArrayList<Observer> clientObservers = new ArrayList<>();
+    ArrayList<Observer> loginObservers   = new ArrayList<>();
+    ArrayList<Observer> menuObservers    = new ArrayList<>();
+    ArrayList<Observer> boardObservers   = new ArrayList<>();
+    ArrayList<Observer> clientObservers  = new ArrayList<>();
+    ArrayList<Observer> historyObservers = new ArrayList<>();
 
     // Updated Constructor
     public UIProcess(ClientProcess client, Stage primaryStage)
@@ -63,29 +68,34 @@ public class UIProcess implements Subject, Observer
         try
         {
             // initialize FXMLLoaders
-            loginLoader = new FXMLLoader(getClass().getResource("/MenuUI/UserMenuUI.fxml"));
-            menuLoader  = new FXMLLoader(getClass().getResource("/MenuUI/MenuUI.fxml"));
-            boardLoader = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
+            loginLoader   = new FXMLLoader(getClass().getResource("/MenuUI/UserMenuUI.fxml"));
+            menuLoader    = new FXMLLoader(getClass().getResource("/MenuUI/MenuUI.fxml"));
+            boardLoader   = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
+            historyLoader = new FXMLLoader(getClass().getResource("/GameHistoryUI/GameHistoryUI.fxml"));
 
             // set fxml roots
             loginRoot   = loginLoader.load();
             menuRoot    = menuLoader.load();
             boardRoot   = boardLoader.load();
+            historyRoot = historyLoader.load();
 
             // get controllers for every fxml
-            loginController = loginLoader.getController();
-            menuController  = menuLoader.getController();
-            boardController = boardLoader.getController();
+            loginController   = loginLoader.getController();
+            menuController    = menuLoader.getController();
+            boardController   = boardLoader.getController();
+            historyController = historyLoader.getController();
 
             // add this class as observer to other classes
             loginController.addObserver(this);
             menuController.addObserver(this);
             boardController.addObserver(this);
+            historyController.addObserver(this);
 
             // add observers
             this.addObserver(loginController);
             this.addObserver(menuController);
             this.addObserver(boardController);
+            this.addObserver(historyController);
             this.addObserver(client);
 
             // default scene
@@ -128,9 +138,11 @@ public class UIProcess implements Subject, Observer
             notifyObservers(message);
         }
 
-        else if(type.equals("GameHistory")) // modify later
+        else if(type.equals("GameHistory"))
         {
-            openPage("GameHistory");
+            openPage("History");
+            message.setMessageType("GameHistoryUpdate");
+            notifyObservers(message);
         }
 
         else if(type.equals("Spectate"))
@@ -141,6 +153,12 @@ public class UIProcess implements Subject, Observer
         else if(type.equals("LocalMove"))
         {
 
+        }
+
+        else if(type.equals("ReplayGame"))
+        {
+            notifyObservers(message);
+            openPage("Board");
         }
 
         // User Menu Actions
@@ -163,6 +181,9 @@ public class UIProcess implements Subject, Observer
         else if(o instanceof  BoardUIController)
             boardObservers.add((Observer) o);
 
+        else if(o instanceof GameHistoryUIController)
+            historyObservers.add((Observer) o);
+
         else if(o instanceof ClientProcess)
             clientObservers.add((Observer) o);
     }
@@ -179,6 +200,9 @@ public class UIProcess implements Subject, Observer
         else if(o instanceof  BoardUIController)
             boardObservers.remove(o);
 
+        else if(o instanceof GameHistoryUIController)
+            historyObservers.remove(o);
+
         else if(o instanceof ClientProcess)
             clientObservers.remove(o);
     }
@@ -194,16 +218,21 @@ public class UIProcess implements Subject, Observer
         }
 
         else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount")
-                || type.equals("Move") || type.equals("MultiPlayer"))
+                || type.equals("Move") || type.equals("MultiPlayer") || type.equals("GameHistoryUpdate") ||
+                type.equals("ReplayGame"))
         {
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-
-
         else if(type.equals("UIMove") || type.equals("ClearBoard"))
         {
             boardObservers.forEach(observer -> observer.update(message));
+        }
+
+
+        else if(type.equals("liveGameList") || type.equals("historyGameList"))
+        {
+            historyObservers.forEach(observer -> observer.update(message));
         }
     }
 
@@ -253,12 +282,28 @@ public class UIProcess implements Subject, Observer
             primaryStage.setScene(scene);
             primaryStage.show();
         }
+
+        else if(page.equals("History"))
+        {
+            scene.setRoot(historyRoot);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }
     }
 
     public void newChat(String playerName, String playerChat)
     {
         System.out.println("add new chat: " + playerName + ": " + playerChat);
     }
+
+    //ui.gameHistoryRecieved(liveGameList, historyGameList);
+
+    public void gameHistoryRecieved(ArrayList<String> liveGameList, ArrayList<String> historyGameList)
+    {
+        notifyObservers(new ObserverMessage("liveGameList", liveGameList));
+        notifyObservers(new ObserverMessage("historyGameList", historyGameList));
+    }
+
 
     public void startGame()
     {
