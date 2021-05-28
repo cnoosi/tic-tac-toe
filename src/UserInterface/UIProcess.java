@@ -8,9 +8,12 @@ import MenuUI.MenuUIController;
 import MenuUI.UserMenuUIController;
 import Networking.ClientProcess;
 import UserControlsUI.UserPrefUIController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import Linkers.*;
 import Observers.*;
@@ -195,7 +198,8 @@ public class UIProcess implements Subject, Observer
         }
 
         // User Menu Actions
-        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount") || type.equals("Move"))
+        else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount") || type.equals("Move") ||
+                type.equals("ChangeName") || type.equals("ChangeUsername") || type.equals("ChangePassword") || type.equals("DeleteUser"))
         {
             notifyObservers(message);
         }
@@ -258,16 +262,17 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("Login") || type.equals("Logout") || type.equals("CreateAccount")
                 || type.equals("Move") || type.equals("MultiPlayer") || type.equals("GameHistoryUpdate") ||
-                type.equals("ReplayGame"))
+                type.equals("ReplayGame") || type.equals("ChangeName") || type.equals("ChangeUsername") ||
+                type.equals("ChangePassword") || type.equals("DeleteUser"))
         {
             clientObservers.forEach(observer -> observer.update(message));
         }
 
-        else if(type.equals("UIMove") || type.equals("ClearBoard") || type.equals("SinglePlayerMode"))
+        else if(type.equals("UIMove") || type.equals("ClearBoard") || type.equals("SinglePlayerMode") ||
+                type.equals("UIBoardChange"))
         {
             boardObservers.forEach(observer -> observer.update(message));
         }
-
 
         else if(type.equals("liveGameList") || type.equals("historyGameList"))
         {
@@ -337,6 +342,11 @@ public class UIProcess implements Subject, Observer
         }
     }
 
+    public void setActiveUsername(String username)
+    {
+        // do something with their username
+    }
+
     public void newChat(String playerName, String playerChat)
     {
         System.out.println("add new chat: " + playerName + ": " + playerChat);
@@ -374,6 +384,23 @@ public class UIProcess implements Subject, Observer
 
     public void updateBoardUI(int currentToken, int winner, int spectators)
     {
-        //notifyObservers(new Position(20, 20), currentToken);
+        ArrayList<String> data = new ArrayList<>();
+        data.add(String.valueOf(currentToken));
+        data.add(String.valueOf(winner));
+        data.add(String.valueOf(spectators));
+        notifyObservers(new ObserverMessage("UIBoardChange", data));
+    }
+
+    public void createAlert(Alert.AlertType alertType, String header, String content)
+    {
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                Alert errorAlert = new Alert(alertType);
+                errorAlert.setHeaderText(header);
+                errorAlert.setContentText(content);
+                errorAlert.showAndWait();
+            }
+        });
     }
 }

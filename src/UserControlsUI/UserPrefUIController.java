@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class UserPrefUIController implements Initializable, Observer, Subject
@@ -43,125 +44,58 @@ public class UserPrefUIController implements Initializable, Observer, Subject
 
     private Observer UIProcess;
 
-    public void handleNameChange(ActionEvent event) throws Exception{
+    public void handleNameChange(ActionEvent event) throws Exception
+    {
+        String password     = pass.getText();
         String newFirst     = firstName.getText();
         String newLast      = lastName.getText();
-        String password     = pass.getText();
-        boolean userValid   = DbManager.getInstance().userFound(DbManager.getInstance().getCurrentUser().getUserName(),password);
 
-        if(userValid)
-        {
-            DbManager.getInstance().changeInfo("FirstName",newFirst,DbManager.getInstance().getCurrentUser().getUserName());
-            DbManager.getInstance().changeInfo("LastName",newLast,DbManager.getInstance().getCurrentUser().getUserName());
-            Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            errorAlert.setHeaderText("USER INFO CHANGED");
-            errorAlert.setContentText("You have successfully changed your user information, please restart the game in order for changes to fully take place");
-            errorAlert.showAndWait();
-        }
-        else{
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("INCORRECT PASSWORD");
-            errorAlert.setContentText("The username and password do not match, retry entering your password");
-            errorAlert.showAndWait();
-        }
+        ArrayList<String> newData = new ArrayList<>();
+        newData.add(password);
+        newData.add(newFirst);
+        newData.add(newLast);
+        notifyObservers(new ObserverMessage("ChangeName", newData));
     }
 
     public void handleUsernameChange(ActionEvent event) throws Exception{
-        String currentUsern = currentUsername.getText();
         String newUsern     = newUsername.getText();
         String password     = pass1.getText();
-        boolean userValid   = DbManager.getInstance().userFound(DbManager.getInstance().getCurrentUser().getUserName(),password);
 
-        if(userValid)
-        {
-            if(DbManager.getInstance().userAvailable(newUsern))
-            {
-                DbManager.getInstance().changeInfo("Username",newUsern,currentUsern);
-                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                errorAlert.setHeaderText("USERNAME  CHANGED");
-                errorAlert.setContentText("You have successfully changed your username, please restart the game in order for changes to fully take place");
-                errorAlert.showAndWait();
-            }
-            else
-            {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setHeaderText("USERNAME NOT AVAILABLE");
-                errorAlert.setContentText("The username you chose is already taken by another player");
-                errorAlert.showAndWait();
-            }
-        }
-        else
-        {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("INCORRECT USERNAME OR PASSWORD");
-            errorAlert.setContentText("The username and password do not match, retry entering your username and password");
-            errorAlert.showAndWait();
-        }
+        ArrayList<String> newData = new ArrayList<>();
+        newData.add(password);
+        newData.add(newUsern);
+        notifyObservers(new ObserverMessage("ChangeUsername", newData));
     }
 
     public void handlePasswordChange(ActionEvent event) throws Exception{
         String currentPass  = currentPassword.getText();
         String newPass      = newPassword.getText();
-        boolean userValid   = DbManager.getInstance().userFound(DbManager.getInstance().getCurrentUser().getUserName(),currentPass);
 
-        if(userValid)
+        if(newPass.equals(passwordConfirm.getText()))
         {
-            if(newPass.equals(passwordConfirm.getText()))
-            {
-                DbManager.getInstance().changeInfo("Password",newPass,DbManager.getInstance().getCurrentUser().getUserName());
-                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                errorAlert.setHeaderText("PASSWORD  CHANGED");
-                errorAlert.setContentText("You have successfully changed your password, please restart the game in order for changes to fully take place");
-                errorAlert.showAndWait();
-            }
-            else
-            {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setHeaderText("PASSWORDS DO NOT MATCH");
-                errorAlert.setContentText("The passwords do not match, make sure the new password and the new password confirmation fields match");
-                errorAlert.showAndWait();
-            }
+            ArrayList<String> newData = new ArrayList<>();
+            newData.add(currentPass);
+            newData.add(newPass);
+            notifyObservers(new ObserverMessage("ChangePassword", newData));
         }
         else
         {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("INCORRECT USERNAME OR PASSWORD");
-            errorAlert.setContentText("The username and password do not match, retry entering your password");
+            errorAlert.setHeaderText("PASSWORDS DO NOT MATCH");
+            errorAlert.setContentText("The passwords do not match, make sure the new password and the new password confirmation fields match");
             errorAlert.showAndWait();
         }
-
     }
 
     public void handleDeleteUser(ActionEvent event)
     {
         String username = userNameDelete.getText();
         String password = passwordDelete.getText();
-        if(username.equals(DbManager.getInstance().getCurrentUser().getUserName()))
-        {
-            boolean userValid   = DbManager.getInstance().userFound(DbManager.getInstance().getCurrentUser().getUserName(),password);
-            if(userValid)
-            {
-                DbManager.getInstance().deleteUser(DbManager.getInstance().getCurrentUser().getUserName());
-                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                errorAlert.setHeaderText("USER DELETED");
-                errorAlert.setContentText("You have successfully deleted your account, please restart the game in order for changes to fully take place");
-                errorAlert.showAndWait();
-            }
-            else
-            {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setHeaderText("INCORRECT PASSWORD");
-                errorAlert.setContentText("The username and password do not match, retry entering your password");
-                errorAlert.showAndWait();
-            }
-        }
-        else
-        {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("INCORRECT USERNAME");
-            errorAlert.setContentText("Username doesn't match the current account retry entering your username");
-            errorAlert.showAndWait();
-        }
+
+        ArrayList<String> newData = new ArrayList<>();
+        newData.add(username);
+        newData.add(password);
+        notifyObservers(new ObserverMessage("DeleteUser", newData));
     }
 
     public void handleHomeButton(ActionEvent event) throws Exception{
@@ -175,12 +109,8 @@ public class UserPrefUIController implements Initializable, Observer, Subject
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        User current = new User();
-        current = DbManager.getInstance().getCurrentUser();
-        firstName.setText(current.getFirstName());
-        lastName.setText(current.getLastName());
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
 
     }
 

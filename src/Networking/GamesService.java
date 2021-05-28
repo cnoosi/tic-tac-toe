@@ -37,7 +37,7 @@ public class GamesService {
         boolean joinQueue = (boolean) map.get("InQueue");
         if (joinQueue)
         {
-            //if (client.getId() != -1)
+            if (client.getId() != -1)
             {
                 System.out.println("JOIN QUEUE: true");
                 matchmakingQueue.add(client);

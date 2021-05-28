@@ -7,18 +7,6 @@ public class DbManager {
     private ArrayList<User> userList = new ArrayList<>();
     private ArrayList<GameHistory> gameList = new ArrayList<>();
     private ArrayList<MovesHistory> movesList = new ArrayList<>();
-    private static DbManager instance = new DbManager();
-    private int currentUser;
-
-    public static DbManager getInstance()
-    {
-        return instance;
-    }
-
-    public User getCurrentUser()
-    {
-        return userList.get(currentUser);
-    }
 
     public DbManager() {
         String sql = "SELECT * FROM User";
@@ -103,21 +91,16 @@ public class DbManager {
         return found;
     }
 
-    public boolean isUserDeleted(String user)
+    public User getUserFromUsername(String username)
     {
-        boolean deleted = false;
-        for(User u:userList)
+        for (User u: userList)
         {
-            if(u.getUserName().equals(user))
+            if (u.getUserName().equals(username))
             {
-                if(u.isDeleted())
-                {
-                    deleted = true;
-                    break;
-                }
+                return u;
             }
         }
-        return deleted;
+        return null;
     }
 
     //********************************************
@@ -168,6 +151,8 @@ public class DbManager {
         }
         return null;
     }
+
+    public ArrayList<GameHistory> getAllGames() {return this.gameList;}
 
     public ArrayList<GameHistory> getGameHistoryForUser(int userId)
     {
@@ -283,17 +268,29 @@ public class DbManager {
     }
 
     public void changeInfo(String columnToEdit, String newString, String userName ){
-        //String sql = "UPDATE User SET FirstName = " + newFirst + " WHERE Username = " + userName;
-
-        String sqll = "UPDATE User SET FirstName = ? , "
-                + "LastName = ? "
-                + "WHERE Username = ?";
-
         String sql = "UPDATE User Set " + columnToEdit + " = ? WHERE Username = ?";
-        //String sql = "UPDATE " + TABLE_NAME + " SET " + ColumnName + " = '" + newValue + "' WHERE " + Column + " = " + rowId;
 
 
-        System.out.println("Username: " + userName + " New firstName: " + newString);
+        User findUser = getUserFromUsername(userName);
+        if (findUser != null)
+        {
+            switch (columnToEdit)
+            {
+                case "Username":
+                    findUser.setUserName(newString);
+                    break;
+                case "FirstName":
+                    findUser.setFirstName(newString);
+                    break;
+                case "LastName":
+                    findUser.setLastName(newString);
+                    break;
+                case "Password":
+                    findUser.setPassword(newString);
+                    break;
+            }
+        }
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,newString);
@@ -307,6 +304,11 @@ public class DbManager {
     public void deleteUser(String userName)
     {
         String sql = "UPDATE User SET Deleted = ? WHERE Username = ?";
+
+        User findUser = getUserFromUsername(userName);
+        if (findUser != null)
+            findUser.setDeleted(true);
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1,1);

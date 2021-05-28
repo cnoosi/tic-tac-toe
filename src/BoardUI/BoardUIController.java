@@ -198,6 +198,28 @@ public class BoardUIController implements Initializable, Observer, Subject
             });
         }
 
+        else if (type.equals("UIBoardChange"))
+        {
+            int currentToken = Integer.parseInt(message.getMessage().get(0));
+            int winnerToken = Integer.parseInt(message.getMessage().get(1));
+            int spectatorCount = Integer.parseInt(message.getMessage().get(2));
+            Platform.runLater(new Runnable(){
+                @Override
+                public void run() {
+                    if(winnerToken != 0)
+                    {
+                        notificationLabel.setTextFill(Color.WHITE);
+                        if (winnerToken != -1)
+                            notificationLabel.setText("Winner is: Player " + winnerToken);
+                        else
+                            notificationLabel.setText("It's a tie!");
+                        setDisable(true);
+                    }
+                    // Do something with current token & spectator count here
+                }
+            });
+        }
+
         else if(type.equals("ClearBoard"))
         {
             setDisable(false);

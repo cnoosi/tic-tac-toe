@@ -9,6 +9,7 @@ public class AccountMessage extends Message {
     private String password;
     private String firstName;
     private String lastName;
+    private String newValue;
     private String response;
 
     public AccountMessage(AccountAction accountAction, String username, String password,
@@ -19,6 +20,18 @@ public class AccountMessage extends Message {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.response = response;
+    }
+
+    public AccountMessage(AccountAction accountAction, String username, String password,
+                          String firstName, String lastName, String newValue, String response)
+    {
+        this.accountAction = accountAction;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.newValue = newValue;
         this.response = response;
     }
 
@@ -44,6 +57,12 @@ public class AccountMessage extends Message {
         this.lastName = lastName;
     }
 
+    public AccountMessage(AccountAction accountAction, String response)
+    {
+        this.accountAction = accountAction;
+        this.response = response;
+    }
+
     @Override
     public Map<String, Object> toMap()
     {
@@ -54,6 +73,7 @@ public class AccountMessage extends Message {
         newMap.put("Password", password);
         newMap.put("FirstName", firstName);
         newMap.put("LastName", lastName);
+        newMap.put("NewValue", newValue);
         newMap.put("Response", response);
         return newMap;
     }

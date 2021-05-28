@@ -32,50 +32,17 @@ public class UserMenuUIController implements Observer, Subject
     //LOGIN FUNCTION
     //********************************************
     public void handleLoginBtn(ActionEvent event) throws Exception{
-//        Scanner  scanner = new Scanner(System.in);
-////      Database db      = new Database();
-//        String   user    = userName.getText();
-//        String   pass    = password.getText();
-//        ArrayList<String> information = new ArrayList<>();
-//        information.add(user);
-//        information.add(pass);
-
-        ArrayList<String> userInfo = new ArrayList<>() {{add(userName.getText()); add(password.getText());}};
-
-//        boolean  userValid;
-//
-//        //CHECKS TO SEE IF THE USER EXISTS
-//        userValid = DbManager.getInstance().userFound(user,pass);
-////      userValid = db.find(user,pass);
-//
-//        if(userValid)
-//        {
-//            userValidation.setText("user has been found!");
-//            DbManager.getInstance().setCurrentUser(user);
-//        }
-//        else
-//        {
-//            userValidation.setText("User not found");
-//        }
+        ArrayList<String> userInfo = new ArrayList<>();
+        userInfo.add(userName.getText());
+        userInfo.add(password.getText());
 
         notifyObservers(new ObserverMessage("Login", userInfo));
-        //Scanner  scanner = new Scanner(System.in);
-        //String   user    = userName.getText();
-        //String   pass    = password.getText();
-
-        //CHECKS TO SEE IF THE USER EXISTS
-        //client.writeMessage(new AccountMessage(AccountAction.Login, user, null, null, pass));
     }
 
     //********************************************
     //CREATE ACCOUNT FUNCTION
     //********************************************
     public void handleCreateAcctBtn(ActionEvent event) throws Exception {
-
-//        String user   = userName2.getText();
-//        String firstN = firstName.getText();
-//        String lastN  = lastName.getText();
-//        String pass   = password2.getText();
 
         ArrayList<String> userInfo = new ArrayList<>()
         {
@@ -88,25 +55,10 @@ public class UserMenuUIController implements Observer, Subject
         };
 
         notifyObservers(new ObserverMessage("CreateAccount", userInfo));
-
-//        boolean available = DbManager.getInstance().userAvailable(user);
-//        if (!available)
-//        {
-//            userValidation2.setText("that username is already taken");
-//        }
-//        else
-//        {
-//            DbManager.getInstance().addUser(user,firstN,lastN,pass);
-//            userValidation2.setText("account successfully created!!");
-//        }
-
-        //client.writeMessage(new AccountMessage(AccountAction.Register, user, firstN, lastN, pass));
-
-        //userValidation2.setText("that username is already taken");
     }
 
     public void handleLogoutButton(ActionEvent event) throws Exception {
-        //client.writeMessage(new AccountMessage(AccountAction.Logout));
+        notifyObservers(new ObserverMessage("Logout"));
     }
 
     public void handleHomeBtn(ActionEvent event)
