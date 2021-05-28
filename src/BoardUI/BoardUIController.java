@@ -1,7 +1,6 @@
 package BoardUI;
 
 import MenuUI.*;
-import Linkers.*;
 import Messages.MoveMessage;
 import Observers.Observer;
 import Observers.ObserverMessage;
@@ -41,7 +40,7 @@ public class BoardUIController implements Initializable, Observer, Subject
     private int token = 1;
     private boolean singlePlayer = false;
 
-    private ArrayList<BoardObserver> observers = new ArrayList<>();
+    private ArrayList<Observer> observers = new ArrayList<>();
 
     @FXML private ArrayList<Button>    buttonList;
     @FXML private ArrayList<ImageView> imageList;

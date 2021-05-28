@@ -2,9 +2,6 @@ package Networking;
 
 import Game.Game;
 import Game.Position;
-import Linkers.ClientObserver;
-import Linkers.ClientSubject;
-import Linkers.GameObserver;
 import Observers.Observer;
 import Observers.ObserverMessage;
 import Messages.*;
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ClientProcess implements Runnable, ClientObserver, Observer
+public class ClientProcess implements Runnable, Observer
 {
     Socket client;
     boolean clientAlive = true;
@@ -286,16 +283,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     }
 
     @Override
-    public void clientUpdate(Position pos)
-    {
-        if(clientAlive)
-        {
-            MoveMessage moveRequest = new MoveMessage(gameId, pos.getRow(), pos.getCol());
-            writeMessage(moveRequest);
-        }
-    }
-
-    @Override
     public void update(ObserverMessage message)
     {
         String messageType = message.getMessageType();
@@ -348,7 +335,10 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         {
             String username  = message.getMessage().get(0); // holds username
             String password = message.getMessage().get(1); // holds first name
-            writeMessage(new AccountMessage(AccountAction.DeleteUser, username, password, null, null, null, null));
+            if (this.username.equals(username))
+                writeMessage(new AccountMessage(AccountAction.DeleteUser, username, password, null, null, null, null));
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "DELETE ERROR", "You cannot delete another user! Please log into the account first delete it");
         }
         else if(messageType.equals("MultiPlayer"))
         {

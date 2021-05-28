@@ -15,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import Linkers.*;
 import Observers.*;
 
 import javax.crypto.AEADBadTagException;
