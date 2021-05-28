@@ -118,6 +118,16 @@ public class DbManager {
         return -1;
     }
 
+    public String getUsername(int userId)
+    {
+        for (User u: userList)
+        {
+            if (u.getId() == userId)
+                return u.getUserName();
+        }
+        return "";
+    }
+
     public GameHistory getGameHistory(String gameId)
     {
         for (GameHistory game : gameList)

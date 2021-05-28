@@ -3,6 +3,7 @@ package Networking;
 import Game.*;
 import Messages.GameHistoryMessage;
 import Messages.GameReplayMessage;
+import Messages.GetGameDataMessage;
 import Messages.QueueMessage;
 
 import java.util.ArrayList;
@@ -84,6 +85,21 @@ public class GamesService {
                     client.writeMessage(new GameHistoryMessage(i, move.getTime(), move.getRow(), move.getCol()));
                 }
             }
+        }
+    }
+
+    public void handleGetGameDataMessage(Map<String, Object> map)
+    {
+        ClientConnection client = (ClientConnection) map.get("Client");
+        String gameId = (String) map.get("GameId");
+        GameHistory findGame = database.getGameHistory(gameId);
+        if (findGame != null)
+        {
+            String player1Name = database.getUsername(findGame.getPlayer1Id());
+            String player2Name = database.getUsername(findGame.getPlayer2Id());
+            int gameDuration = (int) (findGame.getEndTime() - findGame.getStartTime());
+            int winnerToken = findGame.getWinnerToken();
+            client.writeMessage(new GetGameDataMessage(gameId, player1Name, player2Name, gameDuration, winnerToken));
         }
     }
 
