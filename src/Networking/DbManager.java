@@ -82,7 +82,7 @@ public class DbManager {
         boolean found = false;
         for (User u: userList)
         {
-            if((u.getUserName().equals(user)) && (u.getPassword().equals(pass)))
+            if((u.getUserName().equals(user)) && (u.getPassword().equals(pass)) && !u.isDeleted())
             {
                 found = true;
                 break;
@@ -130,15 +130,32 @@ public class DbManager {
         return null;
     }
 
+    public ArrayList<GameHistory> getGameHistoryForUser(int userId)
+    {
+        ArrayList<GameHistory> history = new ArrayList<>();
+        for (GameHistory game : gameList)
+        {
+            if (game.getPlayer1Id() == userId || game.getPlayer2Id() == userId)
+                history.add(game);
+        }
+        return history;
+    }
+
     public ArrayList<MovesHistory> getMoveHistory(String gameId)
     {
-        ArrayList<MovesHistory> moves = new ArrayList<>();
+        Map<Integer, MovesHistory> moveMap = new HashMap<Integer, MovesHistory>();
+
         for (MovesHistory move : movesList)
         {
-            if (move.getGameId().equals(gameId))
-            {
-                moves.add(move.getMoveIndex(), move);
+            if (move.getGameId().equals(gameId)) {
+                moveMap.put(move.getMoveIndex(), move);
             }
+        }
+
+        ArrayList<MovesHistory> moves = new ArrayList<>();
+        for (Map.Entry<Integer, MovesHistory> entry: moveMap.entrySet())
+        {
+            moves.add(entry.getValue());
         }
         return moves;
     }

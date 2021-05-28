@@ -2,6 +2,7 @@ package Networking;
 import Game.*;
 import Messages.GameMessage;
 import Messages.Message;
+import Messages.SpectateMessage;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,15 +16,17 @@ public class GameProcess
     private ArrayList<ClientConnection> spectators;
     private long startTime = System.currentTimeMillis();
     private long endTime;
+    private GamesService gamesService;
     private ServerProcess server;
     private ClientProcess client;
 
     private final int MOVE_TIME_LIMIT = 30;
 
-    public GameProcess(ServerProcess server, String gameId, Pair<ClientConnection, ClientConnection> players)
+    public GameProcess(GamesService gamesService, ServerProcess server, String gameId, Pair<ClientConnection, ClientConnection> players)
     {
         game = new Game();
         this.server = server;
+        this.gamesService = gamesService;
         this.gameId = gameId;
         this.players = players;
         this.spectators = new ArrayList<>();
@@ -80,9 +83,9 @@ public class GameProcess
             }
 
             // Call database function
-            server.saveGameData(this);
+            gamesService.saveGameData(this);
 
-            server.killGameProcess(gameId);
+            gamesService.killGameProcess(gameId);
         }
         else if (client != null)
         {

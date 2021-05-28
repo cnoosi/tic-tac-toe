@@ -27,6 +27,13 @@ public class AccountMessage extends Message {
         this.accountAction = accountAction;
     }
 
+    public AccountMessage(AccountAction accountAction, String username, String password)
+    {
+        this.accountAction = accountAction;
+        this.username = username;
+        this.password = password;
+    }
+
     public AccountMessage(AccountAction accountAction, String username, String password,
                           String firstName, String lastName)
     {
@@ -42,7 +49,7 @@ public class AccountMessage extends Message {
     {
         HashMap<String, Object> newMap = new HashMap<>();
         newMap.put("MessageType", this.getClass().getSimpleName());
-        newMap.put("Action", accountAction);
+        newMap.put("Action", accountAction.ordinal());
         newMap.put("Username", username);
         newMap.put("Password", password);
         newMap.put("FirstName", firstName);
