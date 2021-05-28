@@ -27,7 +27,7 @@ public class Main extends Application
         {
             Thread serverThread = new Thread(new ServerProcess());
             serverThread.start();
-            launch(args);
+            //launch(args);
         }
         else if (args[0].equals("client"))
         {

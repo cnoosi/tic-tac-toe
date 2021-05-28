@@ -29,10 +29,10 @@ public class ServerProcess implements Runnable
     private AccountService accountsService;
     private GamesService gamesService;
 
-    public ServerProcess(Stage primaryStage)
-    {
-        this.serverUIProcess = new ServerUIProcess(this, primaryStage);
-    }
+//    public ServerProcess(Stage primaryStage)
+//    {
+//        this.serverUIProcess = new ServerUIProcess(this, primaryStage);
+//    }
 
     private void handleSubscribeMessage(Map<String, Object> map)
     {

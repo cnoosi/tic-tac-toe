@@ -12,9 +12,9 @@ public class Server extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Thread serverThread = new Thread(new ServerProcess(primaryStage));
-        serverThread.start();
-        primaryStage.show();
+//        Thread serverThread = new Thread(new ServerProcess(primaryStage));
+//        serverThread.start();
+//        primaryStage.show();
     }
     public static void main(String [] args)
     {

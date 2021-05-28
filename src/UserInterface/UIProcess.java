@@ -7,6 +7,7 @@ import GameHistoryUI.GameHistoryUIController;
 import MenuUI.MenuUIController;
 import MenuUI.UserMenuUIController;
 import Networking.ClientProcess;
+import UserControlsUI.UserPrefUIController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,28 +32,32 @@ public class UIProcess implements Subject, Observer
     FXMLLoader boardLoader;
     FXMLLoader loginLoader;
     FXMLLoader historyLoader;
+    FXMLLoader preferenceLoader;
 
     //FXML Holder
     Parent menuRoot;
     Parent boardRoot;
     Parent loginRoot;
     Parent historyRoot;
+    Parent preferenceRoot;
 
     //Controllers
     MenuUIController menuController;
     BoardUIController boardController;
     UserMenuUIController loginController;
     GameHistoryUIController historyController;
+    UserPrefUIController preferenceController;
 
     //Primary Stage
     Stage primaryStage;
 
     //Observers
-    ArrayList<Observer> loginObservers   = new ArrayList<>();
-    ArrayList<Observer> menuObservers    = new ArrayList<>();
-    ArrayList<Observer> boardObservers   = new ArrayList<>();
-    ArrayList<Observer> clientObservers  = new ArrayList<>();
-    ArrayList<Observer> historyObservers = new ArrayList<>();
+    ArrayList<Observer> loginObservers      = new ArrayList<>();
+    ArrayList<Observer> menuObservers       = new ArrayList<>();
+    ArrayList<Observer> boardObservers      = new ArrayList<>();
+    ArrayList<Observer> clientObservers     = new ArrayList<>();
+    ArrayList<Observer> historyObservers    = new ArrayList<>();
+    ArrayList<Observer> preferenceObservers = new ArrayList<>();
 
     // Updated Constructor
     public UIProcess(ClientProcess client, Stage primaryStage)
@@ -72,31 +77,37 @@ public class UIProcess implements Subject, Observer
             menuLoader    = new FXMLLoader(getClass().getResource("/MenuUI/MenuUI.fxml"));
             boardLoader   = new FXMLLoader(getClass().getResource("/BoardUI/BoardUI.fxml"));
             historyLoader = new FXMLLoader(getClass().getResource("/GameHistoryUI/GameHistoryUI.fxml"));
+            preferenceLoader = new FXMLLoader(getClass().getResource("/UserControlsUI/UserPrefUI.fxml"));
 
             // set fxml roots
             loginRoot   = loginLoader.load();
             menuRoot    = menuLoader.load();
             boardRoot   = boardLoader.load();
             historyRoot = historyLoader.load();
+            preferenceRoot = preferenceLoader.load();
 
             // get controllers for every fxml
             loginController   = loginLoader.getController();
             menuController    = menuLoader.getController();
             boardController   = boardLoader.getController();
             historyController = historyLoader.getController();
+            preferenceController = preferenceLoader.getController();
 
             // add this class as observer to other classes
             loginController.addObserver(this);
             menuController.addObserver(this);
             boardController.addObserver(this);
             historyController.addObserver(this);
+            preferenceController.addObserver(this);
 
             // add observers
             this.addObserver(loginController);
             this.addObserver(menuController);
             this.addObserver(boardController);
             this.addObserver(historyController);
+            this.addObserver(preferenceController);
             this.addObserver(client);
+
 
             // default scene
             scene = new Scene(menuRoot);
@@ -150,7 +161,11 @@ public class UIProcess implements Subject, Observer
                 updateBoardUI(row, col, token);
                 System.out.println(localGame);
             }
+        }
 
+        else if(type.equals("UserPreference"))
+        {
+            openPage("UserPreference");
         }
 
         else if(type.equals("MultiPlayer"))
@@ -209,6 +224,9 @@ public class UIProcess implements Subject, Observer
 
         else if(o instanceof ClientProcess)
             clientObservers.add((Observer) o);
+
+        else if(o instanceof UserPrefUIController)
+            preferenceObservers.add((Observer) o);
     }
 
     @Override
@@ -228,6 +246,9 @@ public class UIProcess implements Subject, Observer
 
         else if(o instanceof ClientProcess)
             clientObservers.remove(o);
+
+        else if(o instanceof UserPrefUIController)
+            preferenceObservers.remove(o);
     }
 
     @Override
@@ -309,6 +330,13 @@ public class UIProcess implements Subject, Observer
         else if(page.equals("History"))
         {
             scene.setRoot(historyRoot);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }
+
+        else if(page.equals("UserPreference"))
+        {
+            scene.setRoot(preferenceRoot);
             primaryStage.setScene(scene);
             primaryStage.show();
         }

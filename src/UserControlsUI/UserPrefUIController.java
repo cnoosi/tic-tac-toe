@@ -1,9 +1,11 @@
 package UserControlsUI;
 
-import Game.DbManager;
-import Game.OpenScene;
-import Game.User;
+import Networking.*;
 import MenuUI.MenuUIController;
+import Observers.Observer;
+import Observers.ObserverMessage;
+import Observers.Subject;
+import UserInterface.UIProcess;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +17,10 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class UserPrefUIController implements Initializable {
-
+public class UserPrefUIController implements Initializable, Observer, Subject
+{
     @FXML TabPane tabPane;
-    private OpenScene openScene = new OpenScene();
+    //private OpenScene openScene = new OpenScene();
 
     //Name Change UI elements
     @FXML TextField     firstName;
@@ -38,6 +40,8 @@ public class UserPrefUIController implements Initializable {
     //User Delete UI elemts
     @FXML TextField     userNameDelete;
     @FXML PasswordField passwordDelete;
+
+    private Observer UIProcess;
 
     public void handleNameChange(ActionEvent event) throws Exception{
         String newFirst     = firstName.getText();
@@ -161,12 +165,13 @@ public class UserPrefUIController implements Initializable {
     }
 
     public void handleHomeButton(ActionEvent event) throws Exception{
-        Stage stage = (Stage) tabPane.getScene().getWindow();
-        FXMLLoader root = new FXMLLoader();
-        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
-        Parent frame = root.load();
-        MenuUIController controller = (MenuUIController) root.getController();
-        openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
+        notifyObservers(new ObserverMessage("Home"));
+//        Stage stage = (Stage) tabPane.getScene().getWindow();
+//        FXMLLoader root = new FXMLLoader();
+//        root.setLocation(getClass().getResource("/MenuUI/MenuUI.fxml"));
+//        Parent frame = root.load();
+//        MenuUIController controller = (MenuUIController) root.getController();
+        //openScene.start(stage, frame, "Tic-Tac-Toe - Menu");
     }
 
     @Override
@@ -177,5 +182,29 @@ public class UserPrefUIController implements Initializable {
         firstName.setText(current.getFirstName());
         lastName.setText(current.getLastName());
 
+    }
+
+    @Override
+    public void update(ObserverMessage message)
+    {
+
+    }
+
+    @Override
+    public void addObserver(Object o)
+    {
+        UIProcess = (Observer) o;
+    }
+
+    @Override
+    public void removeObserver(Object o)
+    {
+        UIProcess = null;
+    }
+
+    @Override
+    public void notifyObservers(ObserverMessage message)
+    {
+        UIProcess.update(message);
     }
 }

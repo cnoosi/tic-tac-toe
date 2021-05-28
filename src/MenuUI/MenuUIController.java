@@ -79,6 +79,13 @@ public class MenuUIController implements Initializable, Observer, Subject
         mp.stop();
     }
 
+
+    @FXML
+    public void handleUserPrefBtn(ActionEvent event)
+    {
+        notifyObservers(new ObserverMessage("UserPreference"));
+    }
+
     /***************************************************/
     public void handleAdminDashButton(ActionEvent event)
     {
