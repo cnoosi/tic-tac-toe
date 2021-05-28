@@ -129,6 +129,7 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("SinglePlayer"))
         {
+            clearBoard();
             openPage("Board");
             localGame = new Game();
             notifyObservers(new ObserverMessage("SinglePlayerMode"));
@@ -154,6 +155,7 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("MultiPlayer"))
         {
+            clearBoard();
             openPage("Board");
             notifyObservers(message);
         }
@@ -167,7 +169,7 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("Spectate"))
         {
-
+            clearBoard();
         }
 
         else if(type.equals("LocalMove"))
@@ -177,6 +179,7 @@ public class UIProcess implements Subject, Observer
 
         else if(type.equals("ReplayGame"))
         {
+            clearBoard();
             notifyObservers(message);
             openPage("Board");
         }
@@ -324,20 +327,14 @@ public class UIProcess implements Subject, Observer
         notifyObservers(new ObserverMessage("historyGameList", historyGameList));
     }
 
-
-    public void startGame()
-    {
-        //openPage("Board");
-    }
-
     public void joinQueue()
     {
-        //openPage("Board");
+
     }
 
     public void leaveQueue()
     {
-        //openPage("Menu");
+
     }
 
     public void changeUIBoardToken(int row, int col, int newToken)

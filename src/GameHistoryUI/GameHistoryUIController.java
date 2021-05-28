@@ -30,6 +30,8 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
     @FXML private Button            homeBtn;
     private OpenScene openScene = new OpenScene();
 
+    boolean selectedHistoryGame = false;
+
     private ArrayList<String> gameHistoryId;
     private ArrayList<String> liveGamesId;
 
@@ -52,12 +54,19 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //    spectate game
         //
         //**********************************
-        ArrayList<String> currentGame = new ArrayList<>();
-        if(gameHistoryList.getItems().contains(gameHistoryList.getItems().get(gameHistoryList.getSelectionModel().getSelectedIndex())))
-
-        currentGame.add(gameHistoryList.getItems().get(gameHistoryList.getSelectionModel().getSelectedIndex()));
+        ArrayList<String> gameMessage = new ArrayList<>();
+        if (selectedHistoryGame)
+        {
+            int selectedIndex = gameHistoryList.getSelectionModel().getSelectedIndex();
+            gameMessage.add(gameHistoryId.get(selectedIndex));
+        }
+        else
+        {
+            int selectedIndex = liveGamesList.getSelectionModel().getSelectedIndex();
+            gameMessage.add(liveGamesId.get(selectedIndex));
+        }
         //System.out.println(currentGame);
-        notifyObservers(new ObserverMessage("ReplayGame", currentGame));
+        notifyObservers(new ObserverMessage("ReplayGame", gameMessage));
     }
 
     public void handleIdSelection() throws Exception{
@@ -66,11 +75,13 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //    Load up info to the gameinfo
         //
         //**********************************
+        selectedHistoryGame = true;
         gameInfo.setText(gameHistoryList.getSelectionModel().getSelectedItem());
     }
 
     public void handleLiveIdSelection()
     {
+        selectedHistoryGame = false;
         gameInfo.setText(liveGamesList.getSelectionModel().getSelectedItem());
     }
 
@@ -86,53 +97,34 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //    INITIALIZE THE LIST HERE
         //
         //**********************************
-        gameHistoryList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         liveGamesList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    }
-
-    public void clearListViews()
-    {
-        liveGamesList.getItems().clear();
-        gameHistoryList.getItems().clear();
+        gameHistoryList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     @Override
     public void update(ObserverMessage message)
     {
-        Platform.runLater(new Runnable(){
-            @Override
-            public void run() {
+        String type = message.getMessageType();
 
-                clearListViews();
-                System.out.println("history update");
-                String type = message.getMessageType();
-
-                if (type.equals("liveGameList"))
-                {
-                    liveGamesId = message.getMessage();
-                    System.out.println(liveGamesId);
-                    for(int i = 0; i < liveGamesId.size(); i++)
-                    {
-                        System.out.println("Trying to add");
-                        liveGamesList.getItems().add("Live Game " + i);
-                    }
-//                    System.out.println(message.getMessage());
-//                    for(String item : message.getMessage())
-//                        if(!liveGamesList.getItems().contains(item))
-//                            liveGamesList.getItems().add(item);
-                }
-                else if(type.equals("historyGameList"))
-                {
-                    gameHistoryId = message.getMessage();
-                    for(int i = 0; i < gameHistoryId.size(); i++)
-                    {
-                        gameHistoryList.getItems().add("Previous Game " + i);
-                    }
-//                    for(String item : message.getMessage())
-//                        gameHistoryList.getItems().add(item);
-                }
+        if (type.equals("liveGameList"))
+        {
+            liveGamesList.getItems().clear();
+            liveGamesId = message.getMessage();
+            for(int i = 0; i < liveGamesId.size(); i++)
+            {
+                System.out.println("ADDING " + i);
+                liveGamesList.getItems().add("Live Game " + i);
             }
-        });
+        }
+        else if(type.equals("historyGameList"))
+        {
+            gameHistoryList.getItems().clear();
+            gameHistoryId = message.getMessage();
+            for(int i = 0; i < gameHistoryId.size(); i++)
+            {
+                gameHistoryList.getItems().add("Previous Game " + i);
+            }
+        }
     }
 
     @Override

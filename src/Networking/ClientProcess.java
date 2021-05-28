@@ -66,10 +66,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         boolean inQueue = (boolean) map.get("InQueue");
         String gameId = (String) map.get("GameId");
         if (!inQueue && gameId != null)
-        {
-            ui.startGame();
             this.gameId = gameId;
-        }
         else if (inQueue)
             ui.joinQueue();
         else
@@ -150,7 +147,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 
         if (messagePreloadCount == messagePreloadCountCompleted)
         {
-            System.out.println("LIVE COUNT: " + liveGameList.size() + " || HISTORY COUNT: " + historyGameList.size());
             ui.gameHistoryRecieved(liveGameList, historyGameList);
         }
     }
@@ -273,7 +269,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     {
         String messageType = message.getMessageType();
 
-        System.out.println("UI ATTEMPT MESSAGE: " + message);
         /***************/
         if(messageType.equals("Login"))
         {
@@ -303,9 +298,6 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         {
             int row = Integer.parseInt(message.getMessage().get(0)); // contains row index
             int col = Integer.parseInt(message.getMessage().get(1)); // contains col index
-            System.out.println(row);
-            System.out.println(col);
-            System.out.println(clientAlive);
             if(clientAlive)
             {
                 MoveMessage moveRequest = new MoveMessage(gameId, row, col);
