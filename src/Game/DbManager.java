@@ -151,22 +151,22 @@ public class DbManager {
 
     }
 
-    public void changeName(String newFirst, String newLast, String userName ){
+    public void changeInfo(String columnToEdit, String newString, String userName ){
         //String sql = "UPDATE User SET FirstName = " + newFirst + " WHERE Username = " + userName;
 
-        String sql = "UPDATE User SET FirstName = ? , "
+        String sqll = "UPDATE User SET FirstName = ? , "
                 + "LastName = ? "
                 + "WHERE Username = ?";
-        
+
+        String sql = "UPDATE User Set " + columnToEdit + " = ? WHERE Username = ?";
         //String sql = "UPDATE " + TABLE_NAME + " SET " + ColumnName + " = '" + newValue + "' WHERE " + Column + " = " + rowId;
 
 
-        System.out.println("Username: " + userName + " New firstName: " + newFirst);
+        System.out.println("Username: " + userName + " New firstName: " + newString);
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,newFirst);
-            pstmt.setString(2,newLast);
-            pstmt.setString(3,userName);
+            pstmt.setString(1,newString);
+            pstmt.setString(2,userName);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
