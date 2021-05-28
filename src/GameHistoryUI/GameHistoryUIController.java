@@ -12,9 +12,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -29,6 +33,11 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
     @FXML private Button            replayBtn;
     @FXML private Button            homeBtn;
     private OpenScene openScene = new OpenScene();
+
+    @FXML private MediaView mv;
+    private MediaPlayer mp;
+    private Media me;
+
 
     boolean selectedHistoryGame = false;
 
@@ -99,6 +108,18 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //**********************************
         liveGamesList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         gameHistoryList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        //**********************************
+        //
+        //    Set the background video
+        //
+        //**********************************
+        String path = new File("src/resources/images/background.mp4").getAbsolutePath();
+        me = new Media(new File(path).toURI().toString());
+        mp = new MediaPlayer(me);
+        mv.setMediaPlayer(mp);
+        mp.setAutoPlay(true);
+        mp.setCycleCount(MediaPlayer.INDEFINITE);
     }
 
     @Override
