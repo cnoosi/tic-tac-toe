@@ -4,29 +4,43 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.media.MediaView?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: CBC3E3;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuUI.UserMenuUIController">
+<AnchorPane prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuUI.UserMenuUIController">
    <children>
-      <Button fx:id="homeBtn" layoutX="28.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleHomeBtn" prefWidth="59.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Back" />
-      <Button fx:id="logoutBtn" layoutX="28.0" layoutY="74.0" mnemonicParsing="false" onAction="#handleLogoutButton" prefHeight="35.0" prefWidth="98.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Logout" />
-      <TextField fx:id="userName" layoutX="365.0" layoutY="273.0" />
-      <PasswordField fx:id="password" layoutX="365.0" layoutY="352.0" />
-      <Label layoutX="299.0" layoutY="277.0" style="-fx-text-fill: purple;" text="Username:" />
-      <Label layoutX="301.0" layoutY="356.0" style="-fx-text-fill: purple;" text="Password:" />
-      <Button fx:id="loginBtn" layoutX="414.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleLoginBtn" text="Login" />
-      <Label fx:id="userValidation" layoutX="338.0" layoutY="485.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
-      <Label layoutX="733.0" layoutY="244.0" style="-fx-text-fill: purple;" text="Username:" />
-      <Label layoutX="732.0" layoutY="290.0" style="-fx-text-fill: purple;" text="First name:" />
-      <Label layoutX="732.0" layoutY="335.0" style="-fx-text-fill: purple;" text="Last Name:" />
-      <Label layoutX="735.0" layoutY="379.0" style="-fx-text-fill: purple;" text="Password:" />
-      <TextField fx:id="userName2" layoutX="845.0" layoutY="240.0" />
-      <TextField fx:id="firstName" layoutX="845.0" layoutY="286.0" />
-      <TextField fx:id="lastName" layoutX="845.0" layoutY="331.0" />
-      <PasswordField fx:id="password2" layoutX="846.0" layoutY="375.0" />
-      <PasswordField fx:id="password3" layoutX="846.0" layoutY="414.0" />
-      <Button fx:id="createAcctBtn" layoutX="871.0" layoutY="465.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
-      <Label fx:id="userValidation2" layoutX="821.0" layoutY="477.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white;" />
-      <Label layoutX="735.0" layoutY="418.0" style="-fx-text-fill: purple;" text="Confirm Password:" />
+      <MediaView fx:id="mv" fitHeight="800.0" fitWidth="1280.0" />
+      <ImageView fitHeight="633.0" fitWidth="633.0" layoutX="72.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/images/neonPanel.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="633.0" fitWidth="633.0" layoutX="557.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/images/neonPanel.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="homeBtn" layoutX="28.0" layoutY="27.0" mnemonicParsing="false" onAction="#handleHomeBtn" prefHeight="40.0" prefWidth="78.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Back" />
+      <Button fx:id="logoutBtn" layoutX="28.0" layoutY="74.0" mnemonicParsing="false" onAction="#handleLogoutButton" prefHeight="40.0" prefWidth="78.0" style="-fx-text-fill: white; -fx-font-size: 16; -fx-background-color: purple;" text="Logout" />
+      <TextField fx:id="userName" layoutX="348.0" layoutY="200.0" />
+      <PasswordField fx:id="password" layoutX="348.0" layoutY="260.0" />
+      <Label layoutX="282.0" layoutY="204.0" style="-fx-text-fill: white;" text="Username:" />
+      <Label layoutX="285.0" layoutY="264.0" style="-fx-text-fill: white;" text="Password:" />
+      <Button fx:id="loginBtn" layoutX="367.0" layoutY="320.0" mnemonicParsing="false" onAction="#handleLoginBtn" text="Login" />
+      <Label layoutX="320.0" layoutY="119.0" prefHeight="35.0" prefWidth="139.0" style="-fx-text-fill: white; -fx-font-family: Streamster; -fx-font-size: 28; -fx-alignment: center;" text="Login" />
+      <Label layoutX="781.0" layoutY="204.0" style="-fx-text-fill: white;" text="Username:" />
+      <Label layoutX="779.0" layoutY="264.0" style="-fx-text-fill: white;" text="First name:" />
+      <Label layoutX="778.0" layoutY="324.0" style="-fx-text-fill: white;" text="Last Name:" />
+      <Label layoutX="784.0" layoutY="384.0" style="-fx-text-fill: White;" text="Password:" />
+      <TextField fx:id="userName2" layoutX="845.0" layoutY="200.0" />
+      <TextField fx:id="firstName" layoutX="845.0" layoutY="260.0" />
+      <TextField fx:id="lastName" layoutX="845.0" layoutY="320.0" />
+      <PasswordField fx:id="password2" layoutX="846.0" layoutY="380.0" />
+      <PasswordField fx:id="password3" layoutX="846.0" layoutY="440.0" />
+      <Button fx:id="createAcctBtn" layoutX="822.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleCreateAcctBtn" text="Create Account" />
+      <Label fx:id="userValidation2" layoutX="772.0" layoutY="119.0" prefHeight="17.0" prefWidth="198.0" style="-fx-text-fill: white; -fx-font-family: Streamster; -fx-font-size: 28; -fx-alignment: center;" text="Create Account" />
+      <Label layoutX="738.0" layoutY="444.0" style="-fx-text-fill: white;" text="Confirm Password:" />
    </children>
 </AnchorPane>
