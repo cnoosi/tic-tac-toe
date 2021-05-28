@@ -35,7 +35,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
     public ClientProcess(Stage primaryStage)
     {
         this.ui = new UIProcess(this, primaryStage);
-        ui.openPage("Menu");
+        ui.openPage("History");
     }
 
     private void handleSubscribeMessage(Map<String, Object> map)

@@ -2,6 +2,9 @@ package GameHistoryUI;
 
 import Game.OpenScene;
 import MenuUI.MenuUIController;
+import Observers.Observer;
+import Observers.ObserverMessage;
+import Observers.Subject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +16,10 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameHistoryUIController implements Initializable {
-    @FXML private ListView<String>  idList;
+public class GameHistoryUIController implements Initializable, Observer, Subject
+{
+    @FXML private ListView<String>  gameHistoryList;
+    @FXML private ListView<String>  liveGamesList;
     @FXML private TextArea          gameInfo;
     @FXML private TextField         gameId;
     @FXML private Button            searchBtn;
@@ -22,12 +27,16 @@ public class GameHistoryUIController implements Initializable {
     @FXML private Button            homeBtn;
     private OpenScene openScene = new OpenScene();
 
+    private Observer UIProcess;
+
     public void handleSearchBtn(ActionEvent event) throws Exception{
         //**********************************
         //
         //    Search for specific game
         //
         //**********************************
+
+        notifyObservers(new ObserverMessage(""));
     }
 
     public void handleReplayBtn(ActionEvent event) throws Exception{
@@ -45,7 +54,7 @@ public class GameHistoryUIController implements Initializable {
         //    Load up info to the gameinfo
         //
         //**********************************
-        gameInfo.setText(idList.getSelectionModel().getSelectedItem());
+        gameInfo.setText(gameHistoryList.getSelectionModel().getSelectedItem());
 
     }
 
@@ -65,8 +74,33 @@ public class GameHistoryUIController implements Initializable {
         //    INITIALIZE THE LIST HERE
         //
         //**********************************
-        idList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        idList.getItems().add("peepee");
-        idList.getItems().add("poopoo");
+        gameHistoryList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        gameHistoryList.getItems().add("peepee");
+        gameHistoryList.getItems().add("poopoo");
+    }
+
+    @Override
+    public void update(ObserverMessage message)
+    {
+
+    }
+
+    @Override
+    public void addObserver(Object o)
+    {
+        UIProcess = (Observer) o;
+    }
+
+    @Override
+    public void removeObserver(Object o)
+    {
+        UIProcess = null;
+    }
+
+    @Override
+    public void notifyObservers(ObserverMessage message)
+    {
+        if(UIProcess != null)
+            UIProcess.update(message);
     }
 }
