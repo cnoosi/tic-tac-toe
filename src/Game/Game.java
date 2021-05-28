@@ -86,6 +86,9 @@ public class Game implements Cloneable
 
     public boolean requestPosition(int i, int j, int playerToken)
     {
+
+
+
         if (this.token == playerToken && getPosition(i, j) == 0)
         {
             setPosition(i, j, playerToken);
