@@ -185,6 +185,15 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
 //        }
     }
 
+    private void handleGetGameDataMessage(Map<String, Object> map)
+    {
+        String player1Name = (String) map.get("Player1Name");
+        String player2Name = (String) map.get("Player2Name");
+        long gameDuration = (long) map.get("GameDuration");
+        long winnerToken = (long) map.get("WinnerToken");
+        ui.gameDataReceived(player1Name, player2Name, (int) gameDuration, (int) winnerToken);
+    }
+
     public void handleMessagingProcess()
     {
         try
@@ -199,6 +208,9 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
                     {
                         case "SubscribeMessage":
                             handleSubscribeMessage(map);
+                            break;
+                        case "AccountMessage":
+                            handleAccountMessage(map);
                             break;
                         case "QueueMessage":
                             handleQueueMessage(map);
@@ -218,8 +230,8 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
                         case "FetchGameListMessage":
                             handleFetchGameListMessage(map);
                             break;
-                        case "AccountMessage":
-                            handleAccountMessage(map);
+                        case "GetGameDataMessage":
+                            handleGetGameDataMessage(map);
                             break;
                         default:
                             System.out.println("Failed to process message: " + messageType);
@@ -309,6 +321,12 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         else if (messageType.equals("GameHistoryUpdate"))
         {
             writeMessage(new FetchGameListMessage());
+        }
+
+        else if (messageType.equals("GetGameData"))
+        {
+            String gameId = message.getMessage().get(0); // holds the gameId they want to spectate
+            writeMessage(new GetGameDataMessage(gameId));
         }
     }
 

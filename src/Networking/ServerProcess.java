@@ -103,6 +103,9 @@ public class ServerProcess implements Runnable
                     case "FetchGameListMessage":
                         handleFetchGameListMessage(map);
                         break;
+                    case "GetGameDataMessage":
+                        gamesService.handleGetGameDataMessage(map);
+                        break;
                     default:
                         System.out.println("Failed to process message: " + messageType);
                 }
