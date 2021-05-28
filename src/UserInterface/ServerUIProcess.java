@@ -127,6 +127,25 @@ public class ServerUIProcess implements Subject, Observer
 
             notifyObservers(new ObserverMessage("ActiveConnectionsList", connectionsStr));
         }
+
+        else if(type.equals("UpdateList"))
+        {
+            ArrayList<User> users = serverProcess.getDatabase().getAllPlayers();
+            ArrayList<String> usersStr = new ArrayList<>();
+
+            for(int i = 0; i < users.size(); i++)
+            {
+                usersStr.add(users.get(i).getUserName());
+            }
+
+            notifyObservers(new ObserverMessage("UpdateListStr", usersStr));
+        }
+
+        else if(type.equals("UserChange"))
+        {
+            serverProcess.getDatabase().changeInfo("Username", message.getMessage().get(0), message.getMessage().get(1));
+            serverProcess.getDatabase().changeInfo("Password", message.getMessage().get(2), message.getMessage().get(1));
+        }
     }
 
     @Override

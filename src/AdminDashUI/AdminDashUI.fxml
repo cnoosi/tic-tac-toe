@@ -29,28 +29,34 @@
             </AnchorPane>
          </content>
       </Tab>
-      <Tab text="Update Users">
+      <Tab fx:id="updateTab" onSelectionChanged="#fillUsersList" text="Update Users">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ListView layoutX="261.0" layoutY="124.0" prefHeight="298.0" prefWidth="706.0" />
-                  <Text layoutX="598.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users">
+                  <Text layoutX="599.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Users">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="username" layoutX="640.0" layoutY="456.0" prefHeight="52.0" prefWidth="202.0" />
-                  <TextField fx:id="username1" layoutX="640.0" layoutY="536.0" prefHeight="53.0" prefWidth="204.0" />
-                  <Text layoutX="482.0" layoutY="490.0" strokeType="OUTSIDE" strokeWidth="0.0" text="username">
+                  <TextField fx:id="username" layoutX="601.0" layoutY="456.0" prefHeight="52.0" prefWidth="202.0" />
+                  <TextField fx:id="password" layoutX="601.0" layoutY="536.0" prefHeight="53.0" prefWidth="204.0" />
+                  <Text layoutX="443.0" layoutY="490.0" strokeType="OUTSIDE" strokeWidth="0.0" text="username">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Text>
-                  <Text layoutX="482.0" layoutY="571.0" strokeType="OUTSIDE" strokeWidth="0.0" text="username">
+                  <Text layoutX="443.0" layoutY="571.0" strokeType="OUTSIDE" strokeWidth="0.0" text="password" wrappingWidth="90.9765625">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Text>
+                  <Button fx:id="updateBtn" layoutX="443.0" layoutY="627.0" mnemonicParsing="false" onAction="#handeUpdateButton" prefHeight="66.0" prefWidth="365.0" text="Update">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Button>
+                  <ListView fx:id="usersList" layoutX="279.0" layoutY="162.0" onMouseClicked="#handleUserSelection" prefHeight="251.0" prefWidth="693.0" />
+                  <Text fx:id="currentUsername" layoutX="678.0" layoutY="124.0" opacity="0.0" strokeType="OUTSIDE" strokeWidth="0.0" />
                </children>
             </AnchorPane>
         </content>

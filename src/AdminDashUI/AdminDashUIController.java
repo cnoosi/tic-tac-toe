@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AdminDashUIController implements Initializable, Subject, Observer
@@ -27,6 +28,11 @@ public class AdminDashUIController implements Initializable, Subject, Observer
     @FXML private Button            registeredPlayersBtn;
     @FXML private Button            activeConnectionsBtn;
     @FXML private Text              informationText;
+    @FXML private ListView<String>  usersList;
+    @FXML private Button            updateBtn;
+    @FXML private TextField         username;
+    @FXML private TextField         password;
+    @FXML private Text              currentUsername;
 
     private Observer serverUIProcess;
 
@@ -58,14 +64,39 @@ public class AdminDashUIController implements Initializable, Subject, Observer
         notifyObservers(new ObserverMessage("ActiveConnections"));
     }
 
+    @FXML
+    public void handeUpdateButton(ActionEvent event)
+    {
+        ArrayList<String> information = new ArrayList<>();
+        information.add(username.getText());
+        information.add(currentUsername.getText());
+        information.add(password.getText());
+
+        System.out.println(information);
+
+        notifyObservers(new ObserverMessage("UserChange", information));
+    }
+
+    @FXML
+    public void fillUsersList()
+    {
+        notifyObservers(new ObserverMessage("UpdateList"));
+    }
+
     public void handleIdSelection() throws Exception{
         //**********************************
         //
         //    Load up info to the gameinfo
         //
-        //**********************************
+        //**********************************;
         information.setText(informationList.getSelectionModel().getSelectedItem());
 
+    }
+
+    public void handleUserSelection()
+    {
+        username.setText(usersList.getSelectionModel().getSelectedItem());
+        currentUsername.setText(username.getText());
     }
 
     public void handleHomeBtn(ActionEvent event) throws Exception {
@@ -81,6 +112,7 @@ public class AdminDashUIController implements Initializable, Subject, Observer
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         informationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        usersList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     @Override
@@ -120,6 +152,15 @@ public class AdminDashUIController implements Initializable, Subject, Observer
             for(int i = 0; i < message.getMessage().size(); i++)
             {
                 informationList.getItems().add(message.getMessage().get(i));
+            }
+        }
+
+        else if(type.equals("UpdateListStr"))
+        {
+            usersList.getItems().clear();
+            for(int i = 1; i < message.getMessage().size(); i++)
+            {
+                usersList.getItems().add(message.getMessage().get(i));
             }
         }
 
