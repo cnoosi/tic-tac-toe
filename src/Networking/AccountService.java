@@ -25,6 +25,7 @@ public class AccountService {
         String password = (String) map.get("Password");
         String firstName = (String) map.get("FirstName");
         String lastName = (String) map.get("LastName");
+        String newValue = (String) map.get("NewValue");
         if (action == AccountAction.Login)
         {
             boolean loginSuccess = database.userFound(username, password);
@@ -47,20 +48,80 @@ public class AccountService {
                         null, null, "success"));
             }
             else
-                client.writeMessage(new AccountMessage(AccountAction.Login, null, null,
+                client.writeMessage(new AccountMessage(AccountAction.Register, null, null,
                         null, null, "fail"));
         }
         else if (action == AccountAction.Logout)
         {
-            client.setId(0);
+            client.setId(-1);
             client.writeMessage(new AccountMessage(AccountAction.Logout, null, null,
                     null, null, "success"));
         }
-        else if (action == AccountAction.ChangeSettings)
+        else if (action == AccountAction.ChangeName)
         {
-            if (client.getId() != 1)
+            if (client.getId() != -1)
             {
-                // Change password and username!
+                String currentUsername = database.getUsername(client.getId());
+                if (database.userFound(currentUsername, password))
+                {
+                    database.changeInfo("FirstName", firstName, currentUsername);
+                    database.changeInfo("LastName", lastName, currentUsername);
+                    client.writeMessage(new AccountMessage(AccountAction.ChangeName, "success"));
+                }
+                else
+                {
+                    client.writeMessage(new AccountMessage(AccountAction.ChangeName, "fail"));
+                }
+            }
+        }
+        else if (action == AccountAction.ChangeUsername)
+        {
+            if (client.getId() != -1)
+            {
+                String currentUsername = database.getUsername(client.getId());
+                if (database.userFound(currentUsername, password))
+                {
+                    database.changeInfo("Username", newValue, currentUsername);
+                    client.writeMessage(new AccountMessage(AccountAction.ChangeUsername, "success"));
+                }
+                else
+                {
+                    client.writeMessage(new AccountMessage(AccountAction.ChangeUsername, "fail"));
+                }
+            }
+        }
+        else if (action == AccountAction.ChangePassword)
+        {
+            if (client.getId() != -1)
+            {
+                String currentUsername = database.getUsername(client.getId());
+                if (database.userFound(currentUsername, password))
+                {
+                    database.changeInfo("Password", newValue, currentUsername);
+                    client.writeMessage(new AccountMessage(AccountAction.ChangePassword, "success"));
+                }
+                else
+                {
+                    client.writeMessage(new AccountMessage(AccountAction.ChangePassword, "fail"));
+                }
+            }
+        }
+        else if (action == AccountAction.DeleteUser)
+        {
+            System.out.println("Server knows whats up");
+            if (client.getId() != -1)
+            {
+                if (database.userFound(username, password))
+                {
+                    System.out.println("Server knows whats up 2");
+                    database.deleteUser(username);
+                    client.setId(-1);
+                    client.writeMessage(new AccountMessage(AccountAction.DeleteUser, "success"));
+                }
+                else
+                {
+                    client.writeMessage(new AccountMessage(AccountAction.DeleteUser, "fail"));
+                }
             }
         }
     }

@@ -4,5 +4,8 @@ public enum AccountAction {
     Register,
     Login,
     Logout,
-    ChangeSettings,
+    ChangeName,
+    ChangeUsername,
+    ChangePassword,
+    DeleteUser,
 }

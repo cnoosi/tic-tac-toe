@@ -7,18 +7,6 @@ public class DbManager {
     private ArrayList<User> userList = new ArrayList<>();
     private ArrayList<GameHistory> gameList = new ArrayList<>();
     private ArrayList<MovesHistory> movesList = new ArrayList<>();
-    private static DbManager instance = new DbManager();
-    private int currentUser;
-
-    public static DbManager getInstance()
-    {
-        return instance;
-    }
-
-    public User getCurrentUser()
-    {
-        return userList.get(currentUser);
-    }
 
     public DbManager() {
         String sql = "SELECT * FROM User";

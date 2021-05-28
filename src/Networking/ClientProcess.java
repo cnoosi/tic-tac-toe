@@ -11,6 +11,7 @@ import Messages.*;
 import UserInterface.UIProcess;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
@@ -157,29 +158,50 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         AccountAction accountAction = AccountAction.values()[(int) accountActionNum];
         String response = (String) map.get("Response");
 
-//        if (accountAction == AccountAction.Login)
-//        {
-//            if (response.equals("success"))
-//                //ui.loginSuccess(true);
-//            else
-//                ui.loginSuccess(false);
-//        }
-//        else if (accountAction == AccountAction.Logout)
-//            ui.logoutSuccess(true);
-//        else if (accountAction == AccountAction.Register)
-//        {
-//            if (response.equals("success"))
-//                ui.registerSuccess(true);
-//            else
-//                ui.registerSuccess(false);
-//        }
-//        else if (accountAction == AccountAction.ChangeSettings)
-//        {
-//            if (response.equals("success"))
-//                ui.settingChangedSuccess(true);
-//            else
-//                ui.settingChangedSuccess(false);
-//        }
+        if (accountAction == AccountAction.Login)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged in", "You have successfully logged in.");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "INCORRECT USERNAME OR PASSWORD", "The username and password do not match, retry entering your password");
+        }
+        else if (accountAction == AccountAction.Logout)
+            ui.createAlert(Alert.AlertType.CONFIRMATION, "Logged out", "You have successfully logged out.");
+        else if (accountAction == AccountAction.Register)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "Account Registered!", "Please enter your username and password again to log in!");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "USERNAME TAKEN", "This username is already taken! Try another username");
+        }
+        else if (accountAction == AccountAction.ChangeName)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "USER INFO CHANGED", "You have successfully changed your user information, please restart the game in order for changes to fully take place");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "INCORRECT PASSWORD", "Please retry entering your password");
+        }
+        else if (accountAction == AccountAction.ChangeUsername)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "USERNAME CHANGED", "You have successfully changed your username, please restart the game in order for changes to fully take place");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "USERNAME NOT AVAILABLE", "The username you chose is already taken by another player");
+        }
+        else if (accountAction == AccountAction.ChangePassword)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "PASSWORD CHANGED", "You have successfully changed your password, please restart the game in order for changes to fully take place");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "INCORRECT USERNAME OR PASSWORD", "The username and password do not match, retry entering your password");
+        }
+        else if (accountAction == AccountAction.DeleteUser)
+        {
+            if (response.equals("success"))
+                ui.createAlert(Alert.AlertType.CONFIRMATION, "USER DELETED", "You have successfully deleted your account, please restart the game in order for changes to fully take place");
+            else
+                ui.createAlert(Alert.AlertType.ERROR, "INCORRECT PASSWORD", "The password does not match, retry entering your password");
+        }
     }
 
     private void handleGetGameDataMessage(Map<String, Object> map)
@@ -277,15 +299,49 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
             writeMessage(new AccountMessage(AccountAction.Login, username, password));
         }
 
+        else if (messageType.equals("Logout"))
+        {
+            writeMessage(new AccountMessage(AccountAction.Logout));
+        }
+
         else if(messageType.equals("CreateAccount"))
         {
             String username  = message.getMessage().get(0); // holds username
             String firstName = message.getMessage().get(1); // holds first name
             String lastName  = message.getMessage().get(2); // holds second name
             String password  = message.getMessage().get(3); // holds password
-            // writeMessage(createAccount)   // has username, first name, last name, password
+            writeMessage(new AccountMessage(AccountAction.Register, username, password, firstName, lastName, null, null));
         }
 
+        else if (messageType.equals("ChangeName"))
+        {
+            System.out.println("client knows whats up");
+            String password  = message.getMessage().get(0); // holds username
+            String firstName = message.getMessage().get(1); // holds first name
+            String lastName  = message.getMessage().get(2); // holds second name
+            writeMessage(new AccountMessage(AccountAction.ChangeName, null, password, firstName, lastName, null, null));
+        }
+
+        else if (messageType.equals("ChangeUsername"))
+        {
+            String password  = message.getMessage().get(0); // holds username
+            String username = message.getMessage().get(1); // holds first name
+            writeMessage(new AccountMessage(AccountAction.ChangeUsername, null, password, null, null, username, null));
+        }
+
+        else if (messageType.equals("ChangePassword"))
+        {
+            String password  = message.getMessage().get(0); // holds username
+            String newPassword = message.getMessage().get(1); // holds first name
+            writeMessage(new AccountMessage(AccountAction.ChangePassword, null, password, null, null, newPassword, null));
+        }
+
+        else if (messageType.equals("DeleteUser"))
+        {
+            String username  = message.getMessage().get(0); // holds username
+            String password = message.getMessage().get(1); // holds first name
+            writeMessage(new AccountMessage(AccountAction.DeleteUser, username, password, null, null, null, null));
+        }
         else if(messageType.equals("MultiPlayer"))
         {
             writeMessage(new QueueMessage(true));
