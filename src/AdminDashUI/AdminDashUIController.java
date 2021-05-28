@@ -2,42 +2,60 @@ package AdminDashUI;
 
 import Game.OpenScene;
 import MenuUI.MenuUIController;
+import Observers.Observer;
+import Observers.ObserverMessage;
+import Observers.Subject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdminDashUIController implements Initializable {
+public class AdminDashUIController implements Initializable, Subject, Observer
+{
 
-    @FXML private ListView<String>  idList;
-    @FXML private TextArea          gameInfo;
-    @FXML private TextField         gameId;
-    @FXML private Button            searchBtn;
-    @FXML private Button            replayBtn;
-    @FXML private Button            homeBtn;
-    private OpenScene openScene = new OpenScene();
+    @FXML private ListView<String>  informationList;
+    @FXML private TextArea          information;
+    @FXML private Button            activeGamesBtn;
+    @FXML private Button            completedGamesBtn;
+    @FXML private Button            registeredPlayersBtn;
+    @FXML private Button            activeConnectionsBtn;
+    @FXML private Text              informationText;
 
-    public void handleSearchBtn(ActionEvent event) throws Exception{
-        //**********************************
-        //
-        //    Search for specific game
-        //
-        //**********************************
+    private Observer serverUIProcess;
+
+    @FXML
+    public void handleActiveGamesBtn(ActionEvent event)
+    {
+        informationText.setText(activeGamesBtn.getText());
+        notifyObservers(new ObserverMessage("ActiveGames"));
     }
 
-    public void handleReplayBtn(ActionEvent event) throws Exception{
-        //**********************************
-        //
-        //    open new board ui window to
-        //    spectate game
-        //
-        //**********************************
+    @FXML
+    public void handleCompletedGamesBtn(ActionEvent event)
+    {
+        informationText.setText(completedGamesBtn.getText());
+        notifyObservers(new ObserverMessage("CompletedGames"));
+    }
+
+    @FXML
+    public void handleRegisteredPlayersBtn(ActionEvent event)
+    {
+        informationText.setText(registeredPlayersBtn.getText());
+        notifyObservers(new ObserverMessage("RegisteredPlayers"));
+    }
+
+    @FXML
+    public void handleActiveConnectionsBtn(ActionEvent event)
+    {
+        informationText.setText(activeConnectionsBtn.getText());
+        notifyObservers(new ObserverMessage("ActiveConnections"));
     }
 
     public void handleIdSelection() throws Exception{
@@ -46,7 +64,7 @@ public class AdminDashUIController implements Initializable {
         //    Load up info to the gameinfo
         //
         //**********************************
-        gameInfo.setText(idList.getSelectionModel().getSelectedItem());
+        information.setText(informationList.getSelectionModel().getSelectedItem());
 
     }
 
@@ -60,14 +78,68 @@ public class AdminDashUIController implements Initializable {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        //**********************************
-        //
-        //    INITIALIZE THE LIST HERE
-        //
-        //**********************************
-        idList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        idList.getItems().add("peepee");
-        idList.getItems().add("poopoo");
+    public void initialize(URL url, ResourceBundle resourceBundle)
+    {
+        informationList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    @Override
+    public void update(ObserverMessage message)
+    {
+        String type = message.getMessageType();
+        if(type.equals("ActiveGamesList"))
+        {
+            informationList.getItems().clear();
+            for(int i = 0; i < message.getMessage().size(); i++)
+            {
+                informationList.getItems().add(message.getMessage().get(i));
+            }
+        }
+
+        else if(type.equals("CompletedGameList"))
+        {
+            informationList.getItems().clear();
+            for(int i = 1; i < message.getMessage().size(); i++)
+            {
+                informationList.getItems().add(message.getMessage().get(i));
+            }
+        }
+
+        else if(type.equals("RegisteredPlayersList"))
+        {
+            informationList.getItems().clear();
+            for(int i = 1; i < message.getMessage().size(); i++)
+            {
+                informationList.getItems().add(message.getMessage().get(i));
+            }
+        }
+
+        else if(type.equals("ActiveConnectionsList"))
+        {
+            informationList.getItems().clear();
+            for(int i = 0; i < message.getMessage().size(); i++)
+            {
+                informationList.getItems().add(message.getMessage().get(i));
+            }
+        }
+
+    }
+
+    @Override
+    public void addObserver(Object o)
+    {
+        serverUIProcess = (Observer) o;
+    }
+
+    @Override
+    public void removeObserver(Object o)
+    {
+        serverUIProcess = null;
+    }
+
+    @Override
+    public void notifyObservers(ObserverMessage message)
+    {
+        serverUIProcess.update(message);
     }
 }
