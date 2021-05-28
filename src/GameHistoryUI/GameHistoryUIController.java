@@ -114,6 +114,7 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
                     for(int i = 0; i < liveGamesId.size(); i++)
                     {
                         System.out.println("Trying to add");
+                        liveGamesList.getItems().add("Live Game " + i);
                     }
 //                    System.out.println(message.getMessage());
 //                    for(String item : message.getMessage())

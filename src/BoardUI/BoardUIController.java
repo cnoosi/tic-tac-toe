@@ -2,6 +2,7 @@ package BoardUI;
 
 import MenuUI.*;
 import Linkers.*;
+import Messages.MoveMessage;
 import Observers.Observer;
 import Observers.ObserverMessage;
 import Observers.Subject;
@@ -37,7 +38,8 @@ public class BoardUIController implements Initializable, Observer, Subject
     private Image               XToken = new Image("/resources/images/TokenO.png");
     private ComputerAlgorithm   ai = new Minimax();
     private OpenScene           openScene = new OpenScene();
-    private int token;
+    private int token = 1;
+    private boolean singlePlayer = false;
 
     private ArrayList<BoardObserver> observers = new ArrayList<>();
 
@@ -59,13 +61,19 @@ public class BoardUIController implements Initializable, Observer, Subject
         {
             if(event.getSource() == buttonList.get(button))
             {
+                System.out.println(singlePlayer);
                 Position pos = getPositionFromIndex(button);
                 ArrayList<String> move = new ArrayList<String>();
                 move.add(String.valueOf(pos.getRow()));
                 move.add(String.valueOf(pos.getCol()));
                 move.add(String.valueOf(token));
 
-                notifyObservers(new ObserverMessage("Move", move));
+                if(singlePlayer)
+                {
+                    
+                }
+                else
+                    notifyObservers(new ObserverMessage("Move", move));
             }
         }
     }
@@ -157,6 +165,11 @@ public class BoardUIController implements Initializable, Observer, Subject
             btn.setDisable(mode);
     }
 
+    public void setSinglePlayer(boolean mode)
+    {
+        singlePlayer = mode;
+    }
+
     public void setLocalPlayerCount(int playerCount)
     {
         this.playerCount = playerCount;
@@ -217,6 +230,12 @@ public class BoardUIController implements Initializable, Observer, Subject
         else if(type.equals("ClearBoard"))
         {
             imageList.forEach(imageView -> imageView.setImage(null));
+        }
+
+        else if(type.equals("SinglePlayerMode"))
+        {
+            setSinglePlayer(true);
+            game = new Game(3, 1);
         }
     }
 
