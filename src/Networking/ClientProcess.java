@@ -192,7 +192,7 @@ public class ClientProcess implements Runnable, ClientObserver, Observer
         String player2Name = (String) map.get("Player2Name");
         long gameDuration = (long) map.get("GameDuration");
         long winnerToken = (long) map.get("WinnerToken");
-        ui.gameDataReceived(player1Name, player2Name, (int) gameDuration, (int) winnerToken);
+        //ui.gameDataReceived(player1Name, player2Name, (int) gameDuration, (int) winnerToken);
     }
 
     public void handleMessagingProcess()

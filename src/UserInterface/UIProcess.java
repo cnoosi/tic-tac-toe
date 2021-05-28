@@ -138,7 +138,7 @@ public class UIProcess implements Subject, Observer
             notifyObservers(message);
         }
 
-        else if(type.equals("GameHistory")) // modify later
+        else if(type.equals("GameHistory"))
         {
             openPage("History");
             message.setMessageType("GameHistoryUpdate");

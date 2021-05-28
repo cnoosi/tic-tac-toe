@@ -30,6 +30,9 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
     @FXML private Button            homeBtn;
     private OpenScene openScene = new OpenScene();
 
+    private ArrayList<String> gameHistoryId;
+    private ArrayList<String> liveGamesId;
+
     private Observer UIProcess;
 
     public void handleSearchBtn(ActionEvent event) throws Exception{
@@ -50,8 +53,10 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         //
         //**********************************
         ArrayList<String> currentGame = new ArrayList<>();
+        if(gameHistoryList.getItems().contains(gameHistoryList.getItems().get(gameHistoryList.getSelectionModel().getSelectedIndex())))
+
         currentGame.add(gameHistoryList.getItems().get(gameHistoryList.getSelectionModel().getSelectedIndex()));
-        System.out.println(currentGame);
+        //System.out.println(currentGame);
         notifyObservers(new ObserverMessage("ReplayGame", currentGame));
     }
 
@@ -91,20 +96,36 @@ public class GameHistoryUIController implements Initializable, Observer, Subject
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
+                gameHistoryId = new ArrayList<>();
+                liveGamesId   = new ArrayList<>();
+
+                //liveGamesList.getItems().clear();
                 gameHistoryList.getItems().clear();
-                liveGamesList.getItems().clear();
                 System.out.println("history update");
                 String type = message.getMessageType();
 
                 if (type.equals("liveGameList"))
                 {
-                    for(String item : message.getMessage())
-                        liveGamesList.getItems().add(item);
+                    liveGamesId = message.getMessage();
+                    for(int i = 0; i < liveGamesId.size(); i++)
+                    {
+                        if(!liveGamesList.getItems().contains("Live Game " + i))
+                            liveGamesList.getItems().add("Live Game " + i);
+                    }
+//                    System.out.println(message.getMessage());
+//                    for(String item : message.getMessage())
+//                        if(!liveGamesList.getItems().contains(item))
+//                            liveGamesList.getItems().add(item);
                 }
                 else if(type.equals("historyGameList"))
                 {
-                    for(String item : message.getMessage())
-                        gameHistoryList.getItems().add(item);
+                    gameHistoryId = message.getMessage();
+                    for(int i = 0; i < gameHistoryId.size(); i++)
+                    {
+                        gameHistoryList.getItems().add("Previous Game " + i);
+                    }
+//                    for(String item : message.getMessage())
+//                        gameHistoryList.getItems().add(item);
                 }
             }
         });
